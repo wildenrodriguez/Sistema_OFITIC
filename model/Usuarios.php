@@ -108,12 +108,12 @@
             empleado.nombre AS Nombre,
             tecnico.tipo AS tipo_c,
             tipo_servicio.nombre AS Tipo
-          FROM
+                FROM
             usuario
-          LEFT JOIN empleado ON usuario.cedula = empleado.cedula
-          LEFT JOIN tecnico ON tecnico.cedula = empleado.cedula
-          LEFT JOIN tipo_servicio ON tecnico.tipo = tipo_servicio.codigo;
-          ";
+            LEFT JOIN empleado ON usuario.cedula = empleado.cedula
+            LEFT JOIN tecnico ON tecnico.cedula = empleado.cedula
+            LEFT JOIN tipo_servicio ON tecnico.tipo = tipo_servicio.codigo;
+            ";
 
             $records = $this->conex->prepare($query);
 

@@ -225,5 +225,65 @@
 
             return $records->fetchAll(PDO::FETCH_ASSOC);
         }
+
+        public function gestionarEmpleado($accion, $datos = array()) {
+            // Establecer los datos del empleado
+            if (isset($datos['cedula'])) $this->set_cedula($datos['cedula']);
+            if (isset($datos['nombre'])) $this->set_nombre($datos['nombre']);
+            if (isset($datos['apellido'])) $this->set_apellido($datos['apellido']);
+            if (isset($datos['telefono'])) $this->set_telefono($datos['telefono']);
+            if (isset($datos['correo'])) $this->set_correo($datos['correo']);
+            if (isset($datos['id_unidad'])) $this->set_unidad($datos['id_unidad']);
+            if (isset($datos['id_dependencia'])) $this->set_dependencia($datos['id_dependencia']);
+        
+            switch ($accion) {
+                case 'crear':
+                    return $this->crear();
+                    break;
+                    
+                case 'modificar':
+                    return $this->modificar();
+                    break;
+                    
+                case 'eliminar':
+                    return $this->eliminar();
+                    break;
+                    
+                case 'consultar':
+                    return $this->datos_empleado();
+                    break;
+                    
+                case 'verificar':
+                    return $this->verificar_existencia();
+                    break;
+                    
+                case 'listar':
+                    return $this->consultar_solicitantes();
+                    break;
+                    
+                case 'empleados_dependencia':
+                    if (isset($datos['dependenciaId'])) {
+                        return $this->Empleados_dependencia($datos['dependenciaId']);
+                    }
+                    break;
+                    
+                case 'no_usuarios':
+                    return $this->no_usuarios();
+                    break;
+                    
+                case 'mis_servicios':
+                    if (isset($datos['cedula'])) {
+                        $this->cedula = $datos['cedula'];
+                        return $this->mis_servicios();
+                    }
+                    break;
+                    
+                default:
+                    return false;
+                    break;
+            }
+            
+            return false;
+        }
     }
  ?>
