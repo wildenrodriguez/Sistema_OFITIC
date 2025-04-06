@@ -1,0 +1,72 @@
+<!-- Modal -->
+<div class="modal fade modal-xl card" id="solicitud" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="mostra" aria-hidden="true">
+      <form method="post" class="modal-dialog" autocomplete="off">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="FallaLabel">Solicitud</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" >
+
+          <div class="row">
+            
+            <div class="col-12">
+              <label for="motivo" class="form-label ">Motivo</label>
+              <input class="form-control" placeholder="Describa el servicio solicitado" class="form-control" name="motivo" type="text" id="motivo2" required maxlength="200">
+            </div>
+            <div class="col-4">
+              <label for="nro" class="form-label ">N° Solicitud</label>
+              <input type="text" readonly class="form-control-plaintext" id="nro" name="nrosol">
+            </div>
+            <div class="col-4">
+              <label for="solicitante" class="form-label ">Solicitante</label>
+              <input type="text" readonly class="form-control-plaintext" id="sol">
+            </div>
+
+            <div class="col-4">
+              <label for="area" class="form-label">Area</label>
+              <select class="col-sm-3 form-control" placeholder="Describa el servicio solicitado" name="area" id="area2" required>
+                <option selecte hidden value="">Seleccione una opcion</option>
+                <option value="1">Soporte técnico</option>
+                <option value="4">Electrónica</option>
+                <option value="2">Redes</option>
+                <option value="3">telefonía</option>
+              </select>
+            </div>
+            </div>
+
+              <div class="nav-content row">
+              
+              <div class="col-sm-6">
+                <label for="dependencia" class="form-label">Dependencia</label>
+                <select name="dependencia" class="form-select" id="dependencia2">
+                  <option selected hidden value="0">Seleccionar</option>
+                  <?php foreach ($dependencias as $dependencia) { ?>
+                    <option value="<?php echo $dependencia['codigo']; ?>"><?php echo $dependencia['nombre']; ?></option>
+                <?php } ?>
+                </select>
+              </div>
+
+              <div class="col-sm-6">
+                  <label class="input-label" for="serial" class="form-label">Serial del equipo</label>
+                  <select class="form-control my-3" id="equipo2" name="serial">
+                  <option selected>Seleccionar</option>
+                      <?php foreach ($equipos as $equipo) {
+                        echo "<option value='".$equipo["serial"]."'>".$equipo["serial"]."</option>";
+                      } ?>
+                      
+                    </select>
+                </div>
+
+              </div>
+              
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="close" data-bs-dismiss="modal">Cerrar</button>
+            <button type="submit" name="enviar" class="btn btn-primary registrar" id="enviar2">Enviar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    
