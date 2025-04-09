@@ -86,9 +86,8 @@
 		$btn_name = "eliminar";
 		$btn_value = "0";
 		$origen = "";
-
 		require_once "model/configuracion.php";
-		$config = new configuracion();
+		$config = new Configuracion();
 		$config->set_tabla("unidad");
 		$unidades = $config->Transaccion("consultar");;
 		$config->set_tabla("dependencia");
