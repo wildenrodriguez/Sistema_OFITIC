@@ -99,10 +99,11 @@ if (is_file("view/" . $page . ".php")) {
 	} else
 
 		if (isset($_POST["enviar"]) and $_POST["motivo"] != NULL) {
+			$peticion['peticion'] = "validar";
 			$solicitud->set_nro_solicitud($_POST["nrosol"]);
 			$solicitud->set_motivo($_POST["motivo"]);
 			$equipo->set_serial($_POST['serial']);
-			if ($_POST["serial"] == " " or $equipo->validar_equipo()) {
+			if ($_POST["serial"] == " " or $equipo->Transaccion($peticion)) {
 				$equipoSerial = null;
 			} else {
 				$equipoSerial = $_POST["serial"];
