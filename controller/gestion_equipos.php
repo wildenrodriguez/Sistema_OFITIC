@@ -11,13 +11,14 @@
 
 	if(is_file("view/$page.php")){
 
+		$peticion = [];
 		// Estilos de Pagina
 		$titulo = "Gestion de Equipos";
 		$css = ["alert","style"];
 
 		if(isset($_POST["solicitud"]) and $_POST["motivo"]!=NULL){	
 			require_once "model/solicitud.php";
-            $soli = new solicitud();
+            $soli = new Solicitud();
             $soli->set_cedula_solicitante($datos["cedula"]);
             $soli->set_motivo($_POST["motivo"]);
 			$nro_solicitud = $soli->solicitar();
@@ -32,19 +33,20 @@
 		require_once('model/equipo.php');
 		$equipo = new Equipo();
 		require_once('model/configuracion.php');
-		$config = new configuracion();
+		$config = new Configuracion();
 
 		$cabecera = array("#","Serial","Tipo","Marca","Nro. bien","Dependencia");
 
 		// Opciones del Modulo
 		if (isset($_POST)) {
-			$equipo = new equipo();
+			$equipo = new Equipo();
 			$equipo->set_datos($_POST);
 
 			if (isset($_POST['registrar'])) {
-
-				if (!$equipo->validar_equipo()) {
-					if($equipo->registrar()){
+				$peticion['peticion'] = "validar";
+				if (!$equipo->Transaccion($peticion)) {
+					$peticion['peticion'] = "registrar";
+					if($equipo->Transaccion($peticion['peticion'])){
 						echo json_encode(['mensaje'=>'Se registró el Equipo','color'=>'alert-success']);
 					}else{
 						echo json_encode(['mensaje'=>'No se pudo registrar el Equipo','color'=>'alert-danger']);
@@ -87,8 +89,8 @@
 			ob_end_clean();
 			$reporte->equipos($equipo->consultar());
 		}
-
-		$marcas = $equipo->consultar_marcas();
+		$peticion['peticion'] = "consulta_marcas";
+		$marcas = $equipo->Transaccion($peticion);
 		$config->set_tabla('dependencia');
 		$dependencias = $config->Transaccion("consultar");
 

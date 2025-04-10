@@ -6,6 +6,9 @@ if (!$_SESSION) {
 ob_start();
 require_once "model/usuarios.php";
 $usuario = new Usuario();
+
+$peticion = [];
+
 if (!$usuario->validar_entrada($_SESSION['user']['rol'], ["Super usuario", "Administrador"]))
 	echo '<script>window.location="?page=404"</script>';
 
@@ -68,8 +71,9 @@ if (is_file("view/" . $page . ".php")) {
 	$modal = "solicitud";
 	$origen = "";
 	require_once "model/solicitud.php";
-	$servi = new Solicitud;
-	$servicios = $servi->servicios();
+	$solicitud = new Solicitud;
+	$peticion['peticion'] = "consultar_servicio";
+	$servicios = $solicitud->Transaccion($peticion);
 	$registros = [];
 	foreach ($servicios as $i => $servicio) {
 		$registros[$i] = [$servicio["ID"], $servicio["Solicitante"], $servicio["Equipo"], $servicio["Cedula"], $servicio["Motivo"], $servicio["Estatus"], $servicio["Inicio"]];
@@ -77,15 +81,16 @@ if (is_file("view/" . $page . ".php")) {
 
 	if (isset($_POST["solicitar"]) and $_POST["motivo"] != NULL) {
 		if ($_POST['cedula'] != " ") {
-			$servi->set_motivo($_POST["motivo"]);
+			$solicitud->set_motivo($_POST["motivo"]);
 			if ($_POST["serial"] == " ") {
-				$equipo = null;
+				$equipoSerial = null;
 			} else {
-				$equipo = $_POST["serial"];
+				$equipoSerial = $_POST["serial"];
 			}
-			$servi->set_id_equipo($equipo);
-			$servi->set_cedula_solicitante($_POST["cedula"]);
-			$hoja->set_nro_solicitud($servi->crear());
+			$peticion['peticion'] = "registrar";
+			$solicitud->set_id_equipo($equipoSerial);
+			$solicitud->set_cedula_solicitante($_POST["cedula"]);
+			$hoja->set_nro_solicitud($solicitud->Transaccion($peticion));
 			$hoja->set_tipo_servicio($_POST["area"]);
 			$hoja->nueva_hoja();
 			header("refresh: 0");
@@ -94,17 +99,18 @@ if (is_file("view/" . $page . ".php")) {
 	} else
 
 		if (isset($_POST["enviar"]) and $_POST["motivo"] != NULL) {
-			$servi->set_nro_solicitud($_POST["nrosol"]);
-			$servi->set_motivo($_POST["motivo"]);
-			$equ->set_serial($_POST['serial']);
-			if ($_POST["serial"] == " " or $equ->validar_equipo()) {
-				$equipo = null;
+			$peticion['peticion'] = "validar";
+			$solicitud->set_nro_solicitud($_POST["nrosol"]);
+			$solicitud->set_motivo($_POST["motivo"]);
+			$equipo->set_serial($_POST['serial']);
+			if ($_POST["serial"] == " " or $equipo->Transaccion($peticion)) {
+				$equipoSerial = null;
 			} else {
-				$equipo = $_POST["serial"];
+				$equipoSerial = $_POST["serial"];
 			}
-			print_r($equipo);
-			$servi->set_id_equipo($equipo);
-			$servi->actualizar_solicitud();
+			$peticion['peticion'] = "actualizar";
+			$solicitud->set_id_equipo($equipo);
+			$solicitud->Transaccion($peticion);
 			$hoja->set_nro_solicitud($_POST["nrosol"]);
 			$hoja->set_tipo_servicio($_POST["area"]);
 			$hoja->nueva_hoja();
@@ -112,9 +118,9 @@ if (is_file("view/" . $page . ".php")) {
 		}
 
 	if (isset($_POST['eliminar'])) {
-		$servi->set_nro_solicitud($_POST['eliminar']);
-
-		if ($servi->eliminar()) {
+		$peticion['peticion'] = "eliminar";
+		$solicitud->set_nro_solicitud($_POST['eliminar']);
+		if ($solicitud->Transaccion($peticion)) {
 			header("refresh:0");
 		} else {
 		}
@@ -124,10 +130,10 @@ if (is_file("view/" . $page . ".php")) {
 	if (isset($_POST["reporte"])) {
 		require_once "model/reporte.php";
 		$reporte = new reporte();
-		$servi->set_fecha_inicio($_POST["inicio"]);
-		$servi->set_fecha_final($_POST["final"]);
+		$solicitud->set_fecha_inicio($_POST["inicio"]);
+		$solicitud->set_fecha_final($_POST["final"]);
 		ob_end_clean();
-		$reporte->solicitudes($servi->consulta_reporte());
+		$reporte->solicitudes($solicitud->consulta_reporte());
 	}
 
 	require_once "view/$page.php";

@@ -4,7 +4,7 @@ if (is_file("view/$page.php")) {
 	$titulo = "Login";
 	$css = [];
 
-	require_once "model/Usuarios.php";
+	require_once "model/usuarios.php";
 
 	$user = new usuario;
 
@@ -25,12 +25,12 @@ if (is_file("view/$page.php")) {
 			if ($cedula == $pass) {
 
 				echo '<script>window.location="?page=users-profile"</script>';
-				exit();
 				ob_clean();
+				exit();
 			}
 			echo '<script>window.location="?page=home"</script>';
-			exit();
 			ob_clean();
+			exit();
 		} else {
 			$msg["danger"] = "Usuario y/o contraseña incorrectos";
 		}

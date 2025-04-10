@@ -21,7 +21,7 @@
 		$origen = "";
 
 		require_once "model/solicitud.php";
-		$solicitud = new Solicitud;
+		$solicitud = new Solicitud();
 		$solicitud->set_cedula_solicitante($_SESSION['user']['cedula']);
 
 		$peticion["peticion"] = "solicitud_usuario";
@@ -43,8 +43,8 @@
             $solicitud = new Solicitud();
             $solicitud->set_cedula_solicitante($datos["cedula"]);
             $solicitud->set_motivo($_POST["motivo"]);
+			$peticion["peticion"] = "registrar";
 			ob_start();
-			$peticion["peticion"] = "solicitar";
 			echo  json_encode($solicitud->Transaccion($peticion));
 			$respuesta = ob_get_contents();
 			ob_end_clean();

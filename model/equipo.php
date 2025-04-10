@@ -71,8 +71,8 @@ class Equipo extends Conexion
         $query = "SELECT `id_equipo` FROM equipo WHERE (`serial` = :serial_)";
         $insert = $this->conex->prepare($query);
         $insert->bindParam(':serial_', $this->data['serial']);
-        $insert->execute();
 
+        $insert->execute();
         if ($insert->rowCount() > 0) {
             return true;
         } else {
@@ -83,7 +83,7 @@ class Equipo extends Conexion
 
     private function Registrar()
     {
-        $query = "INSERT INTO equipo() VALUES(NULL,:tipo,:serial_,:marca,:nro_bien,:dependencia);
+        $query = "INSERT INTO equipo() VALUES (NULL,:tipo,:serial_,:marca,:nro_bien,:dependencia);
             SELECT SCOPE_IDENTITY();";
 
         $insert = $this->conex->prepare($query);
