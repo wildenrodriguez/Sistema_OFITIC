@@ -6,6 +6,7 @@
 
 	ob_start();
 	if (is_file("view/mis_servicios.php")) {
+		$peticion = [];
 
 		$titulo = "Mis Solicitudes";
 		$css = ["alert","style"];
@@ -20,15 +21,17 @@
 		$origen = "";
 
 		require_once "model/solicitud.php";
-		$servi=new solicitud;
-		$servi->set_cedula_solicitante($_SESSION['user']['cedula']);
-		$servicios = $servi->mis_servicios();
-		$registros=[];
+		$solicitud = new Solicitud;
+		$solicitud->set_cedula_solicitante($_SESSION['user']['cedula']);
+
+		$peticion["peticion"] = "solicitud_usuario";
+		$servicios = $solicitud->Transaccion($peticion);
+		$registros = [];
 		foreach ($servicios as $i => $servicio) {
 			$registros[$i] = [$servicio["ID"],$servicio["Motivo"],$servicio["Inicio"],$servicio["Estatus"],$servicio["Resultado"]];
 		}
 		
-		require_once "model/Usuarios.php";
+		require_once "model/usuarios.php";
 		$usuario = new Usuario();
 		$usuario->set_cedula($_SESSION['user']['cedula']);
 		
@@ -37,21 +40,22 @@
 
 		if(isset($_POST["solicitud"]) and $_POST["motivo"]!=NULL){	
 			require_once "model/solicitud.php";
-            $soli = new solicitud();
-            $soli->set_cedula_solicitante($datos["cedula"]);
-            $soli->set_motivo($_POST["motivo"]);
+            $solicitud = new Solicitud();
+            $solicitud->set_cedula_solicitante($datos["cedula"]);
+            $solicitud->set_motivo($_POST["motivo"]);
 			ob_start();
-			echo  json_encode($soli->solicitar());
+			$peticion["peticion"] = "solicitar";
+			echo  json_encode($solicitud->Transaccion($peticion));
 			$respuesta = ob_get_contents();
 			ob_end_clean();
 			
 		}
 
 		if(isset($_POST["reporte"])){	
-			require_once "model/Hoja_servicio.php";
-            $hoja = new hoja();
+			require_once "model/hoja_servicio.php";
+            $hoja = new Hoja();
             $hoja->set_nro_solicitud($_POST["reporte"]);
-            $hojas=$hoja->mis_hojas();
+            $hojas = $hoja->mis_hojas();
 			$info=[];
 			foreach ($hojas as $nro) {
 				$hoja->set_cod_hoja($nro["cod_hoja"]);

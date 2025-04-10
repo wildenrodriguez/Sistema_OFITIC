@@ -2,7 +2,7 @@
 
 require_once('model/conexion.php');
 
-class configuracion extends Conexion
+class Configuracion extends Conexion
 {
     private $nombre;
     private $codigo;
@@ -46,19 +46,18 @@ class configuracion extends Conexion
 
     private function consultar_tabla()
     {
-
         $registro = "SELECT * FROM " . $this->tabla;
         $consulta = $this->conex->prepare($registro);
         $resul = $consulta->execute();
         $datos = $consulta->fetchAll(PDO::FETCH_ASSOC);
-        $consulta = NULL;
+        $this->Cerrar_Conexion($this->conex,  $consulta);
         return $datos;
     }
 
     private function validar_tabla()
     {
         $con = $this->conex->prepare("SELECT * FROM $this->tabla WHERE nombre=?");
-        $con->execute([$this->nombre]);
+        $con->execute($this->nombre);
         if ($con->rowCount() > 0) {
             $con = NULL;
             return true;
@@ -76,7 +75,7 @@ class configuracion extends Conexion
             $registro = $this->conex->prepare($sql);
             $registro->bindParam(':nombre', $this->nombre);
             $valor = $registro->execute();
-            $registro = NULL;
+            $this->Cerrar_Conexion($this->conex,  $registro);
             return $valor;
         }
     }
@@ -86,7 +85,8 @@ class configuracion extends Conexion
         $registro = $this->conex->prepare("DELETE FROM $this->tabla WHERE codigo = :id");
         $registro->bindParam(":id", $this->codigo);
         $registro->execute();
-        $registro = NULL;
+        $this->Cerrar_Conexion($this->conex,  $registro);
+        return 1;
     }
 
     private function consulta_reporte2()
@@ -97,12 +97,12 @@ class configuracion extends Conexion
 
         $records->execute();
         $datos = $records->fetchAll(PDO::FETCH_ASSOC);
-  
-        $records = NULL;
+
+        $this->Cerrar_Conexion($this->conex,  $records);
         return $datos;
     }
 
-    public function Transaccion($peticion, )
+    public function Transaccion($peticion)
     {
         switch ($peticion) {
             case "crear":
@@ -122,6 +122,5 @@ class configuracion extends Conexion
                 "error";
                 break;
         }
-        $this->conex = NULL;
     }
 }

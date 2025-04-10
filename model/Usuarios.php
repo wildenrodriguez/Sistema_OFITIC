@@ -1,7 +1,7 @@
     <?php 
     require_once('model/conexion.php');
 
-    class Usuario extends conexion{
+    class Usuario extends Conexion{
 
         protected $cedula;
         protected $rol;

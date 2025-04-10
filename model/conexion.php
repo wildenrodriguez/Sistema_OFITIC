@@ -3,7 +3,7 @@ require_once 'config/config.php';
 class Conexion extends PDO
 {
     private $conex;
-    public function __construct()
+    protected function __construct()
     {
         $conexstring = "mysql:host=" . _DB_HOST_ . ";dbname=" . _DB_NAME_ . ";charset=utf8";
         try {
@@ -13,8 +13,15 @@ class Conexion extends PDO
             die("Conexión Fallida" . _DB_HOST_ . _DB_NAME_ . _DB_USER_ . _DB_PASS_ . $e->getMessage());
         }
     }
-    public function Conex()
+    protected function Conex()
     {
         return  $this->conex;
     }
+
+    protected function Cerrar_Conexion(&$conexion, &$stm)
+    {
+        unset($conexion);
+        unset($stm);
+    }
 }
+?>

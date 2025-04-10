@@ -44,16 +44,19 @@
 		$modal = "solicitud";
 		$origen = "";
 		require_once "model/Hoja_servicio.php";
-		$hoja=new hoja;
-		$registros=[];
-		if ($datos["tipo"]!="super") {
+		$hoja = new Hoja();
+		$peticion = [];
+		$registros = [];
+		if ($datos["tipo"] != "super") {
 			$hoja->set_tipo_servicio($datos["tipo"]);
-			$servicios=$hoja->servicios_t();
+			$peticion["peticion"] = "servicio_tipo";
+			$servicios = $hoja->Transaccion($peticion);;
 			foreach ($servicios as $servicio) {
 				$registros[$servicio["hoja"]]=[$servicio["nro"],$servicio["solicitante"],$servicio["tipo"]."/".$servicio["marca"],$servicio["serial"]."/".$servicio["nro_bien"],$servicio["motivo"],$servicio["fecha"]];
 			}
 		} else {
-			$servicios=$hoja->servicios_s();
+			$peticion["peticion"] = "servicio_semanal";
+			$servicios = $hoja->Transaccion($peticion);
 			foreach ($servicios as $servicio) {
 				$registros[$servicio["hoja"]]=[$servicio["nro"],$servicio["solicitante"],$servicio["tipo"]."/".$servicio["marca"],$servicio["serial"]."/".$servicio["nro_bien"],$servicio["motivo"],$servicio["fecha"],$servicio["tipo_s"]];
 			}

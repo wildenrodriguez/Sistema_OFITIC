@@ -96,21 +96,20 @@ if (is_file("view/" . $page . ".php")) {
         ];
     }
 
-    $btn_color = "danger";
-    $btn_icon = "trash3";
-    $btn_name = "eliminar";
-    $btn_value = "0";
-    $origen = "";
+		$btn_color = "danger";
+		$btn_icon = "trash3";
+		$btn_name = "eliminar";
+		$btn_value = "0";
+		$origen = "";
 
-    require_once "model/configuracion.php";
-    $config = new configuracion();
-    $config->set_tabla("unidad");
-    $unidades = $config->Transaccion("consultar");
-    $config->set_tabla("dependencia");
-    $dependencias = $config->Transaccion("consultar");
-    
-    ob_clean();
-    require_once "view/$page.php";
-} else {
-    require_once "view/404.php";
-}
+		require_once "model/configuracion.php";
+		$config = new configuracion();
+		$config->set_tabla("unidad");
+		$unidades = $config->Transaccion("consultar");;
+		$config->set_tabla("dependencia");
+		$dependencias = $config->Transaccion("consultar");;
+		ob_clean();
+		require_once "view/$page.php";
+	} else {
+		require_once "view/404.php";
+	}
