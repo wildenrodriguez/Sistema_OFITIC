@@ -2,7 +2,7 @@
 
     require_once('model/conexion.php');
 
-    class tecnico extends conexion{
+    class tecnico extends Conexion{
 
         private $data;
 

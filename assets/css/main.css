@@ -1,15 +1,15 @@
 :root {
   /* Light theme variables */
   /* --background: #f4f4f4; */
-  --background: linear-gradient(180deg,#c42f3144,#e0a62344, #017c4544 );
+  --background: #f5f5f5;
   --foreground: #0f172a;
   --light: #333;
   --mate: #fff;
   --muted: #f1f5f9;
-  --muted-foreground: #64748b;
+  --muted-foreground: #f5f5f5;
   --popover: #ffffff;
   --popover-foreground: #0f172a;
-  --card: #ffffff44;
+  --card: #dadada;
   --card-foreground: #0f172a;
   --border: #e2e8f0;
   --input: #eee;
@@ -91,8 +91,7 @@ ul {
 /* Sidebar */
 .sidebar {
   width: var(--sidebar-width);
-  background-color: var(--card);
-  border-right: 1px solid var(--border);
+  background-color: #7c1d21;
   display: flex;
   flex-direction: column;
   position: fixed;
