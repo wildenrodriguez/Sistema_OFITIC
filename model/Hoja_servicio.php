@@ -1,87 +1,111 @@
-<?php 
+<?php
 
-    require_once('model/conexion.php');
+require_once('model/conexion.php');
 
-    class Hoja extends conexion{
+class Hoja extends Conexion
+{
 
-        private $data;
-        private $detalles;
+    private $data;
+    private $detalles;
 
-        public function __construct(){
-            $this->conex = new Conexion();
-            $this->conex = $this->conex->Conex();
-            $data=array();
-        }
+    public function __construct()
+    {
+        $this->conex = new Conexion();
+        $this->conex = $this->conex->Conex();
+        $data = array();
+    }
 
-        function set_nro_solicitud($nro_solicitud){
-            $this->data["nro_solicitud"] = $nro_solicitud;
-        }
-
-        
-        function set_detalles($detalles){
-            $this->detalles = $detalles;
-        }
+    public function set_nro_solicitud($nro_solicitud)
+    {
+        $this->data["nro_solicitud"] = $nro_solicitud;
+    }
 
 
-         function set_cedula_tecnico($cedula_tecnico){
-            $this->data["cedula_tecnico"] = $cedula_tecnico;
-        }
+    public function set_detalles($detalles)
+    {
+        $this->detalles = $detalles;
+    }
 
-        function set_cod_hoja($cod_hoja){
-            $this->data["cod_hoja"] = $cod_hoja;
-        }
 
-        function set_tipo_servicio($tipo_servicio){
-            $this->data["tipo_servicio"] = $tipo_servicio;
-        }
+    public function set_cedula_tecnico($cedula_tecnico)
+    {
+        $this->data["cedula_tecnico"] = $cedula_tecnico;
+    }
 
-        function get_tipo_servicio(){
-            return $this->data["tipo_servicio"];
-        }
+    public function set_cod_hoja($cod_hoja)
+    {
+        $this->data["cod_hoja"] = $cod_hoja;
+    }
 
-       function set_observacion($observacion){
-            $this->data["observacion"] = $observacion;
-        }
+    public function set_tipo_servicio($tipo_servicio)
+    {
+        $this->data["tipo_servicio"] = $tipo_servicio;
+    }
 
-        function get_observacion(){
-            return $this->data["observacion"];
-        }
+    public function get_tipo_servicio()
+    {
+        return $this->data["tipo_servicio"];
+    }
 
-        function set_estatus($estatus){
-            $this->data["estatus"] = $estatus;
-        }
+    public function set_observacion($observacion)
+    {
+        $this->data["observacion"] = $observacion;
+    }
 
-        function get_estatus(){
-            return $this->data["estatus"];
-        }
+    public function get_observacion()
+    {
+        return $this->data["observacion"];
+    }
 
-        function set_resultado($resultado){
-            $this->data["resultado"] = $resultado;
-        }
+    public function set_estatus($estatus)
+    {
+        $this->data["estatus"] = $estatus;
+    }
 
-        function get_resultado(){
-            return $this->data["resultado"];
-        }
+    public function get_estatus()
+    {
+        return $this->data["estatus"];
+    }
 
-        function set_componentes($componentes){
-            $this->data["componentes"] = $componentes;
-        }
+    public function set_resultado($resultado)
+    {
+        $this->data["resultado"] = $resultado;
+    }
 
-        function exist(){
-            $con = $this->conex->prepare("SELECT * FROM hoja_servicio WHERE cod_hoja=?");
-            $con->execute([$this->data["cod_hoja"]]);
-            return $con->fetch();
-        }
+    public function get_resultado()
+    {
+        return $this->data["resultado"];
+    }
 
-        function areas_disponibles() {
-            $con = $this->conex->prepare("SELECT  ts.codigo, ts.nombre FROM tipo_servicio ts WHERE ts.codigo NOT IN ( SELECT hs.tipo_servicio FROM hoja_servicio hs WHERE hs.nro_solicitud = :nro_solicitud );            ");
-            $con->bindValue(':nro_solicitud',$this->data["nro_solicitud"]);
-            $con->execute();
-            return $con->fetchAll(PDO::FETCH_ASSOC);
-        }
+    public function set_componentes($componentes)
+    {
+        $this->data["componentes"] = $componentes;
+    }
 
-        function datos_hoja(){
-            $con = $this->conex->prepare("SELECT
+    private function exist()
+    {
+        $con = $this->conex->prepare("SELECT * FROM hoja_servicio WHERE cod_hoja=?");
+        $con->execute([$this->data["cod_hoja"]]);
+        $datos = $con->fetch(PDO::FETCH_ASSOC);
+
+        $this->Cerrar_Conexion($void, $con);
+        return $datos;
+    }
+
+    private function areas_disponibles()
+    {
+        $con = $this->conex->prepare("SELECT  ts.codigo, ts.nombre FROM tipo_servicio ts WHERE ts.codigo NOT IN ( SELECT hs.tipo_servicio FROM hoja_servicio hs WHERE hs.nro_solicitud = :nro_solicitud );            ");
+        $con->bindParam(':nro_solicitud', $this->data["nro_solicitud"]);
+        $con->execute();
+        $datos = $con->fetchAll(PDO::FETCH_ASSOC);
+
+        $this->Cerrar_Conexion($this->conex, $con);
+        return $datos;
+    }
+
+    private function datos_hoja()
+    {
+        $con = $this->conex->prepare("SELECT
             hoja.nro_solicitud AS nro,
             hoja.observacion AS observacion,
             hoja.estatus AS estatus,
@@ -110,118 +134,139 @@
           LEFT JOIN equipo AS equi ON s.id_equipo = equi.id_equipo
           LEFT JOIN marca AS mar ON equi.marca = mar.codigo
             WHERE cod_hoja=:hoja");
-            $con->bindValue(':hoja',$this->data["cod_hoja"]);
-            $con->execute();
-            return $con->fetch();
-            
+        $con->bindValue(':hoja', $this->data["cod_hoja"]);
+        $con->execute();
+        $datos = $con->fetch();
+        $this->Cerrar_Conexion($this->conex, $con);
+        return $datos;
+
+    }
+
+    private function consulta_detalles_hoja()
+    {
+        $con = $this->conex->prepare("SELECT componente , detalle FROM detalle_hoja WHERE cod_hoja=:hoja");
+        $con->bindParam(':hoja', $this->data["cod_hoja"]);
+        $con->execute();
+        $datos = $con->fetchAll(PDO::FETCH_ASSOC);
+        $this->Cerrar_Conexion($this->conex, $con);
+        return $datos;
+    }
+
+    private function llenar_detalles()
+    {
+        foreach ($this->detalles as $detalle) {
+
+            $componente = $detalle[0];
+            $detalle = $detalle[1];
+
+            $stmt = $this->conex->prepare("INSERT INTO detalle_hoja (cod_hoja, componente, detalle) VALUES (:cod_hoja, :componente, :detalle)");
+
+
+            $stmt->bindParam(":cod_hoja", $this->data["cod_hoja"]);
+            $stmt->bindParam(":componente", $componente);
+            $stmt->bindParam(":detalle", $detalle);
+
+            $stmt->execute();
         }
+    }
 
-        function consulta_detalles_hoja(){
-            $con = $this->conex->prepare("SELECT componente , detalle FROM detalle_hoja WHERE cod_hoja=:hoja");
-            $con->bindValue(':hoja',$this->data["cod_hoja"]);
-            $con->execute();
-            return $con->fetchAll(PDO::FETCH_ASSOC);
-        }
+    private function finalizar()
+    {
+        $sql = "UPDATE `hoja_servicio` SET `cedula_tecnico`=:cedula_tecnico,`estatus`='I' WHERE cod_hoja=:hoja";
+        $solicitar = $this->conex->prepare($sql);
+        $solicitar->bindParam(':hoja', $this->data["cod_hoja"]);
+        $solicitar->bindParam(':cedula_tecnico', $this->data["cedula_tecnico"]);
+        $resultado = $solicitar->execute();
+        $this->Cerrar_Conexion($this->conex, $solicitar);
+        return $resultado;
+    }
 
-        function llenar_detalles(){
-            foreach ($this->detalles as $detalle) {
+    private function limpiar_detalles()
+    {
+        $con = $this->conex->prepare("DELETE FROM `detalle_hoja` WHERE cod_hoja=:hoja");
+        $con->bindValue(':hoja', $this->data["cod_hoja"]);
+        $con->execute();
+    }
 
-                $componente = $detalle[0];
-                $detalle = $detalle[1];
+    private function mis_hojas()
+    {
+        $query = "SELECT cod_hoja FROM hoja_servicio WHERE nro_solicitud = :solicitud";
 
-                $stmt = $this->conex->prepare("INSERT INTO detalle_hoja (cod_hoja, componente, detalle) VALUES (:cod_hoja, :componente, :detalle)");
-            
-              
-                $stmt->bindParam(":cod_hoja", $this->data["cod_hoja"]);
-                $stmt->bindParam(":componente", $componente);
-                $stmt->bindParam(":detalle", $detalle);
-          
-                $stmt->execute();
+        $records = $this->conex->prepare($query);
+        $records->bindParam(':solicitud', $this->data["nro_solicitud"]);
+        $records->execute();
+        $datos = $records->fetchAll(PDO::FETCH_ASSOC);
+        $this->Cerrar_Conexion($this->conex, $records);
+        return $datos;
+    }
+
+    private function nueva_hoja()
+    {
+        $sql = "INSERT INTO `hoja_servicio`(`nro_solicitud`, `tipo_servicio`) VALUES (:solicitud,:tipo)";
+        $asignar = $this->conex->prepare($sql);
+        $asignar->bindValue(':solicitud', $this->data["nro_solicitud"]);
+        $asignar->bindParam(':tipo', $this->data["tipo_servicio"]);
+        $asignar->execute();
+    }
+
+    private function Datos()
+    {
+        $datos = $this->exist($this->data["nro_solicitud"]);
+        foreach ($datos as $values) {
+            foreach ($values as $campo => $valor) {
+                $this->data[$campo] = $valor;
             }
         }
+    }
 
-        public function finalizar(){
-            $sql="UPDATE `hoja_servicio` SET `cedula_tecnico`=:cedula_tecnico,`estatus`='I' WHERE cod_hoja=:hoja";
-            $solicitar = $this->conex->prepare($sql);
-            $solicitar->bindValue(':hoja',$this->data["cod_hoja"]);
-            $solicitar->bindParam(':cedula_tecnico',$this->data["cedula_tecnico"]);
+    private function actualizar_hoja()
+    {
+        $sql = "UPDATE `hoja_servicio` SET `observacion`=:observacion,`resultado`=:resultado WHERE cod_hoja=:cod";
+        $solicitar = $this->conex->prepare($sql);
+        $solicitar->bindValue(':cod', $this->data["cod_hoja"]);
+        $solicitar->bindParam(':resultado', $this->data["resultado"]);
+        $solicitar->bindParam(':observacion', $this->data["observacion"]);
+        $resultado = $solicitar->execute();
 
-            return $solicitar->execute();
-        }
-        
-        function limpiar_detalles() {
-            $con = $this->conex->prepare("DELETE FROM `detalle_hoja` WHERE cod_hoja=:hoja");
-            $con->bindValue(':hoja',$this->data["cod_hoja"]);
-            $con->execute();
-        }
+        $this->Cerrar_Conexion($this->conex, $solicitar);
 
-        function mis_hojas() {
-            $query = "SELECT cod_hoja FROM hoja_servicio WHERE nro_solicitud = :solicitud";
+        return $resultado;
+    }
 
-            $records = $this->conex->prepare($query);
+    private function asignar_especialidad($especialidad_ant)
+    {
+        $sql = "INSERT INTO orden_solicitud_especialidad() VALUES (:solicitud,:especialidad,NULL)";
+        $asignar = $this->conex->prepare($sql);
+        $asignar->bindValue(':solicitud', $this->data["nro_solicitud"]);
+        $asignar->bindParam(':especialidad', $this->data["id_especialidad"]);
+        $asignar->execute();
 
-            $records->bindParam(':solicitud',$this->data["nro_solicitud"]);
+        $sql = "UPDATE orden_solicitud_especialidad SET estatus='Inactivo' WHERE nro_solicitud = :solicitud AND id_especialidad = :especialidad";
+        $actualizar = $this->conex->prepare($sql);
+        $actualizar->bindValue(':solicitud', $this->data["nro_solicitud"]);
+        $actualizar->bindParam(':especialidad', $especialidad_ant);
+        $actualizar->execute();
 
-            $records->execute();
+        $this->Cerrar_Conexion($this->conex, $asignar);
+        $this->Cerrar_Conexion($this->conex, $actualizar);
+    }
 
-            return $records->fetchAll(PDO::FETCH_ASSOC);
-        }
+    private function ConsultaServicios()
+    {
 
-        function nueva_hoja(){
-            $sql="INSERT INTO `hoja_servicio`(`nro_solicitud`, `tipo_servicio`) VALUES (:solicitud,:tipo)";
-            $asignar = $this->conex->prepare($sql);
-            $asignar->bindValue(':solicitud',$this->data["nro_solicitud"]);
-            $asignar->bindParam(':tipo',$this->data["tipo_servicio"]);
-            $asignar->execute();
-        }
+        $query = "SELECT * FROM servicio";
 
-        public function Datos(){
-            $datos = $this->exist($this->data["nro_solicitud"]);
-            foreach ($datos as $values) {
-                foreach ($values as $campo => $valor) {
-                    $this->data[$campo] = $valor;
-                }
-            }
-        }
+        $records = $this->conex->prepare($query);
 
-        public function actualizar_hoja(){
-            $sql="UPDATE `hoja_servicio` SET `observacion`=:observacion,`resultado`=:resultado WHERE cod_hoja=:cod";
-            $solicitar = $this->conex->prepare($sql);
-            $solicitar->bindValue(':cod',$this->data["cod_hoja"]);
-            $solicitar->bindParam(':resultado',$this->data["resultado"]);
-            $solicitar->bindParam(':observacion',$this->data["observacion"]);
+        $records->execute();
 
-            return $solicitar->execute();
-        }
+        return $records->fetchAll(PDO::FETCH_ASSOC);
 
-        public function asignar_especialidad($especialidad_ant){
-            $sql="INSERT INTO orden_solicitud_especialidad() VALUES (:solicitud,:especialidad,NULL)";
-            $asignar = $this->conex->prepare($sql);
-            $asignar->bindValue(':solicitud',$this->data["nro_solicitud"]);
-            $asignar->bindParam(':especialidad',$this->data["id_especialidad"]);
-            $asignar->execute();
+    }
 
-            $sql="UPDATE orden_solicitud_especialidad SET estatus='Inactivo' WHERE nro_solicitud = :solicitud AND id_especialidad = :especialidad";
-            $actualizar = $this->conex->prepare($sql);
-            $actualizar->bindValue(':solicitud',$this->data["nro_solicitud"]);
-            $actualizar->bindParam(':especialidad',$especialidad_ant);
-            $actualizar->execute();
-        }
-
-        public function ConsultaServicios(){
-
-            $query = "SELECT * FROM servicio";
-
-            $records = $this->conex->prepare($query);
-
-            $records->execute();
-
-            return $records->fetchAll(PDO::FETCH_ASSOC);
-            
-        }
-
-        public function servicios_t(){
-            $query = "SELECT
+    private function servicios_t()
+    {
+        $query = "SELECT
             hoja.nro_solicitud AS nro,
             hoja.cod_hoja AS hoja,
             sol.nombre AS solicitante,
@@ -239,16 +284,17 @@
           WHERE hoja.tipo_servicio = :tipo
           ORDER BY fecha DESC;";
 
-            $consult = $this->conex->prepare($query);
-            $consult->bindParam(':tipo',$this->data["tipo_servicio"]);
-            $consult->execute();
+        $consult = $this->conex->prepare($query);
+        $consult->bindParam(':tipo', $this->data["tipo_servicio"]);
+        $consult->execute();
 
-            return $consult->fetchAll(PDO::FETCH_ASSOC);
-            
-        }
+        return $consult->fetchAll(PDO::FETCH_ASSOC);
 
-        public function servicios_s(){
-            $query = "SELECT
+    }
+
+    private function servicios_s()
+    {
+        $query = "SELECT
             hoja.nro_solicitud AS nro,
             hoja.cod_hoja AS hoja,
             sol.nombre AS solicitante,
@@ -267,11 +313,55 @@
           LEFT JOIN marca AS mar ON equi.marca = mar.codigo
           ORDER BY fecha DESC;";
 
-            $consult = $this->conex->prepare($query);
-            $consult->execute();
+        $consulta = $this->conex->prepare($query);
+        $consulta->execute();
 
-            return $consult->fetchAll(PDO::FETCH_ASSOC);
-            
+        return $consulta->fetchAll(PDO::FETCH_ASSOC);
+
+    }
+
+    public function Transaccion($peticion)
+    {
+        switch ($peticion["peticion"]) {
+            case "nuevo":
+                return $this->nueva_hoja();
+
+            case "consultar":
+                return $this->ConsultaServicios();
+
+            case "consultar_detalles":
+                return $this->consulta_detalles_hoja();
+
+            case "actualizar":
+                return $this->actualizar_hoja();
+
+            case "llenar_detalles":
+                return $this->llenar_detalles();
+
+            case "servicio_semanal":
+                return $this->servicios_s();
+
+            case "servicio_tipo":
+                return $this->servicios_t();
+
+            case "eliminar":
+                return $this->eliminar();
+
+            case "equipos":
+                return $this->Equipos_dependencia($peticion["dato"]);
+
+            case "consulta_marcas":
+                return $this->consultar_marcas();
+
+            case "reporte":
+                return $this->consulta_reporte();
+
+            default:
+                return "Operación".$peticion." No valida";
+                ;
         }
     }
- ?>
+
+
+}
+?>
