@@ -4,9 +4,9 @@ if (is_file("view/$page.php")) {
 	$titulo = "Login";
 	$css = [];
 
-	require_once "model/usuarios.php";
+	require_once "model/usuario.php";
 
-	$user = new usuario;
+	$user = new Usuario();
 
 	if (!empty($_POST)) {
 		$cedula = $_POST['particle'] . $_POST['CI'];
@@ -28,13 +28,14 @@ if (is_file("view/$page.php")) {
 				ob_clean();
 				exit();
 			}
-			echo '<script>window.location="?page=home"</script>';
 			ob_clean();
+			echo '<script>window.location="?page=home"</script>';
 			exit();
 		} else {
 			$msg["danger"] = "Usuario y/o contraseña incorrectos";
 		}
 	}
+
 	if ($page == "login") {
 		require_once "view/$page.php";
 	}

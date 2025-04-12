@@ -6,7 +6,7 @@
 	
 	ob_start();
 
-	require_once "model/Usuarios.php";
+	require_once "model/usuario.php";
 	$usuario = new Usuario();
 	if(!$usuario->validar_entrada($_SESSION['user']['rol'],["Super usuario","Técnico"]))
 		echo'<script>window.location="?page=404"</script>';
@@ -15,11 +15,11 @@
 		require_once "model/Hoja_servicio.php";
 		$hoja=new hoja;
 		$hoja->set_cod_hoja($_POST["nro_hoja"]);
-		$datos_hoja = $hoja->datos_hoja();
+		$datos_hoja = $hoja->DatosHoja();
 
 		$hoja->set_nro_solicitud($datos_hoja['nro']);
-		$areas = $hoja->areas_disponibles();
-		$aux = $hoja->consulta_detalles_hoja();
+		$areas = $hoja->AreaDisponible();
+		$aux = $hoja->ConsultarDetalles();
 		foreach ($aux as $detalle) {
 			$valores[$detalle["componente"]]=$detalle["detalle"];
 		}
@@ -45,7 +45,7 @@
 					$hoja->set_cod_hoja($_POST["nro_hoja"]);
 					$hoja->set_observacion($_POST["observacion"]);
 					$hoja->set_resultado($_POST["resultado"]);
-					$hoja->actualizar_hoja();
+					$hoja->ActualizarHoja();
 					$excluir=["accion","nro_hoja","observacion","resultado","area"];
 					$actualizar=[];
 					foreach ($_POST as $indice => $valor) {
@@ -58,7 +58,7 @@
 						}
 					}
 					$hoja->set_tipo_servicio($datos_hoja['tipo_s']);
-					$hoja->limpiar_detalles();
+					$hoja->LimpiarDetalles();
 					$hoja->set_detalles($actualizar);
 					$hoja->llenar_detalles();
 					echo'<script>window.location="?page=servicios"</script>';
@@ -68,7 +68,7 @@
 					$hoja->set_cod_hoja($_POST["nro_hoja"]);
 					$hoja->set_observacion($_POST["observacion"]);
 					$hoja->set_resultado($_POST["resultado"]);
-					$hoja->actualizar_hoja();
+					$hoja->ActualizarHoja();
 					$excluir=["accion","nro_hoja","observacion","resultado","area"];
 					$actualizar=[];
 					foreach ($_POST as $indice => $valor) {
@@ -81,7 +81,7 @@
 						}
 					}
 					$hoja->set_tipo_servicio($datos_hoja['tipo_s']);
-					$hoja->limpiar_detalles();
+					$hoja->LimpiarDetalles();
 					$hoja->set_detalles($actualizar);
 					$hoja->llenar_detalles();
 					$hoja->set_cedula_tecnico($_SESSION['user']['cedula']);
@@ -102,7 +102,7 @@
 					$hoja->set_cod_hoja($_POST["nro_hoja"]);
 					$hoja->set_observacion($_POST["observacion"]);
 					$hoja->set_resultado($_POST["resultado"]);
-					$hoja->actualizar_hoja();
+					$hoja->ActualizarHoja();
 					$excluir=["accion","nro_hoja","observacion","resultado","area"];
 					$actualizar=[];
 					foreach ($_POST as $indice => $valor) {
@@ -115,7 +115,7 @@
 						}
 					}
 					$hoja->set_tipo_servicio($datos_hoja['tipo_s']);
-					$hoja->limpiar_detalles();
+					$hoja->LimpiarDetalles();
 					$hoja->set_detalles($actualizar);
 					$hoja->llenar_detalles();
 					ob_clean();

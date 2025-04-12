@@ -6,7 +6,7 @@ if (!$_SESSION) {
 
 ob_start();
 
-require_once "model/Usuarios.php";
+require_once "model/usuario.php";
 $usuario = new Usuario();
 if (!$usuario->validar_entrada($_SESSION['user']['rol'], ["Super usuario", "Administrador"]))
     echo '<script>window.location="?page=404"</script>';

@@ -10,7 +10,7 @@ if ($_GET['dato'] != "unidad" and $_GET['dato'] != "dependencia" and $_GET['dato
 	$msg["danger"] = "Sesion Finalizada.";
 }
 
-require_once "model/Usuarios.php";
+require_once "model/usuario.php";
 $usuario = new Usuario();
 if (!$usuario->validar_entrada($_SESSION['user']['rol'], ["Super usuario"]))
 	echo '<script>window.location="?page=404"</script>';
@@ -31,7 +31,7 @@ if (is_file("view/Configuracion.php")) {
 	# Datos para la tabla
 
 	require_once "model/configuracion.php";
-	$config = new configuracion();
+	$config = new Configuracion();
 
 
 	foreach ($tablas as $tabla) {

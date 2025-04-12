@@ -4,7 +4,7 @@ if (!$_SESSION) {
 }
 
 ob_start();
-require_once "model/usuarios.php";
+require_once "model/usuario.php";
 $usuario = new Usuario();
 
 $peticion = [];
