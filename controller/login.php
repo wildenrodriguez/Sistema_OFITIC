@@ -15,7 +15,7 @@ if (is_file("view/$page.php")) {
 		$user->set_clave($pass);
 		if ($user->Iniciar_Sesion()) {
 			require_once "model/empleado.php";
-			$emp = new empleado;
+			$emp = new Empleado();
 
 
 			$emp->set_cedula($cedula);
@@ -24,8 +24,8 @@ if (is_file("view/$page.php")) {
 			$_GET['page'] = "";
 			if ($cedula == $pass) {
 
-				echo '<script>window.location="?page=users-profile"</script>';
 				ob_clean();
+				echo '<script>window.location="?page=users-profile"</script>';
 				exit();
 			}
 			ob_clean();

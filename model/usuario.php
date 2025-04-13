@@ -4,72 +4,96 @@
     class Usuario extends Conexion{
 
         protected $cedula;
-        protected $rol;
+        private $nombres;
+        private $apellidos;
+        private $correo;
         protected $clave;
         protected $tipo;
+        protected $rol;
 
         public function __construct(){
             $this->conex = new Conexion();
             $this->conex = $this->conex->Conex();
         }
 
-        function set_cedula($cedula){
+        public function set_cedula($cedula){
             $this->cedula = $cedula;
         }
 
-        function set_tipo($tipo){
+        public function set_nombres($nombres){
+            $this->nombres = $nombres;
+        }
+
+        public function set_apellidos($apellidos){
+            $this->apellidos = $apellidos;
+        }
+
+        public function set_tipo($tipo){
             $this->tipo = $tipo;
         }
 
-        function set_clave($contrase){
+        public function set_clave($contrase){
             $this->clave = $contrase;
         }
 
-        function set_rol($rol){
+        public function set_rol($rol){
             $this->rol = $rol;
+        }
+
+        public function get_nombres(){
+            return $this->nombres;
+        }
+
+        public function get_apellidos(){
+            return $this->apellidos;
         }
 
         function validar_entrada($usuario, $permitidos){
             return in_array($usuario, $permitidos);
         }
 
-        function exist($user, $pass){
-            $con = $this->conex->prepare("SELECT * FROM usuario WHERE cedula=? AND clave=?");
-            $con->execute([$user,$pass]);
+        function exist($user){
+            $con = $this->conex->prepare("SELECT * FROM usuario WHERE cedula=?");
+            $con->execute([$user]);
             return $con->fetch();
         }
 
         function crear(){
-            $con = $this->conex->prepare("INSERT INTO `usuario`(`cedula`, `clave`, `rol`) VALUES (:cedula,:cedula,:rol)");
+            $con = $this->conex->prepare("INSERT INTO `usuario`(`cedula`, `clave`, `rol`) VALUES (:cedula,:clave,:rol)");
             $con->bindParam(':cedula',$this->cedula);
+            $con->bindParam(':clave',$this->clave);
             $con->bindParam(':rol',$this->rol);
             return $con->execute();
         }
 
-        function crear_tecnico(){
+        public function crear_tecnico(){
             $con = $this->conex->prepare("INSERT INTO `tecnico`() VALUES (:cedula,:tipo)");
             $con->bindParam(':cedula',$this->cedula);
             $con->bindParam(':tipo',$this->tipo);
             return $con->execute();
         }
 
-        function validar(){
+        public function validar(){
             $con = $this->conex->prepare("SELECT * FROM usuario WHERE cedula=?");
             $con->execute([$this->cedula]);
             return $con->fetch();
         }
 
         public function Iniciar_Sesion(){
-            $exist = $this->exist($this->cedula, $this->clave);
+            $exist = $this->exist($this->cedula);
             
-            if($exist){
-                return true;
+            if($exist != NULL){
+                if(password_verify($this->clave, $exist['clave'])){
+                    return true;
+                } else {
+                    return false;
+                }
             }else{
                 return false;
             }
         }
 
-        function datos(){
+        public function datos(){
             $con = $this->conex->prepare("SELECT `clave`, `rol` FROM `usuario` WHERE cedula = :cedula");
             $con->bindValue(':cedula',$this->cedula);
             $con->execute();
@@ -123,5 +147,37 @@
             
         }
 
+        public function Transacción($peticion){
+
+            switch ($peticion['peticion']) {
+                case 'registrar':
+                    # code...
+                    break;
+                
+                case 'consultar':
+
+                    break;
+                
+                case 'modificar':
+
+                    break;
+
+                case 'eliminar':
+
+                    break;
+
+                case 'iniciar_sesion':
+
+                    break;
+
+                case 'validar':
+
+                    break;
+                
+                default:
+                    return "error ".$peticion['peticion']." no valida";
+
+            }
+        }
     }
  ?>

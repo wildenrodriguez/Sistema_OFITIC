@@ -29,6 +29,8 @@
 		if (isset($_POST["registrar_usuario"])) {
 			
 			$usuario->set_cedula($_POST['cedula']);
+			$clave = password_hash($_POST['cedula'], PASSWORD_BCRYPT);
+			$usuario->set_clave($clave);
 
 			if (!$usuario->validar()){
 				$usuario->set_rol($_POST['rol']);

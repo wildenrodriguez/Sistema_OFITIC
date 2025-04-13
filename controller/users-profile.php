@@ -15,7 +15,7 @@
 	if (is_file("view/".$page.".php")) {
 
 		
-		require_once "model/Usuarios.php";
+		require_once "model/usuario.php";
 		require_once "model/empleado.php";
 		$usuario = new Usuario();
 		$empleado = new Empleado();

@@ -31,7 +31,7 @@
 			$registros[$i] = [$servicio["ID"],$servicio["Motivo"],$servicio["Inicio"],$servicio["Estatus"],$servicio["Resultado"]];
 		}
 		
-		require_once "model/usuarios.php";
+		require_once "model/usuario.php";
 		$usuario = new Usuario();
 		$usuario->set_cedula($_SESSION['user']['cedula']);
 		
