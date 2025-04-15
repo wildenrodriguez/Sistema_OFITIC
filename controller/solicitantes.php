@@ -67,7 +67,7 @@ if (is_file("view/" . $page . ".php")) {
         if ($_POST['eliminar'] != $_SESSION['user']['cedula']) {
             $obj_solicitante->set_cedula($_POST['eliminar']);
             $usuario->set_cedula($_POST['eliminar']);
-            $usuario->eliminar();
+            $usuario->Eliminar();
 
             // Eliminar empleado usando el nuevo método
             if ($obj_solicitante->gestionarEmpleado('eliminar', ['cedula' => $_POST['eliminar']])) {

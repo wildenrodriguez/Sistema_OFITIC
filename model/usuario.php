@@ -3,13 +3,14 @@
 
     class Usuario extends Conexion{
 
-        protected $cedula;
+        private $cedula;
+        private $nombre_usuario;
         private $nombres;
         private $apellidos;
         private $correo;
-        protected $clave;
-        protected $tipo;
-        protected $rol;
+        private $clave;
+        private $tipo;
+        private $rol;
 
         public function __construct(){
             $this->conex = new Conexion();
@@ -48,39 +49,50 @@
             return $this->apellidos;
         }
 
-        function validar_entrada($usuario, $permitidos){
+        private function validar_entrada($usuario, $permitidos){
             return in_array($usuario, $permitidos);
         }
 
-        function exist($user){
-            $con = $this->conex->prepare("SELECT * FROM usuario WHERE cedula=?");
-            $con->execute([$user]);
-            return $con->fetch();
-        }
+        private function Registrar(){
 
-        function crear(){
-            $con = $this->conex->prepare("INSERT INTO `usuario`(`cedula`, `clave`, `rol`) VALUES (:cedula,:clave,:rol)");
+            $query = "INSERT INTO `usuario`(`cedula`, `clave`, `rol`) VALUES (:cedula,:clave,:rol)";
+
+            $con = $this->conex->prepare($query);
             $con->bindParam(':cedula',$this->cedula);
             $con->bindParam(':clave',$this->clave);
             $con->bindParam(':rol',$this->rol);
+
+            return $con->execute();
+        }
+        
+        private function ModificarUsuario(){
+            $query = "UPDATE `usuario` SET `nombre_usuario`=':nombre_usuario',`cedula`=':cedula',
+            `nombres`=':nombres',`apellidos`=':apellidos',
+            `correo`=':correo',`clave`=':clave', WHERE nombre_usuario = `:id_usuario` OR `cedula` = 'id_cedula'";
+
+            $con = $this->conex->prepare($query);
+            $con->bindParam(':cedula',$this->cedula);
+            $con->bindParam(':clave',$this->clave);
+            $con->bindParam(':rol',$this->rol);
+
             return $con->execute();
         }
 
-        public function crear_tecnico(){
+        private function crear_tecnico(){
             $con = $this->conex->prepare("INSERT INTO `tecnico`() VALUES (:cedula,:tipo)");
             $con->bindParam(':cedula',$this->cedula);
             $con->bindParam(':tipo',$this->tipo);
             return $con->execute();
         }
 
-        public function validar(){
+        private function Validar(){
             $con = $this->conex->prepare("SELECT * FROM usuario WHERE cedula=?");
             $con->execute([$this->cedula]);
             return $con->fetch();
         }
 
-        public function Iniciar_Sesion(){
-            $exist = $this->exist($this->cedula);
+        private function IniciarSesion(){
+            $exist = $this->Validar();
             
             if($exist != NULL){
                 if(password_verify($this->clave, $exist['clave'])){
@@ -93,7 +105,7 @@
             }
         }
 
-        public function datos(){
+        private function PerfilUsuario(){
             $con = $this->conex->prepare("SELECT `clave`, `rol` FROM `usuario` WHERE cedula = :cedula");
             $con->bindValue(':cedula',$this->cedula);
             $con->execute();
@@ -101,7 +113,7 @@
             return $con->fetch() ;
         }
 
-        public function eliminar(){
+        private function Eliminar(){
             $registro = $this->conex->prepare("DELETE FROM usuario WHERE cedula = :cedula");
             $registro->bindValue(":cedula",$this->cedula);
             $registro->execute(); 
@@ -111,9 +123,11 @@
             $tecnico->execute();
         }
 
-        public function Actualizar_Contra(){
+        private function ActualizarClave(){
 
-            $registro = $this->conex->prepare("UPDATE usuario SET clave=? WHERE cedula = ?");
+            $query = "UPDATE usuario SET clave=? WHERE cedula = ?";
+
+            $registro = $this->conex->prepare($query);
             
             if ($registro->execute([$this->clave,$this->cedula])) {
                 return true;
@@ -123,7 +137,7 @@
             
         }
         
-        public function Consulta_Usuarios(){
+        private function ConsultaUsuarios(){
 
             $query = "SELECT
             usuario.cedula AS Cedula,
@@ -132,12 +146,10 @@
             empleado.nombre AS Nombre,
             tecnico.tipo AS tipo_c,
             tipo_servicio.nombre AS Tipo
-                FROM
-            usuario
+            FROM usuario
             LEFT JOIN empleado ON usuario.cedula = empleado.cedula
             LEFT JOIN tecnico ON tecnico.cedula = empleado.cedula
-            LEFT JOIN tipo_servicio ON tecnico.tipo = tipo_servicio.codigo;
-            ";
+            LEFT JOIN tipo_servicio ON tecnico.tipo = tipo_servicio.codigo";
 
             $records = $this->conex->prepare($query);
 
@@ -147,32 +159,36 @@
             
         }
 
-        public function Transacción($peticion){
+        public function Transaccion($peticion){
 
             switch ($peticion['peticion']) {
                 case 'registrar':
-                    # code...
-                    break;
+
+                    return $this->Registrar();
                 
                 case 'consultar':
 
-                    break;
+                    return $this->ConsultaUsuarios();
                 
                 case 'modificar':
 
-                    break;
+                    return $this->ModificarUsuario();
 
                 case 'eliminar':
 
-                    break;
+                    return $this->Eliminar();
 
-                case 'iniciar_sesion':
+                case 'sesion':
 
-                    break;
+                    return $this->IniciarSesion();
 
                 case 'validar':
 
                     break;
+
+                case 'perfil':
+
+                    return $this->PerfilUsuario();
                 
                 default:
                     return "error ".$peticion['peticion']." no valida";

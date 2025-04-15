@@ -6,11 +6,12 @@
 	ob_start();
 
 	require_once "model/usuario.php";
+	$peticion = [];
 	$usuario = new Usuario();
 	$usuario->set_cedula($_SESSION['user']['cedula']);
-	
+	$petición['peticion'] = "perfil";
 	$datos = $_SESSION['user'];
-	$datos = $datos + $usuario->datos();
+	$datos = $datos + $usuario->Transaccion($petición);
 
 	if (is_file("view/".$page.".php")) {
 
@@ -59,7 +60,7 @@
 				$usuario->set_clave($_POST['newpassword']);
 				$usuario->set_cedula($_SESSION['user']["cedula"]);
 				ob_clean();
-				if ($usuario->Actualizar_Contra()) {
+				if ($usuario->ActualizarClave()) {
 					unset($msg);
 					$msg["success"] = "Actualizado";
 				} else {

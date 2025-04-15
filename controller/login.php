@@ -1,6 +1,7 @@
 <?php
 ob_start();
 if (is_file("view/$page.php")) {
+	$peticon = [];
 	$titulo = "Login";
 	$css = [];
 
@@ -9,17 +10,19 @@ if (is_file("view/$page.php")) {
 	$user = new Usuario();
 
 	if (!empty($_POST)) {
+		$peticion['peticion'] = "sesion";
 		$cedula = $_POST['particle'] . $_POST['CI'];
 		$pass = $_POST['password'];
 		$user->set_cedula($cedula);
 		$user->set_clave($pass);
-		if ($user->Iniciar_Sesion()) {
+		if ($user->Transaccion($peticion)) {
 			require_once "model/empleado.php";
+			$peticion['peticion'] = "perfil";
 			$emp = new Empleado();
 
 
 			$emp->set_cedula($cedula);
-			$datos = $emp->datos_empleado() + $user->datos();
+			$datos = $emp->datos_empleado() + $user->Transaccion($peticion);
 			$_SESSION['user'] = $datos;
 			$_GET['page'] = "";
 			if ($cedula == $pass) {

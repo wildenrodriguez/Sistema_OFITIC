@@ -51,13 +51,13 @@
 		if (isset($_POST['eliminar'])) {
 			
 			$usuario->set_cedula($_POST['eliminar']);
-			$usuario->eliminar();
+			$usuario->Eliminar();
 			ob_clean();
 			header("Refresh:0");
 		}
 
 		$registros=[];
-		$info=$usuario->consulta_usuarios();
+		$info=$usuario->ConsultaUsuarios();
 		$cabecera = array('Cedula',"Nombre","Rol","Tipo","Contraseña");
 		foreach ($info as $id => $user) {
 				$registros[$id]=[$user["Cedula"],$user["Nombre"],$user["Rol"],$user["Tipo"],$user["Clave"]];
