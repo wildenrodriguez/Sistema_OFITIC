@@ -10,7 +10,7 @@
     
     $titulo = "Home";
     $css = ["alert","style"];
-    require_once "model/Usuarios.php";
+    require_once "model/usuario.php";
     $usuario = new Usuario();
     $usuario->set_cedula($_SESSION['user']['cedula']);
     

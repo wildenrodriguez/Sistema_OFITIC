@@ -92,7 +92,7 @@ class Hoja extends Conexion
         return $datos;
     }
 
-    private function areas_disponibles()
+    private function AreaDisponible()
     {
         $con = $this->conex->prepare("SELECT  ts.codigo, ts.nombre FROM tipo_servicio ts WHERE ts.codigo NOT IN ( SELECT hs.tipo_servicio FROM hoja_servicio hs WHERE hs.nro_solicitud = :nro_solicitud );            ");
         $con->bindParam(':nro_solicitud', $this->data["nro_solicitud"]);
@@ -103,7 +103,7 @@ class Hoja extends Conexion
         return $datos;
     }
 
-    private function datos_hoja()
+    private function DatosHoja()
     {
         $con = $this->conex->prepare("SELECT
             hoja.nro_solicitud AS nro,
@@ -142,9 +142,9 @@ class Hoja extends Conexion
 
     }
 
-    private function consulta_detalles_hoja()
+    private function ConsultarDetalles()
     {
-        $con = $this->conex->prepare("SELECT componente , detalle FROM detalle_hoja WHERE cod_hoja=:hoja");
+        $con = $this->conex->prepare("SELECT componente, detalle FROM detalle_hoja WHERE cod_hoja=:hoja");
         $con->bindParam(':hoja', $this->data["cod_hoja"]);
         $con->execute();
         $datos = $con->fetchAll(PDO::FETCH_ASSOC);
@@ -152,7 +152,7 @@ class Hoja extends Conexion
         return $datos;
     }
 
-    private function llenar_detalles()
+    private function LlenarDetalles()
     {
         foreach ($this->detalles as $detalle) {
 
@@ -170,7 +170,7 @@ class Hoja extends Conexion
         }
     }
 
-    private function finalizar()
+    private function Finalizar()
     {
         $sql = "UPDATE `hoja_servicio` SET `cedula_tecnico`=:cedula_tecnico,`estatus`='I' WHERE cod_hoja=:hoja";
         $solicitar = $this->conex->prepare($sql);
@@ -181,14 +181,14 @@ class Hoja extends Conexion
         return $resultado;
     }
 
-    private function limpiar_detalles()
+    private function LimpiarDetalles()
     {
         $con = $this->conex->prepare("DELETE FROM `detalle_hoja` WHERE cod_hoja=:hoja");
         $con->bindValue(':hoja', $this->data["cod_hoja"]);
         $con->execute();
     }
 
-    private function mis_hojas()
+    private function ListarHojas()
     {
         $query = "SELECT cod_hoja FROM hoja_servicio WHERE nro_solicitud = :solicitud";
 
@@ -200,7 +200,7 @@ class Hoja extends Conexion
         return $datos;
     }
 
-    private function nueva_hoja()
+    private function RegistrarHoja()
     {
         $sql = "INSERT INTO `hoja_servicio`(`nro_solicitud`, `tipo_servicio`) VALUES (:solicitud,:tipo)";
         $asignar = $this->conex->prepare($sql);
@@ -219,7 +219,7 @@ class Hoja extends Conexion
         }
     }
 
-    private function actualizar_hoja()
+    private function ActualizarHoja()
     {
         $sql = "UPDATE `hoja_servicio` SET `observacion`=:observacion,`resultado`=:resultado WHERE cod_hoja=:cod";
         $solicitar = $this->conex->prepare($sql);
@@ -233,31 +233,11 @@ class Hoja extends Conexion
         return $resultado;
     }
 
-    private function asignar_especialidad($especialidad_ant)
-    {
-        $sql = "INSERT INTO orden_solicitud_especialidad() VALUES (:solicitud,:especialidad,NULL)";
-        $asignar = $this->conex->prepare($sql);
-        $asignar->bindValue(':solicitud', $this->data["nro_solicitud"]);
-        $asignar->bindParam(':especialidad', $this->data["id_especialidad"]);
-        $asignar->execute();
-
-        $sql = "UPDATE orden_solicitud_especialidad SET estatus='Inactivo' WHERE nro_solicitud = :solicitud AND id_especialidad = :especialidad";
-        $actualizar = $this->conex->prepare($sql);
-        $actualizar->bindValue(':solicitud', $this->data["nro_solicitud"]);
-        $actualizar->bindParam(':especialidad', $especialidad_ant);
-        $actualizar->execute();
-
-        $this->Cerrar_Conexion($this->conex, $asignar);
-        $this->Cerrar_Conexion($this->conex, $actualizar);
-    }
-
     private function ConsultaServicios()
     {
-
         $query = "SELECT * FROM servicio";
 
         $records = $this->conex->prepare($query);
-
         $records->execute();
 
         return $records->fetchAll(PDO::FETCH_ASSOC);
@@ -324,19 +304,19 @@ class Hoja extends Conexion
     {
         switch ($peticion["peticion"]) {
             case "nuevo":
-                return $this->nueva_hoja();
+                return $this->RegistrarHoja();
 
             case "consultar":
                 return $this->ConsultaServicios();
 
             case "consultar_detalles":
-                return $this->consulta_detalles_hoja();
+                return $this->ConsultarDetalles();
 
             case "actualizar":
-                return $this->actualizar_hoja();
+                return $this->ActualizarHoja();
 
             case "llenar_detalles":
-                return $this->llenar_detalles();
+                return $this->LlenarDetalles();
 
             case "servicio_semanal":
                 return $this->servicios_s();
@@ -345,16 +325,7 @@ class Hoja extends Conexion
                 return $this->servicios_t();
 
             case "eliminar":
-                return $this->eliminar();
-
-            case "equipos":
-                return $this->Equipos_dependencia($peticion["dato"]);
-
-            case "consulta_marcas":
-                return $this->consultar_marcas();
-
-            case "reporte":
-                return $this->consulta_reporte();
+                return $this->Finalizar();
 
             default:
                 return "Operación".$peticion." No valida";

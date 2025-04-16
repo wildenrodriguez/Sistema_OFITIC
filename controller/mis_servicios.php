@@ -31,7 +31,7 @@
 			$registros[$i] = [$servicio["ID"],$servicio["Motivo"],$servicio["Inicio"],$servicio["Estatus"],$servicio["Resultado"]];
 		}
 		
-		require_once "model/usuarios.php";
+		require_once "model/usuario.php";
 		$usuario = new Usuario();
 		$usuario->set_cedula($_SESSION['user']['cedula']);
 		
@@ -55,12 +55,12 @@
 			require_once "model/hoja_servicio.php";
             $hoja = new Hoja();
             $hoja->set_nro_solicitud($_POST["reporte"]);
-            $hojas = $hoja->mis_hojas();
+            $hojas = $hoja->ListarHojas();
 			$info=[];
 			foreach ($hojas as $nro) {
 				$hoja->set_cod_hoja($nro["cod_hoja"]);
-				$datos_hoja = $hoja->datos_hoja();
-				$aux = $hoja->consulta_detalles_hoja();
+				$datos_hoja = $hoja->DatosHoja();
+				$aux = $hoja->ConsultarDetalles();
 				$valores=[];
 				foreach ($aux as $detalle) {
 					$valores[$detalle["componente"]]=$detalle["detalle"];

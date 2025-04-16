@@ -5,7 +5,7 @@
 
 	ob_start();
 
-	require_once "model/Usuarios.php";
+	require_once "model/usuario.php";
 	$usuario = new Usuario();
 	if(!$usuario->validar_entrada($_SESSION['user']['rol'],["Super usuario"]))
 		echo'<script>window.location="?page=404"</script>';
@@ -29,6 +29,8 @@
 		if (isset($_POST["registrar_usuario"])) {
 			
 			$usuario->set_cedula($_POST['cedula']);
+			$clave = password_hash($_POST['cedula'], PASSWORD_BCRYPT);
+			$usuario->set_clave($clave);
 
 			if (!$usuario->validar()){
 				$usuario->set_rol($_POST['rol']);
@@ -49,13 +51,13 @@
 		if (isset($_POST['eliminar'])) {
 			
 			$usuario->set_cedula($_POST['eliminar']);
-			$usuario->eliminar();
+			$usuario->Eliminar();
 			ob_clean();
 			header("Refresh:0");
 		}
 
 		$registros=[];
-		$info=$usuario->consulta_usuarios();
+		$info=$usuario->ConsultaUsuarios();
 		$cabecera = array('Cedula',"Nombre","Rol","Tipo","Contraseña");
 		foreach ($info as $id => $user) {
 				$registros[$id]=[$user["Cedula"],$user["Nombre"],$user["Rol"],$user["Tipo"],$user["Clave"]];

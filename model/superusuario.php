@@ -1,7 +1,7 @@
 <?php
 require_once 'model/Usuarios.php';
 
-class SuperUsuario extends usuario{
+class SuperUsuario extends Usuario{
 	
 
 	function __construct(){

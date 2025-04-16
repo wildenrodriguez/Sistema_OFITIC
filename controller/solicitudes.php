@@ -4,7 +4,7 @@ if (!$_SESSION) {
 }
 
 ob_start();
-require_once "model/usuarios.php";
+require_once "model/usuario.php";
 $usuario = new Usuario();
 
 $peticion = [];
@@ -92,7 +92,7 @@ if (is_file("view/" . $page . ".php")) {
 			$solicitud->set_cedula_solicitante($_POST["cedula"]);
 			$hoja->set_nro_solicitud($solicitud->Transaccion($peticion));
 			$hoja->set_tipo_servicio($_POST["area"]);
-			$hoja->nueva_hoja();
+			$hoja->NuevaHoja();
 			header("refresh: 0");
 		}
 
@@ -113,7 +113,7 @@ if (is_file("view/" . $page . ".php")) {
 			$solicitud->Transaccion($peticion);
 			$hoja->set_nro_solicitud($_POST["nrosol"]);
 			$hoja->set_tipo_servicio($_POST["area"]);
-			$hoja->nueva_hoja();
+			$hoja->NuevaHoja();
 			header("refresh: 0");
 		}
 
