@@ -1,5 +1,5 @@
 <?php
-if (!$_SESSION) {
+if (!$_SESSION['user']) {
 	echo '<script>window.location="?page=login"</script>';
 	$msg["danger"] = "Sesion Finalizada.";
 }
@@ -7,9 +7,10 @@ ob_start();
 
 require_once "model/usuario.php";
 $usuario = new Usuario();
-$usuario->set_cedula($_SESSION['cedula']);
+$usuario->set_cedula($_SESSION['user']['cedula']);
 $peticion = ['peticion' => "perfil"];
 $datos = $usuario->Transaccion($peticion);
+var_dump($_SESSION['user']);
 
 if (is_file("view/" . $page . ".php")) {
 
@@ -35,7 +36,7 @@ if (is_file("view/" . $page . ".php")) {
 		}
 
 		$datos = $usuario->Transaccion(['peticion' => 'perfil']);
-		$_SESSION['user'] = $datos;
+		$_SESSION['user']['user'] = $datos;
 
 		ob_clean();
 	}

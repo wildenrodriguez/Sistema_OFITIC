@@ -23,6 +23,7 @@
 		require_once "model/solicitud.php";
 		$solicitud = new Solicitud();
 		$solicitud->set_cedula_solicitante($_SESSION['user']['cedula']);
+		var_dump($_SESSION);
 
 		$peticion["peticion"] = "solicitud_usuario";
 		$servicios = $solicitud->Transaccion($peticion);

@@ -23,7 +23,7 @@ if (is_file("view/$page.php")) {
 
 			$emp->set_cedula($cedula);
 			$datos = $user->Transaccion($peticion);
-			$_SESSION = $datos;
+			$_SESSION['user'] = $datos;
 			$_GET['page'] = "";
 			if ($cedula == $pass) {
 
