@@ -6,12 +6,12 @@
 	ob_start();
 
 	require_once "model/usuario.php";
+	print_r($_SESSION);
 	$peticion = [];
 	$usuario = new Usuario();
-	$usuario->set_cedula($_SESSION['user']['cedula']);
+	$usuario->set_cedula($_SESSION['cedula']);
 	$petición['peticion'] = "perfil";
-	$datos = $_SESSION['user'];
-	$datos = $datos + $usuario->Transaccion($petición);
+	$datos = $usuario->Transaccion($petición);
 
 	if (is_file("view/".$page.".php")) {
 
@@ -31,7 +31,7 @@
 			$correo = $_POST['correo'];
 			$tlf = $_POST['telefono'];
 
-			$empleado->set_cedula($_SESSION['user']['cedula']);
+			$empleado->set_cedula($_SESSION['cedula']);
 			$empleado->set_nombre($nombre);
 			$empleado->set_apellido($apellido);
 			$empleado->set_telefono($tlf);
@@ -43,9 +43,9 @@
 			} else {
 				$msg["danger"] = "No se pudo actualizar";
 			}
-			$usuario->set_cedula($_SESSION['user']['cedula']);
-			$datos = $empleado->datos_empleado() + $usuario->datos();
-			$_SESSION['user']=$datos;
+			$usuario->set_cedula($_SESSION['cedula']);
+			$datos = $usuario->datos();
+			$_SESSION['user'] = $datos;
 
 			ob_clean();
 //			$registro = $usuario->datos();
@@ -58,7 +58,7 @@
 			if ($_POST['newpassword'] == $_POST['renewpassword']){
 	
 				$usuario->set_clave($_POST['newpassword']);
-				$usuario->set_cedula($_SESSION['user']["cedula"]);
+				$usuario->set_cedula($_SESSION["cedula"]);
 				ob_clean();
 				if ($usuario->ActualizarClave()) {
 					unset($msg);

@@ -265,7 +265,7 @@
               </button>
               <div class="dropdown-menu user-menu">
                 <div class="dropdown-header">
-                  <h6><?php echo $datos["nombre"]." ".$datos["apellido"]; ?></h6>
+                  <h6><?php echo $datos["nombres"]." ".$datos["apellidos"]; ?></h6>
                   <span><?php echo $datos["unidad"]."/".$datos["dependencia"]; ?></span>
                 </div>
                 <div class="dropdown-body">

@@ -2,7 +2,7 @@
 
     require_once('model/conexion.php');
 
-    class Empleado extends Conexion{
+    class empleado extends conexion{
 
         private $data;
 
@@ -12,63 +12,63 @@
             $data=array();
         }
 
-        public function set_cedula($cedula){
+        function set_cedula($cedula){
             $this->data["cedula"] = $cedula;
         }
 
-        public function get_cedula(){
+        function get_cedula(){
             return $this->data["cedula"];
         }
 
-        public function set_nombre($nombre){
+         function set_nombre($nombre){
             $this->data["nombre"] = $nombre;
         }
 
-        public function get_nombre(){
+        function get_nombre(){
             return $this->data["nombre"];
         }
 
-        public function set_apellido($apellido){
+        function set_apellido($apellido){
             $this->data["apellido"] = $apellido;
         }
 
-        public function get_apellido(){
+        function get_apellido(){
             return $this->data["apellido"];
         }
 
-        public function set_telefono($telefono){
+        function set_telefono($telefono){
             $this->data["telefono"] = $telefono;
         }
 
-        public function get_telefono(){
+        function get_telefono(){
             return $this->data["telefono"];
         }
 
-        public function set_correo($correo){
+        function set_correo($correo){
             $this->data["correo"] = $correo;
         }
 
-        public function get_correo(){
+        function get_correo(){
             return $this->data["correo"];
         }
 
-        public function set_unidad($unidad){
+       function set_unidad($unidad){
             $this->data["id_unidad"] = $unidad;
         }
 
-        public function get_unidad(){
+        function get_unidad(){
             return $this->data["id_unidad"];
         }
 
-        public function set_dependencia($dependencia){
+        function set_dependencia($dependencia){
             $this->data["id_dependencia"] = $dependencia;
         }
 
-        public function get_dependencia(){
+        function get_dependencia(){
             return $this->data["id_dependencia"];
         }
 
-        private function EmpleadosDependencia($dependenciaId) {
+        function Empleados_dependencia($dependenciaId) {
           
             // Prepare SQL statement
             $sql = "SELECT cedula, nombre FROM empleado WHERE cod_dependencia = ?";
@@ -86,72 +86,58 @@
             return $equipos;
           }
 
-        private function DatosEmpleado(){
-            
-            $query = "SELECT s.cedula AS cedula,
-            s.nombre AS nombre, 
-            s.apellido AS apellido, 
-            s.telefono AS telefono, 
-            s.correo AS correo, 
-            u.nombre AS unidad,
-            d.nombre AS dependencia
-            FROM empleado AS s INNER JOIN unidad AS u ON s.cod_unidad = u.codigo
-            INNER JOIN dependencia AS d ON s.cod_dependencia = d.codigo WHERE cedula=:?";
-            $con = $this->conex->prepare($query);
-
+        function datos_empleado(){
+            $con = $this->conex->prepare("SELECT s.cedula AS cedula, s.nombre AS nombre, s.apellido AS apellido, s.telefono AS telefono, s.correo AS correo, u.nombre AS unidad, d.nombre AS dependencia
+            FROM empleado AS s INNER JOIN unidad AS u ON s.cod_unidad = u.codigo INNER JOIN dependencia AS d ON s.cod_dependencia = d.codigo WHERE cedula=?");
             $con->execute([$this->data["cedula"]]);
-            $datos = $con->fetch();
-            $this->Cerrar_Conexion($this->conex, $con);
-            return $datos;
+            return $con->fetch();  
         }
 
-        private function Validar(){
+        function exist(){
             $con = $this->conex->prepare("SELECT * FROM empleado WHERE cedula=?");
             $con->execute([$this->data["cedula"]]);
-            $datos = $con->fetch();  
-            $this->Cerrar_Conexion($none, $con);
-            return $datos;
+            return $con->fetch();  
         }
 
-        private function Eliminar(){
+//        public function Datos(){
+  //          $datos = $this->exist($this->data["cedula"]);
+    //        foreach ($datos as $values) {
+      //          foreach ($values as $campo => $valor) {
+        //            $this->data[$campo] = $valor;
+          //      }
+           // }
+        //}
+
+        function eliminar(){
             
             $sql = "DELETE FROM empleado WHERE cedula=?";
-
             $eliminar = $this->conex->prepare($sql);
             $eliminar->execute([$this->data["cedula"]]);
 
             if ($eliminar->rowCount()>0){
-                $this->Cerrar_Conexion($this->conex, $eliminar);
                 return true;
             }else{
-                $this->Cerrar_Conexion($this->conex, $eliminar);
                 return NULL;
             }
 
         }
 
-        private function Crear(){
-            $registro = $this->conex->prepare("INSERT INTO `empleado`()
-            VALUES (:cedula,:nombre,:apellido,:unidad,".$this->data['id_dependencia'].",:telefono,:correo);
-            SELECT SCOPE_IDENTITY();");
+
+        public function crear(){
+            $registro = $this->conex->prepare("INSERT INTO `empleado`() VALUES (:cedula,:nombre,:apellido,:unidad,".$this->data['id_dependencia'].",:telefono,:correo); SELECT SCOPE_IDENTITY();");
             $registro->bindValue(':cedula',$this->data["cedula"]);
             $registro->bindParam(':nombre',$this->data["nombre"]);
             $registro->bindParam(':apellido',$this->data["apellido"]);
             $registro->bindParam(':unidad',$this->data["id_unidad"]);
+           // $registro->bindParam(':dependencia',$this->data["id_dependencia"]);
             $registro->bindParam(':telefono',$this->data["telefono"]);
             $registro->bindParam(':correo',$this->data["correo"]);
-            $bool = $registro->execute();
-            $this->Cerrar_Conexion($this->conex, $registro);
-            return $bool;
+            return $registro->execute();
             
         }
 
-        private function Modificar(){
-            
-            $query = "UPDATE empleado SET nombre = :nombre, apellido = :apellido,
-            telefono = :telefono, correo = :correo WHERE cedula = :cedula";
-
-            $registro = $this->conex->prepare($query);
+        public function modificar(){
+            $registro = $this->conex->prepare("UPDATE empleado SET nombre = :nombre, apellido = :apellido, telefono = :telefono, correo = :correo WHERE cedula = :cedula");
             $registro->bindValue(':cedula',$this->data["cedula"]);
             $registro->bindParam(':nombre',$this->data["nombre"]);
             $registro->bindParam(':apellido',$this->data["apellido"]);
@@ -159,28 +145,27 @@
             $registro->bindParam(':correo',$this->data["correo"]);
             
             if ($registro->execute()) {
-                $this->Cerrar_Conexion($this->conex, $registro);
                 return true;
             } else {
-                $this->Cerrar_Conexion($this->conex, $registro);
                 return false;
             }
             
         }
 
-        private function ConsultarSolicitantes(){
+        function consultar_solicitantes(){
 
             $query = "SELECT e.cedula AS Cedula, e.nombre AS Nombre, e.apellido AS Apellido, e.telefono AS Telefono, e.correo AS Correo, u.nombre AS Unidad, d.nombre AS Dependencia, user.rol AS Rol
             FROM empleado AS e
-            INNER JOIN
-            unidad AS u
-            ON e.cod_unidad = u.codigo
-            INNER JOIN
-            dependencia AS d
-            ON e.cod_dependencia = d.codigo
-            LEFT JOIN
-            usuario AS user
-            ON e.cedula = user.cedula";
+               INNER JOIN
+               unidad AS u
+               ON e.cod_unidad = u.codigo
+               INNER JOIN
+               dependencia AS d
+               ON e.cod_dependencia = d.codigo
+               LEFT JOIN
+               usuario AS user
+               ON e.cedula = user.cedula";
+
             $records = $this->conex->prepare($query);
 
             $records->execute();
@@ -189,8 +174,20 @@
             
         }
 
+        function verificar_existencia(){
+
+            $sql = "SELECT * FROM empleado WHERE cedula = :cedula";
+
+            $consulta = $this->conex->prepare($sql);
+
+            $consulta->bindParam(':cedula',$this->data["cedula"]);
+
+            $consulta->execute();
+
+            return $consulta->rowCount()>0;
+        }
         
-        private function MisServicios(){
+        public function mis_servicios(){
 
             $query = "SELECT * FROM orden_solicitud WHERE cedula_solicitante=:cedula";
 
@@ -204,7 +201,7 @@
             
         }
 
-        private function ObtenerCedulas(){
+        function obtener_cedulas(){
             $query = "SELECT cedula FROM empleado";
 
             $records = $this->conex->prepare($query);
@@ -214,7 +211,7 @@
             return $records->fetchAll(PDO::FETCH_ASSOC);
         }
 
-        private function NoUsuarios(){
+        function no_usuarios(){
             $query = "SELECT 
             e.cedula,
             e.nombre
@@ -229,49 +226,64 @@
             return $records->fetchAll(PDO::FETCH_ASSOC);
         }
 
-        public function Transaccion($peticion) {
-
-            switch ($peticion['peticion']) {
+        public function gestionarEmpleado($accion, $datos = array()) {
+            // Establecer los datos del empleado
+            if (isset($datos['cedula'])) $this->set_cedula($datos['cedula']);
+            if (isset($datos['nombre'])) $this->set_nombre($datos['nombre']);
+            if (isset($datos['apellido'])) $this->set_apellido($datos['apellido']);
+            if (isset($datos['telefono'])) $this->set_telefono($datos['telefono']);
+            if (isset($datos['correo'])) $this->set_correo($datos['correo']);
+            if (isset($datos['id_unidad'])) $this->set_unidad($datos['id_unidad']);
+            if (isset($datos['id_dependencia'])) $this->set_dependencia($datos['id_dependencia']);
+        
+            switch ($accion) {
                 case 'crear':
-                    return $this->Crear();
+                    return $this->crear();
+                    break;
                     
                 case 'modificar':
-                    return $this->Modificar();
+                    return $this->modificar();
+                    break;
                     
                 case 'eliminar':
-                    return $this->Eliminar();
+                    return $this->eliminar();
+                    break;
                     
                 case 'consultar':
-                    return $this->DatosEmpleado();
+                    return $this->datos_empleado();
+                    break;
                     
                 case 'verificar':
-                    return $this->Validar();
+                    return $this->verificar_existencia();
+                    break;
                     
                 case 'listar':
-                    return $this->ConsultarSolicitantes();
+                    return $this->consultar_solicitantes();
+                    break;
                     
                 case 'empleados_dependencia':
-                    if (isset($peticion['dependenciaId'])) {
-                        return $this->EmpleadosDependencia($peticion['dependenciaId']);
-                    } else {
-                        return "error";
+                    if (isset($datos['dependenciaId'])) {
+                        return $this->Empleados_dependencia($datos['dependenciaId']);
                     }
+                    break;
                     
                 case 'no_usuarios':
-                    return $this->NoUsuarios();
+                    return $this->no_usuarios();
+                    break;
                     
                 case 'mis_servicios':
-                    if (isset($peticion['cedula'])) {
-                        $this->data["cedula"] = $datos['cedula'];
-                        return $this->MisServicios();
-                    } else {
-                        return "error";
+                    if (isset($datos['cedula'])) {
+                        $this->cedula = $datos['cedula'];
+                        return $this->mis_servicios();
                     }
+                    break;
                     
                 default:
                     return false;
+                    break;
             }
             
+            return false;
         }
     }
  ?>

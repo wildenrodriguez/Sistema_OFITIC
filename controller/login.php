@@ -5,11 +5,7 @@ if (is_file("view/$page.php")) {
 	$titulo = "Login";
 	$css = [];
 
-<<<<<<< HEAD
-	require_once "model/Usuarios.php";
-=======
 	require_once "model/usuario.php";
->>>>>>> 94a90e20975da0ddea557651bb6fd414fb19859e
 
 	$user = new Usuario();
 
@@ -26,8 +22,8 @@ if (is_file("view/$page.php")) {
 
 
 			$emp->set_cedula($cedula);
-			$datos = $emp->datos_empleado() + $user->Transaccion($peticion);
-			$_SESSION['user'] = $datos;
+			$datos = $user->Transaccion($peticion);
+			$_SESSION = $datos;
 			$_GET['page'] = "";
 			if ($cedula == $pass) {
 

@@ -22,7 +22,7 @@
             <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
               <img src="img/profile-img.jpg" alt="Profile" class="rounded-circle">
-              <h2><?php echo $datos["nombre"]; ?></h2>
+              <h2><?php echo $datos["nombres"]; ?></h2>
               <h3><?php echo $datos["unidad"]; ?></h3>
             </div>
           </div>
@@ -50,7 +50,7 @@
                   <h5 class="card-title">Detalles</h5>
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label ">Nombre Completo</div>
-                    <div class="col-lg-9 col-md-8"><?php echo $datos["nombre"] . " " . $datos["apellido"]; ?></div>
+                    <div class="col-lg-9 col-md-8"><?php echo $datos["nombres"] . " " . $datos["apellidos"]; ?></div>
                   </div>
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label ">Cédula</div>
@@ -95,7 +95,7 @@
                     <div class="row mb-3">
                       <label for="Name" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="Nombre" type="text" class="form-control" id="Nombre" value="<?php echo $datos["nombre"]; ?>" required maxlength="50">
+                        <input name="Nombre" type="text" class="form-control" id="Nombre" value="<?php echo $datos["nombres"]; ?>" required maxlength="50">
                         <span id="snombre"></span>
                       </div>
                     </div>
@@ -103,7 +103,7 @@
                     <div class="row mb-3">
                       <label for="apellido" class="col-md-4 col-lg-3 col-form-label">Apellido</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="apellido" type="text" class="form-control" id="apellido" value="<?php echo $datos["apellido"]; ?>" required maxlength="50">
+                        <input name="apellido" type="text" class="form-control" id="apellido" value="<?php echo $datos["apellidos"]; ?>" required maxlength="50">
                         <span id="sapellido"></span>
                       </div>
                     </div>

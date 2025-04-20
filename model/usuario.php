@@ -49,8 +49,12 @@
             return $this->apellidos;
         }
 
-        private function validar_entrada($usuario, $permitidos){
-            return in_array($usuario, $permitidos);
+        private function ValidarPermiso($usuario, $permitidos){
+            if($usuario == $permitidos){
+                return true;
+            } else{
+                return false;
+            }
         }
 
         private function Registrar(){
@@ -106,7 +110,7 @@
         }
 
         private function PerfilUsuario(){
-            $con = $this->conex->prepare("SELECT `clave`, `rol` FROM `usuario` WHERE cedula = :cedula");
+            $con = $this->conex->prepare("SELECT * FROM `usuario` WHERE cedula = :cedula");
             $con->bindValue(':cedula',$this->cedula);
             $con->execute();
             
@@ -189,6 +193,9 @@
                 case 'perfil':
 
                     return $this->PerfilUsuario();
+
+                case 'permiso':
+                    return $this->ValidarPermiso($peticion['user'], $peticion['rol']);
                 
                 default:
                     return "error ".$peticion['peticion']." no valida";

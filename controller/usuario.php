@@ -6,8 +6,13 @@
 	ob_start();
 
 	require_once "model/usuario.php";
+	print_r($_SESSION);
+	$peticion = [];
+	$peticion['peticion'] = "permiso";
+	$peticion['user'] = $_SESSION['user']['rol'];
+	$peticion['rol'] = 'Super usuario';
 	$usuario = new Usuario();
-	if(!$usuario->validar_entrada($_SESSION['user']['rol'],["Super usuario"]))
+	if(!$usuario->Transaccion($peticion));
 		echo'<script>window.location="?page=404"</script>';
 
 	if (is_file("view/".$page.".php")) {
@@ -35,7 +40,7 @@
 			if (!$usuario->validar()){
 				$usuario->set_rol($_POST['rol']);
 
-				if($usuario->crear()){
+				if($usuario->Registrar()){
                     if ($_POST['rol']=="Técnico") {
                         $usuario->set_tipo($_POST['tipo']);
                         $usuario->crear_tecnico();

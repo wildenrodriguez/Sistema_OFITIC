@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-04-2025 a las 06:25:18
+-- Tiempo de generación: 17-04-2025 a las 06:43:10
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -285,6 +285,7 @@ CREATE TABLE `usuario` (
   `id_rol` int(11) DEFAULT NULL,
   `nombres` varchar(65) NOT NULL,
   `apellidos` varchar(65) NOT NULL,
+  `telefono` varchar(13) NOT NULL,
   `correo` varchar(45) NOT NULL,
   `clave` varchar(128) NOT NULL,
   `rol` varchar(15) NOT NULL
@@ -294,13 +295,13 @@ CREATE TABLE `usuario` (
 -- Volcado de datos para la tabla `usuario`
 --
 
-INSERT INTO `usuario` (`nombre_usuario`, `cedula`, `id_rol`, `nombres`, `apellidos`, `correo`, `clave`, `rol`) VALUES
-('', 'V-31843937', NULL, '', '', '', '$2y$10$1vXPHPs29V2T.1HVvUHXn.rzC3KfFwxTXbnosxiJRJEWA4ZATIEBm', 'Super usuario'),
-('frank30', 'V-30454597', 1, '', '', '', '$2y$10$d64FtFMmW8sTyuiKyxD52eN0q9vdBEglqAbOJXUzw80aRB3/uko7K', 'Super usuario'),
-('lz2712', 'V-30266398', 1, '', '', '', '$2y$10$sONqWv4yy5PEeePKYljGXOLjFuJa1lMz9yua.3cMVAHG4hU.75Jpe', 'Super usuario'),
-('mari14', 'V-30587785', NULL, '', '', '', '$2y$10$nMQ5inBjrq6FeZbt8sTQk.9Mkx4c.H93TVw.39zCiC3ovXCZoqyaa', 'Super usuario'),
-('maria123', 'V-21140325', 1, '', '', '', '12345', 'Super usuario'),
-('root', 'V-1234567', 1, '', '', '', '123', 'Super usuario');
+INSERT INTO `usuario` (`nombre_usuario`, `cedula`, `id_rol`, `nombres`, `apellidos`, `telefono`, `correo`, `clave`, `rol`) VALUES
+('cabrerajorge', 'V-31843937', 1, 'Jorge', 'Cabrera', '0424-5567016', 'cabrerajorge2003@gmail.com', '$2y$10$1vXPHPs29V2T.1HVvUHXn.rzC3KfFwxTXbnosxiJRJEWA4ZATIEBm', 'Super usuario'),
+('frank30', 'V-30454597', 1, 'Frankling', 'Fonseca', '0424-5041921', 'ranklinjavierfonsecavasquez@gmail.com', '$2y$10$d64FtFMmW8sTyuiKyxD52eN0q9vdBEglqAbOJXUzw80aRB3/uko7K', 'Super usuario'),
+('lz2712', 'V-30266398', 1, 'Leizer', 'Torrealba', '0416-0506544', 'leizeraponte2020@gmail.com', '$2y$10$sONqWv4yy5PEeePKYljGXOLjFuJa1lMz9yua.3cMVAHG4hU.75Jpe', 'Super usuario'),
+('mari14', 'V-30587785', 1, 'Mariangel', 'Bokor', '0424-5319088', 'bokorarcangel447@gmail.com', '$2y$10$nMQ5inBjrq6FeZbt8sTQk.9Mkx4c.H93TVw.39zCiC3ovXCZoqyaa', 'Super usuario'),
+('maria123', 'V-21140325', 1, 'Felix', 'Mujica', '0400-0000000', 'ejemplo@gmail.com', '12345', 'Super usuario'),
+('root', 'V-1234567', 1, 'root', 'admin', '0000-0000000', 'prueba@gmail.com', '123', 'Super usuario');
 
 --
 -- Índices para tablas volcadas
