@@ -22,7 +22,7 @@ if (is_file("view/Configuracion.php")) {
 	$usuario->set_cedula($_SESSION['user']['cedula']);
 
 	$datos = $_SESSION['user'];
-	$datos = $datos + $usuario->datos();
+	$datos = $datos + $usuario->Transaccion(['peticion' => 'perfil']);
 
 	$dato = $_GET['dato'];
 	$tablas = [$dato];

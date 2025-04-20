@@ -20,7 +20,7 @@ if (is_file("view/" . $page . ".php")) {
     // Datos del Usuario Actual
     $usuario->set_cedula($_SESSION['user']['cedula']);
     $datos = $_SESSION['user'];
-    $datos = $datos + $usuario->datos();
+    $datos = $datos + $usuario->Transaccion(['peticion' => 'perfil']);
 
     // Lógica del Modelo
     require_once 'model/empleado.php';

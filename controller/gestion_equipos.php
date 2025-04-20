@@ -3,12 +3,18 @@
 		echo'<script>window.location="?page=login"</script>';
 		$msg["danger"] = "Sesion Finalizada.";
 	}
-
+	
 	require_once "model/usuario.php";
 	$usuario = new Usuario();
-	if(!$usuario->validar_entrada($_SESSION['user']['rol'],["Super usuario","Administrador"]))
-		echo'<script>window.location="?page=404"</script>';
-
+	
+	if(!$usuario->Transaccion([
+		'peticion' => 'permiso',
+		'user' => $_SESSION['user']['rol'],
+		'rol' => ["Super usuario", "Administrador"]
+	])) {
+		//echo '<script>window.location="?page=404"</script>';
+	}
+	var_dump($_SESSION['user']['rol']);
 	if(is_file("view/$page.php")){
 
 		$peticion = [];
@@ -27,7 +33,7 @@
 		$usuario->set_cedula($_SESSION['user']['cedula']);
 		
 		$datos = $_SESSION['user'];
-		$datos = $datos + $usuario->datos();
+		$datos = $datos + $usuario->Transaccion(['peticion' => 'perfil']);
 
 		// Lógica del Modelo
 		require_once('model/equipo.php');

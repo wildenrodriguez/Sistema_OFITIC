@@ -1,90 +1,71 @@
-<?php 
-	if (!$_SESSION) {
-		echo'<script>window.location="?page=login"</script>';
-		$msg["danger"] = "Sesion Finalizada.";
+<?php
+if (!$_SESSION) {
+	echo '<script>window.location="?page=login"</script>';
+	$msg["danger"] = "Sesion Finalizada.";
+}
+ob_start();
+
+require_once "model/usuario.php";
+$usuario = new Usuario();
+$usuario->set_cedula($_SESSION['cedula']);
+$peticion = ['peticion' => "perfil"];
+$datos = $usuario->Transaccion($peticion);
+
+if (is_file("view/" . $page . ".php")) {
+
+	$titulo = "Mi Perfil";
+	$css = ["alert"];
+
+	if (isset($_POST['cambiar'])) {
+
+		$nombre = $_POST['Nombre'];
+		$apellido = $_POST['apellido'];
+		$correo = $_POST['correo'];
+		$tlf = $_POST['telefono'];
+
+		$usuario->set_nombres($nombre);
+		$usuario->set_apellidos($apellido);
+		$usuario->set_correo($correo);
+		$usuario->set_telefono($tlf);
+
+		if ($usuario->Transaccion(['peticion' => 'modificar'])) {
+			$msg["success"] = "Actualizado";
+		} else {
+			$msg["danger"] = "No se pudo actualizar";
+		}
+
+		$datos = $usuario->Transaccion(['peticion' => 'perfil']);
+		$_SESSION['user'] = $datos;
+
+		ob_clean();
 	}
-	ob_start();
 
-	require_once "model/usuario.php";
-	print_r($_SESSION);
-	$peticion = [];
-	$usuario = new Usuario();
-	$usuario->set_cedula($_SESSION['cedula']);
-	$petición['peticion'] = "perfil";
-	$datos = $usuario->Transaccion($petición);
+	if (isset($_POST['passw'])) {
 
-	if (is_file("view/".$page.".php")) {
+		if ($_POST['newpassword'] == $_POST['renewpassword']) {
 
-		
-		require_once "model/usuario.php";
-		require_once "model/empleado.php";
-		$usuario = new Usuario();
-		$empleado = new Empleado();
-
-		$titulo = "Mi Perfil";
-		$css = ["alert"];
-
-		if (isset($_POST['cambiar'])) {
-			
-			$nombre = $_POST['Nombre'];
-			$apellido = $_POST['apellido'];
-			$correo = $_POST['correo'];
-			$tlf = $_POST['telefono'];
-
-			$empleado->set_cedula($_SESSION['cedula']);
-			$empleado->set_nombre($nombre);
-			$empleado->set_apellido($apellido);
-			$empleado->set_telefono($tlf);
-			$empleado->set_correo($correo);
-
-			$empleado->modificar();
-			if ($empleado->modificar()) {
-				$msg["success"] = "Actualizado";
+			$usuario->set_clave($_POST['newpassword']);
+			if ($usuario->Transaccion(['peticion' => 'ActualizarClave'])) {
+				unset($msg);
+				$msg["success"] = "Contraseña actualizada";
 			} else {
-				$msg["danger"] = "No se pudo actualizar";
+				$msg["danger"] = "No se pudo actualizar la contraseña";
 			}
-			$usuario->set_cedula($_SESSION['cedula']);
-			$datos = $usuario->datos();
-			$_SESSION['user'] = $datos;
-
-			ob_clean();
-//			$registro = $usuario->datos();
-//			foreach($registro as $campo => $dato)
-//				$datos[$campo]=$dato;
+		} else {
+			$msg["danger"] = "Las contraseñas no coinciden";
 		}
+	}
 
-		if (isset($_POST['passw'])) {
+	// En users-profile.php (línea ~59)
+if (isset($datos['clave']) && $datos['clave'] == $datos['cedula']) {
+    $active3 = "active";
+    $active4 = "show active";
+} else {
+    $active1 = "active";
+    $active2 = "show active";
+}
 
-			if ($_POST['newpassword'] == $_POST['renewpassword']){
-	
-				$usuario->set_clave($_POST['newpassword']);
-				$usuario->set_cedula($_SESSION["cedula"]);
-				ob_clean();
-				if ($usuario->ActualizarClave()) {
-					unset($msg);
-					$msg["success"] = "Actualizado";
-				} else {
-					$msg["danger"] = "No se pudo actualizar";
-				}
-			}else {
-				$msg["danger"] = "Las contraseñas no coinciden";
-			}
-		}
-
-		
-
-		if ($datos['clave'] == $datos['cedula']) {
-		
-		$active3 = "active";
-		$active4 = "show active";
-	} else{$active1 = "active";
-		   $active2 = "show active"; }
-
-		require_once "view/users-profile.php";
-      }else {
-		require_once "view/404.php";
-	  }
-               
-		
-	
- ?>
+	require_once "view/users-profile.php";
+} else {
+	require_once "view/404.php";
+}

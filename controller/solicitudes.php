@@ -50,7 +50,7 @@ if (is_file("view/" . $page . ".php")) {
 	$usuario->set_cedula($_SESSION['user']['cedula']);
 
 	$datos = $_SESSION['user'];
-	$datos = $datos + $usuario->datos();
+	$datos = $datos + $usuario->Transaccion(['peticion' => 'perfil']);
 
 	require_once "model/hoja_servicio.php";
 	$hoja = new Hoja();

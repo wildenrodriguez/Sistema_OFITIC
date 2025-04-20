@@ -8,7 +8,15 @@
 
 	require_once "model/usuario.php";
 	$usuario = new Usuario();
-	if(!$usuario->validar_entrada($_SESSION['user']['rol'],["Super usuario","Técnico"]))
+	require_once "model/usuario.php";
+	$usuario = new Usuario();
+	if(!$usuario->Transaccion([
+		'peticion' => 'permiso',
+		'user' => $_SESSION['user']['rol'],
+		'rol' => ["Super usuario", "Técnico"]
+	])) {
+		echo '<script>window.location="?page=404"</script>';
+	}
 		echo'<script>window.location="?page=404"</script>';
 
 	if (is_file("view/".$page.".php")) {
@@ -29,7 +37,7 @@
 		$usuario->set_cedula($_SESSION['user']['cedula']);
 		
 		$datos = $_SESSION['user'];
-		$datos = $datos + $usuario->datos();
+		$datos = $datos + $usuario->Transaccion(['peticion' => 'perfil']);
 		if ($datos["rol"] == "Técnico") {
 			require_once "model/tecnico.php";
 			$tec = new tecnico();

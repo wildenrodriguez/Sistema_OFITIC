@@ -36,8 +36,8 @@
 		$usuario->set_cedula($_SESSION['user']['cedula']);
 		
 		$datos = $_SESSION['user'];
-		$datos = $datos + $usuario->datos();
-
+		$datos = $datos + $usuario->Transaccion(['peticion' => 'perfil']);
+		var_dump($datos);
 		if(isset($_POST["solicitud"]) and $_POST["motivo"]!=NULL){	
 			require_once "model/solicitud.php";
             $solicitud = new Solicitud();
