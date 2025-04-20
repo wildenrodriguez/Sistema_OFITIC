@@ -1,0 +1,17 @@
+{
+    "name": "jorge/sigso",
+    "autoload": {
+        "psr-4": {
+            "Jorge\\Sigso\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Jorge Cabrera",
+            "email": "126417840+JorgeCabrera2003@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "dompdf/dompdf": "^3.1"
+    }
+}

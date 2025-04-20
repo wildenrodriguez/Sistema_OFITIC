@@ -70,17 +70,80 @@ if (is_file("view/Configuracion.php")) {
 	}
 
 	if (isset($_POST["reporte"])) {
-		require_once "model/reporte.php";
-		$reporte = new reporte();
-		require_once "model/solicitud.php";
-
-		$tabla = $_POST['reporte'];
-		$config->set_tabla($tabla);
-		ob_end_clean();
-		$reporte->Unidades($config->Transaccion("reporte"), $_POST['reporte']);
-		//$_SESSION['servicio']=$servi->consulta_reporte();
-		//$reporte->mpdf();
-	}
+    require_once "vendor/autoload.php"; // Asegúrate que apunte al autoload de Composer
+    
+    $tabla = $_POST['reporte'];
+    $config->set_tabla($tabla);
+    $datos = $config->Transaccion("reporte");
+    
+    // Configurar opciones de DOMPDF
+    $options = new Dompdf\Options();
+    $options->set('isHtml5ParserEnabled', true);
+    $options->set('isRemoteEnabled', true);
+    
+    // Instanciar DOMPDF
+    $dompdf = new Dompdf\Dompdf($options);
+    
+    // HTML para el PDF
+    $html = '
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>Reporte de '.$tabla.'</title>
+        <style>
+            body { font-family: Arial, sans-serif; }
+            h1 { color: #333; text-align: center; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th { background-color: #f8f9fa; text-align: left; padding: 8px; }
+            td { padding: 8px; border-bottom: 1px solid #ddd; }
+            .header { margin-bottom: 20px; }
+            .logo { width: 100px; }
+            .fecha { text-align: right; }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <img src="'.$_SERVER['DOCUMENT_ROOT'].'/img/OFITIC.jpg" class="logo">
+            <div class="fecha">Fecha: '.date('d/m/Y').'</div>
+        </div>
+        <h1>Reporte de '.ucfirst($tabla).'</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nombre</th>
+                </tr>
+            </thead>
+            <tbody>';
+    
+    foreach ($datos as $index => $fila) {
+        $html .= '<tr>
+                    <td>'.($index+1).'</td>
+                    <td>'.$fila['nombre'].'</td>
+                  </tr>';
+    }
+    
+    $html .= '
+            </tbody>
+        </table>
+    </body>
+    </html>';
+    
+    // Cargar HTML
+    $dompdf->loadHtml($html);
+    
+    // Configurar papel y orientación
+    $dompdf->setPaper('A4', 'portrait');
+    
+    // Renderizar PDF
+    $dompdf->render();
+    
+    // Enviar PDF al navegador para mostrarlo
+    $dompdf->stream("reporte_".$tabla."_".date('Ymd').".pdf", array("Attachment" => false));
+    
+    exit();
+}
 
 	if (isset($_POST["enviar"])) {
 		$aray = [
