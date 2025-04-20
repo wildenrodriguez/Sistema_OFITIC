@@ -57,7 +57,7 @@ class Configuracion extends Conexion
     private function validar_tabla()
     {
         $con = $this->conex->prepare("SELECT * FROM $this->tabla WHERE nombre=?");
-        $con->execute($this->nombre);
+        $con->execute([$this->nombre]); // Corregido: Pasar un array en lugar de un string
         if ($con->rowCount() > 0) {
             $con = NULL;
             return true;
@@ -89,7 +89,7 @@ class Configuracion extends Conexion
         return 1;
     }
 
-    private function consulta_reporte2()
+    private function consulta_reporte()
     {
         $query = "SELECT * FROM $this->tabla";
 
@@ -116,7 +116,7 @@ class Configuracion extends Conexion
                 return $this->eliminar_configuracion();
 
             case "reporte":
-                return $this->eliminar_configuracion();
+                return $this->consulta_reporte();
 
             default:
                 "error";
