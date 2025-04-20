@@ -1,58 +1,64 @@
 :root {
   /* Light theme variables */
-  /* --background: #f4f4f4; */
-  --background: linear-gradient(180deg,#c42f3144,#e0a62344, #017c4544 );
-  --foreground: #0f172a;
-  --light: #333;
-  --mate: #fff;
+  --background: #ffffff;
+  --background: linear-gradient(152deg, rgba(255, 255, 255, 1) 0%, rgba(222, 222, 222, 1) 67%, rgba(199, 199, 199, 1) 100%);
+  --foreground: #333333; /* Gris oscuro */
+  --light: #5A5A5A; /* Gris medio */
+  --mate: #ffffff;
   --muted: #f1f5f9;
   --muted-foreground: #64748b;
   --popover: #ffffff;
-  --popover-foreground: #0f172a;
+  --popover-foreground: #333333;
   --card: #ffffff44;
-  --card-foreground: #0f172a;
+  --card-foreground: #333333;
   --border: #e2e8f0;
   --input: #eee;
-  --primary: #0f172a;
-  --primary-foreground: #f8fafc;
-  --secondary: #eee;
-  --secondary-foreground: #0f172a;
-  --accent: #f1f5f9;
-  --accent-foreground: #0f172a;
+  --primary: #7C1D21; /* Rojo corporativo */
+  --primary-foreground: #ffffff;
+  --secondary: #6ABF4B; /* Verde más claro */
+  --secondary-foreground: #ffffff;
+  --accent: #F0B323; /* Amarillo corporativo */
+  --accent-foreground: #333333;
   --destructive: #ff0000;
-  --destructive-foreground: #f8fafc;
+  --destructive-foreground: #ffffff;
   --ring: #94a3b8;
   --radius: 0.5rem;
   --sidebar-width: 16rem;
   --sidebar-collapsed-width: 4.5rem;
   --bg-switch: #ccc;
+  --sidebar-bg: #7C1D21; /* Rojo corporativo */
+  --sidebar-foreground: #ffffff; /* Texto claro para contraste */
+  --sidebar-hover-bg: #99242A; /* Rojo ligeramente más oscuro para hover */
 }
 
 .dark {
   /* Dark theme variables */
-  /* --background: #001; */
-  --background: #001 linear-gradient(180deg, #6b0002 5%,#001 90% );
-  --foreground: #e1e7ef;
-  --light: #e0e0e0;
-  --mate: #000;
+  --background: #121212;
+  --background: linear-gradient(152deg, rgba(18, 18, 18, 1) 0%, rgba(30, 30, 30, 1) 67%, rgba(60, 60, 60, 1) 100%);
+  --foreground: #E0E0E0; /* Gris claro */
+  --light: #B0B0B0; /* Gris medio */
+  --mate: #000000;
   --muted: #1e293b;
   --muted-foreground: #94a3b8;
   --popover: #020817;
   --popover-foreground: #94a3b8;
   --card: #02081744;
-  --card-foreground: #e1e7ef;
+  --card-foreground: #E0E0E0;
   --border: #1e293b;
   --input: #112;
-  --primary: #f8fafc;
-  --primary-foreground: #0f172a;
-  --secondary: #0f172a;
-  --secondary-foreground: #f8fafc;
-  --accent: #1e293b;
-  --accent-foreground: #f8fafc;
+  --primary: #A52D33; /* Rojo más claro */
+  --primary-foreground: #ffffff;
+  --secondary: #5CA63E; /* Verde más claro para modo oscuro */
+  --secondary-foreground: #ffffff;
+  --accent: #D9A21B; /* Amarillo suavizado */
+  --accent-foreground: #121212;
   --destructive: #7f1d1d;
-  --destructive-foreground: #f8fafc;
+  --destructive-foreground: #ffffff;
   --ring: #1e293b;
   --bg-switch: #333;
+  --sidebar-bg: #7C1D21; /* Rojo corporativo */
+  --sidebar-foreground: #ffffff; /* Texto claro para contraste */
+  --sidebar-hover-bg: #99242A; /* Rojo ligeramente más oscuro para hover */
 }
 
 /* Base styles */
@@ -91,7 +97,8 @@ ul {
 /* Sidebar */
 .sidebar {
   width: var(--sidebar-width);
-  background-color: var(--card);
+  background-color: var(--sidebar-bg); /* Aplicar color rojo corporativo */
+  color: var(--sidebar-foreground); /* Texto claro */
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -123,6 +130,18 @@ ul {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: var(--foreground); /* Color dinámico basado en el tema */
+}
+
+#logo-text {
+  color: #000; /* Negro para modo claro */
+  font-size: 1.5rem;
+  font-weight: bold;
+  
+}
+
+.dark #logo-text {
+  color: var(--sidebar-foreground); /* Texto claro para modo oscuro */
 }
 
 .collapse-btn {
@@ -166,7 +185,7 @@ ul {
   display: flex;
   align-items: center;
   padding: 0.75rem 1rem;
-  color: var(--muted-foreground);
+  color: var(--sidebar-foreground); /* Texto claro */
   border-radius: 0.375rem;
   margin: 0 0.5rem;
   transition: background-color 0.2s, color 0.2s;
@@ -174,13 +193,13 @@ ul {
 }
 
 .menu-item a:hover {
-  background-color: var(--secondary);
-  color: var(--secondary-foreground);
+  background-color: var(--sidebar-hover-bg); /* Fondo más oscuro al pasar el mouse */
+  color: var(--sidebar-foreground); /* Mantener texto claro */
 }
 
 .menu-item.active a {
-  background-color: var(--secondary);
-  color: var(--secondary-foreground);
+  background-color: var(--sidebar-hover-bg); /* Fondo más oscuro para el activo */
+  color: var(--sidebar-foreground); /* Mantener texto claro */
   font-weight: 500;
 }
 

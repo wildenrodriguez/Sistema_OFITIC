@@ -3,7 +3,7 @@
   <div class="sidebar-header">
     <h1 class="logo">
       <img src="assets/img/logo.jpg" style="width: 1.5em; border-radius: 2px" alt="Logo" class="img-logo">
-      <span class="ms-2">OFITIC</span>
+      <span class="ms-2" id="logo-text">OFITIC</span>
     </h1>
     <button id="collapse-btn" class="collapse-btn">
       <i class="fas fa-chevron-left"></i>
