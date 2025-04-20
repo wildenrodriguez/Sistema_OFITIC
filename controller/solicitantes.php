@@ -8,8 +8,13 @@ ob_start();
 
 require_once "model/usuario.php";
 $usuario = new Usuario();
-if (!$usuario->validar_entrada($_SESSION['user']['rol'], ["Super usuario", "Administrador"]))
-    echo '<script>window.location="?page=404"</script>';
+if(!$usuario->Transaccion([
+    'peticion' => 'permiso',
+    'user' => $_SESSION['user']['rol'],
+    'rol' => ["Super usuario", "Administrador"]
+])) {
+    //echo '<script>window.location="?page=404"</script>';
+}
 
 if (is_file("view/" . $page . ".php")) {
 
