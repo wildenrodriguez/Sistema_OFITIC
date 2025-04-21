@@ -1,7 +1,7 @@
 <?php
 ob_start();
 if (is_file("view/$page.php")) {
-	$peticon = [];
+	$peticion = [];
 	$titulo = "Login";
 	$css = [];
 
@@ -30,6 +30,7 @@ if (is_file("view/$page.php")) {
 				ob_clean();
 				echo '<script>window.location="?page=users-profile"</script>';
 				exit();
+
 			}
 			ob_clean();
 			echo '<script>window.location="?page=home"</script>';

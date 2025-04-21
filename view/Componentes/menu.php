@@ -35,7 +35,7 @@
           </li>
         <?php } ?>
 
-        <?php if ($datos["rol"] == "Super usuario" or $datos["rol"] == "Administrador") { ?>
+        <?php if ($datos["rol"] == "Super usuario" or $datos["rol"] == "ADMINISTRADOR") { ?>
 
           <li class="menu-item <?php echo ($page == "solicitudes") ? "active" : "" ?>">
             <a href="?page=solicitudes">

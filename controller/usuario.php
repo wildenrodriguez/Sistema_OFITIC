@@ -6,17 +6,16 @@
 	ob_start();
 
 	require_once "model/usuario.php";
-	print_r($_SESSION);
 	$peticion = [];
 	$peticion['peticion'] = "permiso";
 	$peticion['user'] = $_SESSION['user']['rol'];
-	$peticion['rol'] = 'Super usuario';
+	$peticion['rol'] = 'ADMINISTRADOR';
 	$usuario = new Usuario();
-	if(!$usuario->Transaccion($peticion));
-		echo'<script>window.location="?page=404"</script>';
+	$permiso = $usuario->Transaccion($peticion);
+
+	if($permiso == 0){ echo'<script>window.location="?page=404"</script>';}
 
 	if (is_file("view/".$page.".php")) {
-
 		// Estilos de Pagina
 		$titulo = "Usuarios";
 		$css = ["alert"];
@@ -62,10 +61,11 @@
 		}
 
 		$registros=[];
-		$info=$usuario->ConsultaUsuarios();
-		$cabecera = array('Cedula',"Nombre","Rol","Tipo","Contraseña");
+		$peticion['peticion'] = "consultar";
+		$info = $usuario->Transaccion($peticion);
+		$cabecera = array('Cedula' => "Cedula","Nombre","Rol","Tipo","Contraseña");
 		foreach ($info as $id => $user) {
-				$registros[$id]=[$user["Cedula"],$user["Nombre"],$user["Rol"],$user["Tipo"],$user["Clave"]];
+				$registros[$id] = $user;
 		}
 		$btn_color = "danger";
 		$btn_icon = "trash3";
