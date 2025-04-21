@@ -188,8 +188,6 @@ class Usuario extends Conexion
                 usuario.cedula,
                 usuario.nombres,
                 usuario.apellidos,
-                usuario.clave,
-                usuario.id_rol,
                 rol.nombre as rol,
                 tecnico.tipo AS tipo_c,
                 tipo_servicio.nombre AS Tipo

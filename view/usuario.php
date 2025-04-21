@@ -33,7 +33,7 @@
             <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#crear_usuario">Crear usuario</button>
 
             <div class="table-responsive">
-                <table class="table" id="tabla">
+                <table class="table display" id="tabla1">
                     <thead>
                         <tr>
                             <?php foreach ($cabecera as $campo) echo "<th scope='col'>$campo</th>"; ?>
@@ -68,7 +68,7 @@
   </main><!-- End #main -->
 
   <?php require_once "Componentes/footer.php"; ?>
-  <script src="js/usuarios.js"></script>
+  <script defer src="assets/js/usuarios.js"></script>
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 

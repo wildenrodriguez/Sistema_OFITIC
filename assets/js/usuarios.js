@@ -1,4 +1,4 @@
-const $rol = $('#rol');
+/* const $rol = $('#rol');
 const $tipo = $('#tipo');
 
 $('#rol').on('change', () => {
@@ -10,7 +10,7 @@ $('#rol').on('change', () => {
         console.log("1");
       }
 
-});
+}); */
 
 $(document).ready(function(){
 
@@ -26,4 +26,5 @@ $(document).ready(function(){
         }
     })
 
+    $('#tabla1').DataTable(); // <-Iniciar la tabla usando JQuery
 });  

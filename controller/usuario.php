@@ -63,7 +63,8 @@
 		$registros=[];
 		$peticion['peticion'] = "consultar";
 		$info = $usuario->Transaccion($peticion);
-		$cabecera = array('Cedula' => "Cedula","Nombre","Rol","Tipo","Contraseña");
+
+		$cabecera = array("Cedula","Nombre","Apellido","Rol","Técnico", "Servicio"); //Cabecera de la Tabla
 		foreach ($info as $id => $user) {
 				$registros[$id] = $user;
 		}
