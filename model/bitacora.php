@@ -60,7 +60,7 @@ class Bitacora extends Conexion
         } catch (PDOException $e) {
             $dato['error'] = $e->getMessage();
         }
-
+        $this->Cerrar_Conexion($none, $stm);
         return $dato;
     }
 
@@ -90,6 +90,7 @@ class Bitacora extends Conexion
         $dato['resultado'] = "error";
         $dato['mensaje'] = "Registro duplicado";
     }
+        $this->Cerrar_Conexion($this->conex, $stm);
         return $dato;
     }
 
@@ -106,7 +107,7 @@ class Bitacora extends Conexion
         } catch (PDOException $e) {
             $dato['error'] = $e->getMessage();
         }
-
+        $this->Cerrar_Conexion($this->conex, $stm);
         return $dato;
     }
 
@@ -122,8 +123,6 @@ class Bitacora extends Conexion
 
             default:
                 return "Operacion: ".$peticion['peticion']." no valida";
-
-
 
         }
 

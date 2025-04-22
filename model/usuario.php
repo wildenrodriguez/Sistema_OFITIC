@@ -109,53 +109,61 @@ class Usuario extends Conexion
     {
         $con = $this->conex->prepare("SELECT * FROM usuario WHERE cedula=?");
         $con->execute([$this->cedula]);
-        return $con->fetch();
+
+        $dato = $con->fetch();
+        $this->Cerrar_Conexion($none, $con);
+
+        return $dato;
     }
 
     private function IniciarSesion()
     {
+        $dato = [];
         $exist = $this->Validar();
 
         if ($exist != NULL) {
             if (password_verify($this->clave, $exist['clave'])) {
-                return true;
+                $dato = true;
             } else {
-                return false;
+                $dato = false;
             }
         } else {
-            return false;
+            $dato = false;
         }
+        $this->Cerrar_Conexion($this->conex, $none);
+        return $dato;
     }
 
     private function PerfilUsuario()
-    {
-        $query = "  SELECT 
-                    usuario.nombre_usuario,
-                    usuario.cedula,
-                    usuario.nombres,
-                    usuario.apellidos,
-                    usuario.id_rol,
-                    usuario.telefono,
-                    usuario.correo,
-                    usuario.clave,
-                    unidad.nombre AS unidad,
-                    dependencia.nombre AS dependencia,
-                    tecnico.tipo AS especialidad,
-                    rol.nombre as rol
+    {   
+        $query = "SELECT
+                usuario.nombre_usuario,
+                usuario.cedula,
+                usuario.nombres,
+                usuario.apellidos,
+                usuario.id_rol,
+                usuario.telefono,
+                usuario.correo,
+                usuario.clave,
+                unidad.nombre AS unidad,
+                dependencia.nombre AS dependencia,
+                tecnico.tipo AS especialidad,
+                rol.nombre as rol
                 FROM usuario
                 INNER JOIN empleado ON usuario.cedula = empleado.cedula
                 INNER JOIN unidad ON empleado.cod_unidad = unidad.codigo
                 INNER JOIN dependencia ON empleado.cod_dependencia = dependencia.codigo
                 INNER JOIN rol ON usuario.id_rol = rol.id_rol
                 LEFT JOIN tecnico ON usuario.cedula = tecnico.cedula
-                WHERE usuario.cedula = :cedula
-            ";
+                WHERE usuario.cedula = :cedula";
 
         $con = $this->conex->prepare($query);
         $con->bindValue(':cedula', $this->cedula);
         $con->execute();
+        $datos = $con->fetch(PDO::FETCH_ASSOC);
+        $this->Cerrar_Conexion($this->conex, $con);
 
-        return $con->fetch(PDO::FETCH_ASSOC);
+        return $datos;
     }
 
     private function Eliminar()
@@ -171,16 +179,18 @@ class Usuario extends Conexion
 
     private function ActualizarClave()
     {
-
         $query = "UPDATE usuario SET clave=? WHERE cedula = ?";
 
         $registro = $this->conex->prepare($query);
 
         if ($registro->execute([$this->clave, $this->cedula])) {
-            return true;
+            $dato = true;
         } else {
-            return false;
+            $dato = false;
         }
+        $this->Cerrar_Conexion($this->conex, $registro);
+
+        return $dato;
     }
 
     private function ConsultaUsuarios()
@@ -197,13 +207,17 @@ class Usuario extends Conexion
             LEFT JOIN tecnico ON tecnico.cedula = empleado.cedula
             LEFT JOIN tipo_servicio ON tecnico.tipo = tipo_servicio.codigo
             INNER JOIN rol ON usuario.id_rol = rol.id_rol
-            ORDER BY usuario.cedula = :cedula";  // Añade esta condición
+            ORDER BY usuario.cedula = :cedula";  
 
         $records = $this->conex->prepare($query);
         $records->bindValue(':cedula', $this->cedula);
         $records->execute();
 
-        return $records->fetchAll(PDO::FETCH_ASSOC);  // Cambia a fetch para un solo registro
+        $datos = $records->fetchAll(PDO::FETCH_ASSOC); 
+
+        $this->Cerrar_Conexion($this->conex, $records);
+
+        return $datos;
     }
 
     public function Transaccion($peticion)
