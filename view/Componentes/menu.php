@@ -272,15 +272,15 @@
                   <ul>
                     <li class="menu-item <?php echo ($page == "users-profile") ? "active" : "" ?>">
                       <a href="?page=users-profile">
-                        <i class="fas fa-question-circle"></i>
-                        <span class="menu-text">Perfil</span>
+                        <i class="menu-text-p fas fa-question-circle"></i>
+                        <span class="menu-text-p">Perfil</span>
                       </a>
                     </li>
 
                     <li class="menu-item">
                       <a href="?page=closet">
-                        <i class="fa-solid fa-arrow-right-to-bracket"></i>
-                        <span class="menu-text">Cerrar Sesión</span>
+                        <i class="menu-text-p fa-solid fa-arrow-right-to-bracket"></i>
+                        <span class="menu-text-p">Cerrar Sesión</span>
                       </a>
                     </li>
 

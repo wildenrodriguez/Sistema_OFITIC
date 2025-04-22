@@ -210,6 +210,14 @@ ul {
   text-align: center;
 }
 
+.menu-text-p {
+  color: #000; /* Negro para modo claro */
+}
+
+.dark .menu-text-p {
+  color: var(--sidebar-foreground); /* Texto claro para modo oscuro */
+}
+
 .sidebar.collapsed .menu-text {
   display: none;
 }
