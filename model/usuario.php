@@ -130,6 +130,7 @@ class Usuario extends Conexion
     private function PerfilUsuario()
     {
         $query = "  SELECT 
+                    usuario.nombre_usuario,
                     usuario.cedula,
                     usuario.nombres,
                     usuario.apellidos,

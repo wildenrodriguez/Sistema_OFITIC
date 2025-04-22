@@ -1,6 +1,7 @@
 <?php
 require_once "model/conexion.php";
-class Bitacora extends Conexion{
+class Bitacora extends Conexion
+{
 
     private $id;
     private $usuario;
@@ -17,23 +18,27 @@ class Bitacora extends Conexion{
 
     public function set_id($id){
         $this->id = $id;
-    };
+    }
 
     public function set_usuario($usuario){
         $this->usuario = $usuario;
-    };
+    }
+
     public function set_modulo($modulo){
         $this->modulo = $modulo;
-    };
+    }
+
     public function set_accion($accion){
         $this->accion = $accion;
-    };
+    }
+
     public function set_fecha($fecha){
         $this->fecha = $fecha;
-    };
+    }
+
     public function set_hora($hora){
         $this->hora = $hora;
-    };
+    }
 
     private function Validar(){
         $dato = [];
@@ -53,7 +58,7 @@ class Bitacora extends Conexion{
             }
             
         } catch (PDOException $e) {
-            $dato['error'] = $e->getMenssage();
+            $dato['error'] = $e->getMessage();
         }
 
         return $dato;
@@ -61,10 +66,9 @@ class Bitacora extends Conexion{
 
     private function Registrar(){
         $dato = [];
-        $bool = $this->Validar()
+        $bool = $this->Validar();
 
         if($bool['bool'] == 0){
-
         try {
             $query = "INSERT INTO bitacora (id, usuario, modulo, accion, fecha, hora)
             VALUES (NULL, :usuario, :modulo, :accion, :fecha, :hora)";
@@ -80,14 +84,14 @@ class Bitacora extends Conexion{
             $dato['mensaje'] = "Se registro con éxito";
         } catch (PDOException $e) {
             $dato['resultado'] = "error";
-            $dato['mensaje'] = $e->getMenssage();
+            $dato['mensaje'] = $e->getMessage();
         }
     } else {
         $dato['resultado'] = "error";
         $dato['mensaje'] = "Registro duplicado";
     }
         return $dato;
-    };
+    }
 
 
     private function Consultar(){
@@ -98,9 +102,9 @@ class Bitacora extends Conexion{
             
             $stm = $this->conex->prepare($query);
             $stm->execute();
-            $dato['arreglo'] = $stm->fetchAll(PDO::FETCH_ASSOC)
+            $dato['arreglo'] = $stm->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $dato['error'] = $e->getMenssage();
+            $dato['error'] = $e->getMessage();
         }
 
         return $dato;
@@ -125,11 +129,4 @@ class Bitacora extends Conexion{
 
     }
 }
-
-
-
-
-
-
-
 ?>
