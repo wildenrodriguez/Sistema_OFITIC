@@ -124,22 +124,21 @@ class Hoja extends Conexion
             s.fecha AS fecha,
             s.estatus AS estatus_s,
             tip.nombre AS tipo_s
-          FROM hoja_servicio hoja
-          LEFT JOIN solicitud AS s ON s.nro_solicitud = hoja.nro_solicitud
-          LEFT JOIN tipo_servicio AS tip ON tip.codigo = hoja.tipo_servicio
-          LEFT JOIN empleado AS sol ON sol.cedula = s.cedula_solicitante
-          LEFT JOIN empleado AS tec ON tec.cedula = hoja.cedula_tecnico
-          LEFT JOIN unidad AS u ON sol.cod_unidad = u.codigo
-          LEFT JOIN dependencia AS d ON sol.cod_dependencia = d.codigo
-          LEFT JOIN equipo AS equi ON s.id_equipo = equi.id_equipo
-          LEFT JOIN marca AS mar ON equi.marca = mar.codigo
+            FROM hoja_servicio hoja
+            LEFT JOIN solicitud AS s ON s.nro_solicitud = hoja.nro_solicitud
+            LEFT JOIN tipo_servicio AS tip ON tip.codigo = hoja.tipo_servicio
+            LEFT JOIN empleado AS sol ON sol.cedula = s.cedula_solicitante
+            LEFT JOIN empleado AS tec ON tec.cedula = hoja.cedula_tecnico
+            LEFT JOIN unidad AS u ON sol.cod_unidad = u.codigo
+            LEFT JOIN dependencia AS d ON sol.cod_dependencia = d.codigo
+            LEFT JOIN equipo AS equi ON s.id_equipo = equi.id_equipo
+            LEFT JOIN marca AS mar ON equi.marca = mar.codigo
             WHERE cod_hoja=:hoja");
         $con->bindValue(':hoja', $this->data["cod_hoja"]);
         $con->execute();
         $datos = $con->fetch();
         $this->Cerrar_Conexion($this->conex, $con);
         return $datos;
-
     }
 
     private function ConsultarDetalles()
@@ -241,7 +240,6 @@ class Hoja extends Conexion
         $records->execute();
 
         return $records->fetchAll(PDO::FETCH_ASSOC);
-
     }
 
     private function servicios_t()
@@ -256,20 +254,19 @@ class Hoja extends Conexion
             equi.nro_bien AS nro_bien,
             s.motivo AS motivo,
             s.fecha AS fecha
-          FROM hoja_servicio hoja
-          LEFT JOIN solicitud AS s ON s.nro_solicitud = hoja.nro_solicitud
-          LEFT JOIN empleado AS sol ON sol.cedula = s.cedula_solicitante
-          LEFT JOIN equipo AS equi ON s.id_equipo = equi.id_equipo
-          LEFT JOIN marca AS mar ON equi.marca = mar.codigo
-          WHERE hoja.tipo_servicio = :tipo
-          ORDER BY fecha DESC;";
+            FROM hoja_servicio hoja
+            LEFT JOIN solicitud AS s ON s.nro_solicitud = hoja.nro_solicitud
+            LEFT JOIN empleado AS sol ON sol.cedula = s.cedula_solicitante
+            LEFT JOIN equipo AS equi ON s.id_equipo = equi.id_equipo
+            LEFT JOIN marca AS mar ON equi.marca = mar.codigo
+            WHERE hoja.tipo_servicio = :tipo
+            ORDER BY fecha DESC;";
 
         $consult = $this->conex->prepare($query);
         $consult->bindParam(':tipo', $this->data["tipo_servicio"]);
         $consult->execute();
 
         return $consult->fetchAll(PDO::FETCH_ASSOC);
-
     }
 
     private function servicios_s()
@@ -285,19 +282,18 @@ class Hoja extends Conexion
             s.motivo AS motivo,
             s.fecha AS fecha,
             tip.nombre AS tipo_s
-          FROM hoja_servicio hoja
-          LEFT JOIN solicitud AS s ON s.nro_solicitud = hoja.nro_solicitud
-          LEFT JOIN tipo_servicio AS tip ON tip.codigo = hoja.tipo_servicio
-          LEFT JOIN empleado AS sol ON sol.cedula = s.cedula_solicitante
-          LEFT JOIN equipo AS equi ON s.id_equipo = equi.id_equipo
-          LEFT JOIN marca AS mar ON equi.marca = mar.codigo
-          ORDER BY fecha DESC;";
+            FROM hoja_servicio hoja
+            LEFT JOIN solicitud AS s ON s.nro_solicitud = hoja.nro_solicitud
+            LEFT JOIN tipo_servicio AS tip ON tip.codigo = hoja.tipo_servicio
+            LEFT JOIN empleado AS sol ON sol.cedula = s.cedula_solicitante
+            LEFT JOIN equipo AS equi ON s.id_equipo = equi.id_equipo
+            LEFT JOIN marca AS mar ON equi.marca = mar.codigo
+            ORDER BY fecha DESC;";
 
         $consulta = $this->conex->prepare($query);
         $consulta->execute();
 
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
-
     }
 
     public function Transaccion($peticion)
@@ -327,12 +323,14 @@ class Hoja extends Conexion
             case "eliminar":
                 return $this->Finalizar();
 
+            case "listar":
+                return $this->ListarHojas();
+
+            case "Datos":
+                return $this->DatosHoja();
+
             default:
-                return "Operación".$peticion." No valida";
-                ;
+                return "Operación" . $peticion . " No valida";;
         }
     }
-
-
 }
-?>
