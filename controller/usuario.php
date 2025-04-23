@@ -13,7 +13,7 @@
 	$usuario = new Usuario();
 	$permiso = $usuario->Transaccion($peticion);
 
-	if($permiso == 0){ echo'<script>window.location="?page=404"</script>';}
+	//if($permiso == 0){ echo'<script>window.location="?page=404"</script>';}
 
 	if (is_file("view/".$page.".php")) {
 		// Estilos de Pagina

@@ -22,8 +22,7 @@
 
 		require_once "model/solicitud.php";
 		$solicitud = new Solicitud();
-		$solicitud->set_cedula_solicitante($_SESSION['user']['cedula']);
-		var_dump($_SESSION);
+		$solicitud->set_cedula_solicitante($_SESSION['user']['cedula']);		
 
 		$peticion["peticion"] = "solicitud_usuario";
 		$servicios = $solicitud->Transaccion($peticion);
@@ -38,7 +37,6 @@
 		
 		$datos = $_SESSION['user'];
 		$datos = $datos + $usuario->Transaccion(['peticion' => 'perfil']);
-		var_dump($datos);
 		if(isset($_POST["solicitud"]) and $_POST["motivo"]!=NULL){	
 			require_once "model/solicitud.php";
             $solicitud = new Solicitud();

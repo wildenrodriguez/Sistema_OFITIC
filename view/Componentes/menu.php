@@ -55,6 +55,12 @@
               <span class="menu-text">Gestión de solicitantes</span>
             </a>
           </li>
+          <li class="menu-item <?php echo ($page == "usuario") ? "active" : "" ?>">
+            <a href="?page=usuario">
+              <i class="fa-solid fa-address-book"></i>
+              <span class="menu-text">Gestión de usuario</span>
+            </a>
+          </li>
 
         <?php } ?>
 
