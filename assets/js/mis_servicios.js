@@ -63,14 +63,14 @@ function enviaAjax(datos) {
 				var lee = JSON.parse(respuesta);
 				if (lee.resultado == "registrar") {
 					$("#modal1").modal("hide");
-					mensajes("success", 10000, "En envió la solicitud exitosamente", null);
+					mensajes("success", 10000, "Se envió la solicitud exitosamente", null);
 					consultar();
 
 				} else if (lee.resultado == "consultar") {
 					crearDataTable(lee.datos);
 
 				} else if (lee.resultado == "error") {
-
+					mensajes("error", null, lee.mensaje, null);
 				}
 			} catch (e) {
 				mensajes("error", null, "Error en JSON Tipo: " + e.name + "\n" +
@@ -130,8 +130,6 @@ function crearDataTable(arreglo) {
 			]
 		});
 	}
-
-
 }
 
 

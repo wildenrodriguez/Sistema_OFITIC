@@ -32,9 +32,9 @@
       }
     </script>
     <script src="vendor/components/jquery/jquery.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/sweetalert2.js"></script>
-    <script src="assets/js/main.js"></script>
+    <script defer src="assets/js/main.js"></script>
+    <script defer src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/utils.js"></script>
+    <script src="assets/js/sweetalert2.js"></script>
     <script src="vendor/datatables.net/datatables.net/js/dataTables.js"></script>
   </head>

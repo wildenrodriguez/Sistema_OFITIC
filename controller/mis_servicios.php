@@ -23,12 +23,13 @@ if (is_file("view/mis_servicios.php")) {
 	$origen = "";
 
 	$usuario = new Usuario();
+	$solicitud = new Solicitud();
+
 	$usuario->set_cedula($_SESSION['user']['cedula']);
 	$datos = $_SESSION['user'];
 	$datos = $datos + $usuario->Transaccion(['peticion' => 'perfil']);
 
 	if (isset($_POST['consultar'])) {
-		$solicitud = new Solicitud();
 		$solicitud->set_cedula_solicitante($_SESSION['user']['cedula']);
 		$peticion["peticion"] = "solicitud_usuario";
 		echo json_encode($solicitud->Transaccion($peticion));
@@ -36,7 +37,6 @@ if (is_file("view/mis_servicios.php")) {
 	}
 
 	if (isset($_POST["solicitud"]) and $_POST["motivo"] != NULL) {
-		$solicitud = new Solicitud();
 		$solicitud->set_cedula_solicitante($datos["cedula"]);
 		$solicitud->set_motivo($_POST["motivo"]);
 		$peticion["peticion"] = "registrar";

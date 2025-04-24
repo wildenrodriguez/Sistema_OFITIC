@@ -26,7 +26,7 @@
           </a>
         </li>
 
-        <?php if ($datos["rol"] == "Super usuario" or $datos["rol"] == "Técnico") { ?>
+        <?php if ($datos["rol"] == "Super usuario" or $datos["rol"] == "ADMINISTRADOR") { ?>
           <li class="menu-item <?php echo ($page == "servicios") ? "active" : "" ?>">
             <a href="?page=servicios">
               <i class="fa-solid fa-clipboard-check"></i>
