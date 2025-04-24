@@ -1,120 +1,147 @@
-$(document).ready(function(){
+function consultar() {
+	var peticion = new FormData();
+	peticion.append('consultar', 'consultar');
+	enviaAjax(peticion);
+}
 
-	$(".registrar").prop("disabled", true);
+$(document).ready(function () {
+	consultar();
 
-	$("#falla").on("keypress",function(e){
+	$("#motivo").on("keypress", function (e) {
 		validarKeyPress(/^[0-9 a-zA-ZáéíóúüñÑçÇ -.\b]*$/, e);
 	});
-	$("#falla").on("keyup", function () {
-      validarKeyUp(
-        /^[0-9 a-zA-ZáéíóúüñÑçÇ -.]{3,200}$/,
-        $(this),
-        $("#sfalla"),
-        "El motivo debe tener entre 3 y 200 caracteres"
-      ); 
-	  habilitarBotonRegistrar1();
-    });	
-
-	
-	
-	//Manejador de eventos para los botones
-	//Se muestra el de incluir, agregar el resto
-	$("#solicitar").on("click",function(){
-		if(validarenvio()){
-			var datos = new FormData();
-			datos.append('solicitud','');
-			datos.append('motivo',$("#falla").val());
-			enviaAjax(datos);
-		}
+	$("#motivo").on("keyup", function () {
+		validarKeyUp(
+			/^[0-9 a-zA-ZáéíóúüñÑçÇ -.]{3,30}$/,
+			$(this),
+			$("#smotivo"),
+			"El motivo debe tener entre 3 y 30 caracteres"
+		);
 	});
-	
-	
-	
+
+	$("#solicitar").on("click", function () {
+		switch ($(this).text()) {
+
+			case "Enviar":
+				if (validarenvio()) {
+					var datos = new FormData();
+					datos.append('solicitud', '');
+					datos.append('motivo', $("#motivo").val());
+					enviaAjax(datos);
+				}
+
+				break;
+
+			default:
+				mensajes("question", 10000, "Error", "Acción desconocida: " + $(this).text());;
+		}
+
+	});
+
+	$("#btn-solicitud").on("click", function () { //<---- Evento del Boton Registrar
+		limpia();
+		$("#modalTitleId").text("Crear Solicitud");
+		$("#solicitar").text("Enviar");
+		$("#modal1").modal("show");
+	}); //<----Fin Evento del Boton Registrar
 });
 
 function enviaAjax(datos) {
 	$.ajax({
-	  async: true,
-	  url: "",
-	  type: "POST",
-	  dataType: "json",
-	  contentType: false,
-	  data: datos,
-	  processData: false,
-	  cache: false,
-	  beforeSend: function () {},
-	  timeout: 10000, //tiempo maximo de espera por la respuesta del servidor
-	  success: function (respuesta) {
-		console.log(respuesta);
-		try {
-		  var data = JSON.parse(respuesta);
-		  var tr = $(document.createElement("tr"));
-		  // Agrega el HTML al elemento tr
-		  tr.html(data);
-		  // Agrega el elemento tr a la tabla
-		  $("#tabla").append(tr);
-		} catch (e) {
-		  alert("Error en JSON " + e.name);
-		}
-	  },
-	  error: function (request, status, err) {
-		if (status == "timeout") {
-		  muestraMensaje("Servidor ocupado, intente de nuevo");
-		} else {
-		  muestraMensaje("ERROR: <br/>" + request + status + err);
-		}
-	  },
-	  complete: function () {},
-	});
-  }
-	
+		async: true,
+		url: "",
+		type: "POST",
+		contentType: false,
+		data: datos,
+		processData: false,
+		cache: false,
+		beforeSend: function () { },
+		timeout: 10000, //tiempo maximo de espera por la respuesta del servidor
+		success: function (respuesta) {
+			console.log(respuesta);
+			try {
+				var lee = JSON.parse(respuesta);
+				if (lee.resultado == "registrar") {
+					$("#modal1").modal("hide");
+					mensajes("success", 10000, "En envió la solicitud exitosamente", null);
+					consultar();
 
-function validarenvio(){
-//OJO TAREA, AGREGAR LA VALIDACION DEL nro	
-	if(validarKeyUp(
-        /^[0-9 a-zA-ZáéíóúüñÑçÇ -.]{3,30}$/,
-        $("#falla"),
-        $("#sfalla"),
-        "El motivo debe de tener 3 letras minimo"
-      )==0)
-	  {
-		  alert("Verifique el motivo");
-		  return false;
-	} 
-	
-	
+				} else if (lee.resultado == "consultar") {
+					crearDataTable(lee.datos);
+
+				} else if (lee.resultado == "error") {
+
+				}
+			} catch (e) {
+				mensajes("error", null, "Error en JSON Tipo: " + e.name + "\n" +
+					"Mensaje: " + e.message + "\n" +
+					"Posición: " + e.lineNumber + ":" + e.columnNumber + "\n" +
+					"Stack: " + e.stack, null);
+			}
+		},
+		error: function (request, status, err) {
+			if (status == "timeout") {
+				mensajes("error", null, "Servidor ocupado", "Intente de nuevo");
+			} else {
+				mensajes("error", null, "Ocurrió un error", "ERROR: <br/>" + request + status + err);
+			}
+		},
+		complete: function () { },
+	});
+}
+
+
+function validarenvio() {
+	//OJO TAREA, AGREGAR LA VALIDACION DEL nro	
+	if (validarKeyUp(/^[0-9 a-zA-ZáéíóúüñÑçÇ -.]{3,30}$/, $("#motivo"),
+		$("#smotivo"), "El motivo debe de tener 3 letras minimo") == 0) {
+		mensajes("error", 10000, "Verifica", "El motivo debe tener entre 3 y 30 caracteres");
+		return false;
+	}
 	return true;
 }
 
+var tabla;
 
-function validarKeyPress(er, e) {
-  key = e.keyCode;
-  tecla = String.fromCharCode(key);
-  a = er.test(tecla);
-  if (!a) {
-    e.preventDefault();
-  }
+function crearDataTable(arreglo) {
+	console.log(arreglo);
+	if (tabla == null) {
+		tabla = $('#tabla1').DataTable({
+			data: arreglo,
+			columns: [
+				{ data: 'ID' },
+				{ data: 'Motivo' },
+				{ data: 'Inicio' },
+				{ data: 'Estatus' },
+				{ data: 'Resultado' }
+			]
+		});
+	} else {
+		tabla.destroy();
+
+		tabla = $('#tabla1').DataTable({
+			data: arreglo,
+			columns: [
+				{ data: 'ID' },
+				{ data: 'Motivo' },
+				{ data: 'Inicio' },
+				{ data: 'Estatus' },
+				{ data: 'Resultado' }
+			]
+		});
+	}
+
+
 }
 
-function validarKeyUp(er, etiqueta, etiquetamensaje, mensaje) {
-	a = er.test(etiqueta.val());
-	if (a) {
-	  // Si el contenido es válido, verificamos la longitud
-	  if (etiqueta.val().length >= 3 && etiqueta.val().length <= 200) {
-		etiquetamensaje.text("");
-		return 1;
-	  } else {
-		// La longitud no está dentro del rango permitido
-		etiquetamensaje.text("El motivo debe tener entre 3 y 200 caracteres");
-		return 0;
-	  }
-	} else {
-	  // El contenido no cumple con la expresión regular
-	  etiquetamensaje.text(mensaje);
-	  return 0;
-	}
-  }
 
+function limpia() {
+	$("#motivo").last().removeClass("is-valid");
+	$("#motivo").last().removeClass("is-invalid");
+	$("#motivo").val("");
+}
+
+/*
 function habilitarBotonRegistrar1() {
-	$(".registrar").prop("disabled", $("#falla").val().trim() === "" || $("#falla").val().length <= 2 );
-  }
+	$(".registrar").prop("disabled", $("#motivo").val().trim() === "" || $("#motivo").val().length <= 2 );
+  } */

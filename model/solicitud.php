@@ -80,7 +80,7 @@ class Solicitud extends Conexion
         $query = "SELECT * FROM orden_solicitud WHERE id=?";
 
         $con = $this->conex->prepare($query);
-        
+
         $con->execute([$id]);
         $datos = $con->fetchAll(PDO::FETCH_ASSOC);
         $this->Cerrar_Conexion($none, $con);
@@ -90,18 +90,26 @@ class Solicitud extends Conexion
 
     private function EliminarSolicitud()
     {
+        $datos = [];
 
-        $sql = "DELETE FROM solicitud WHERE nro_solicitud=?";
-        $eliminar = $this->conex->prepare($sql);
-        
-        $bool = $eliminar->execute([$this->data["nro_solicitud"]]);
-        $this->Cerrar_Conexion($this->conex, $eliminar);
-        if ($bool > 0) {
-            return true;
-        } else {
-            return NULL;
+        try {
+            $sql = "DELETE FROM solicitud WHERE nro_solicitud=?";
+            $stm = $this->conex->prepare($sql);
+
+            $bool = $stm->execute([$this->data["nro_solicitud"]]);
+            $datos['resultado'] = 'eliminar';
+            if ($bool > 0) {
+                $datos['mensaje'] = 'Se eliminó exitosamente';
+            } else {
+                $datos['mensaje'] = 'No se logró la eliminación';
+            }
+        } catch (PDOException $e) {
+            $datos['resultado'] = 'error';
+            $datos['mensaje'] = $e->getMessage();
         }
 
+        $this->Cerrar_Conexion($this->conex, $stm);
+        return $datos;
     }
 
     private function Solicitar()
@@ -113,17 +121,17 @@ class Solicitud extends Conexion
         $records = $this->conex->prepare($query);
         $records->bindParam(':cedula', $this->data["cedula_solicitante"]);
         $records->bindParam(':motivo', $this->data["motivo"]);
-        
+
         $records->execute();
         $resultado = $records->fetch();
-        
+
         if ($resultado["total"] > 0) {
         } else {
             $sql = "INSERT INTO solicitud(cedula_solicitante,motivo,fecha) VALUES (:solicitante,:motivo,current_timestamp())";
             $solicitar = $this->conex->prepare($sql);
             $solicitar->bindValue(':solicitante', $this->data["cedula_solicitante"]);
             $solicitar->bindParam(':motivo', $this->data["motivo"]);
-            
+
             $solicitar->execute();
             $this->Cerrar_Conexion($none, $solicitar);
         }
@@ -138,21 +146,30 @@ class Solicitud extends Conexion
 
     private function CrearSolicitud()
     {
-        $sql = "INSERT INTO `solicitud`(`cedula_solicitante`,`motivo`,`id_equipo`,estatus,fecha)
-        VALUES (:solicitante,:motivo,:equipo,'En Proceso',current_timestamp())";
+        $datos = [];
 
-        $solicitar = $this->conex->prepare($sql);
-        $solicitar->bindValue(':solicitante', $this->data["cedula_solicitante"]);
-        $solicitar->bindParam(':equipo', $this->data["id_equipo"]);
-        $solicitar->bindParam(':motivo', $this->data["motivo"]);
-        
-        $solicitar->execute();
-        $this->Cerrar_Conexion($none, $solicitar);
+        try {
+            $sql = "INSERT INTO `solicitud`(`cedula_solicitante`,`motivo`,`id_equipo`,estatus,fecha)
+            VALUES (:solicitante,:motivo,:equipo,'En Proceso',current_timestamp())";
 
-        $nro = $this->conex->prepare("SELECT * FROM solicitud ORDER BY nro_solicitud DESC LIMIT 1;");
-        
-        $nro->execute();
-        $datos = $nro->fetchAll(PDO::FETCH_ASSOC)[0]["nro_solicitud"];
+            $solicitar = $this->conex->prepare($sql);
+            $solicitar->bindValue(':solicitante', $this->data["cedula_solicitante"]);
+            $solicitar->bindParam(':equipo', $this->data["id_equipo"]);
+            $solicitar->bindParam(':motivo', $this->data["motivo"]);
+
+            $solicitar->execute();
+            $this->Cerrar_Conexion($none, $solicitar);
+
+            $nro = $this->conex->prepare("SELECT * FROM solicitud ORDER BY nro_solicitud DESC LIMIT 1;");
+            $nro->execute();
+
+            $datos['resultado'] = 'registrar';
+            $datos['datos'] = $nro->fetchAll(PDO::FETCH_ASSOC)[0]["nro_solicitud"];
+        } catch (PDOException $e) {
+            $datos['resultado'] = 'error';
+            $datos['mensaje'] = $e->getMessage();
+        }
+
         $this->Cerrar_Conexion($this->conex, $nro);
         return $datos;
     }
@@ -200,7 +217,9 @@ class Solicitud extends Conexion
 
     private function SolicitudUsuario()
     {
-        $query = "SELECT o.nro_solicitud AS ID, s.nombre AS Tecnico, o.motivo AS Motivo, e.tipo AS Equipo, o.fecha AS Inicio, o.estatus AS Estatus, o.resultado AS Resultado
+        $datos = [];
+        try {
+            $query = "SELECT o.nro_solicitud AS ID, s.nombre AS Tecnico, o.motivo AS Motivo, e.tipo AS Equipo, o.fecha AS Inicio, o.estatus AS Estatus, o.resultado AS Resultado
             FROM solicitud AS o
                LEFT JOIN
                empleado AS s
@@ -210,11 +229,18 @@ class Solicitud extends Conexion
                ON o.id_equipo = e.id_equipo
                WHERE o.cedula_solicitante = :cedula";
 
-        $records = $this->conex->prepare($query);
-        $records->bindParam(':cedula', $this->data["cedula_solicitante"]);
-        $records->execute();
-        $datos = $records->fetchAll(PDO::FETCH_ASSOC);
-        $this->Cerrar_Conexion($this->conex, $records);
+            $stm = $this->conex->prepare($query);
+            $stm->bindParam(':cedula', $this->data["cedula_solicitante"]);
+            $stm->execute();
+            $datos['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
+            $datos['resultado'] = 'consultar';
+            
+        } catch (PDOException $e) {
+            $datos['resultado'] = 'error';
+            $datos['mensaje'] = $e->getMessage();
+        }
+        
+        $this->Cerrar_Conexion($this->conex, $stm);
         return $datos;
     }
 

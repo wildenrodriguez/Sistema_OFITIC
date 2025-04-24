@@ -6,12 +6,14 @@ if (!$_SESSION) {
 
 ob_start();
 if (is_file("view/mis_servicios.php")) {
+	require_once "model/usuario.php";
+	require_once "model/solicitud.php";
+	require_once "model/hoja_servicio.php";
+
 	$peticion = [];
 
 	$titulo = "Mis Solicitudes";
 	$css = ["alert", "style"];
-	$cabecera = array("#", "Motivo", "Fecha", "Estado", "Resultado");
-
 	$cabecera = array('#', "Motivo", "Fecha Reporte", "Estado", "Resultado");
 
 	$btn_color = "warning";
@@ -20,37 +22,30 @@ if (is_file("view/mis_servicios.php")) {
 	$btn_value = "0";
 	$origen = "";
 
-	require_once "model/solicitud.php";
-	$solicitud = new Solicitud();
-	$solicitud->set_cedula_solicitante($_SESSION['user']['cedula']);
-
-	$peticion["peticion"] = "solicitud_usuario";
-	$servicios = $solicitud->Transaccion($peticion);
-	$registros = [];
-	foreach ($servicios as $i => $servicio) {
-		$registros[$i] = [$servicio["ID"], $servicio["Motivo"], $servicio["Inicio"], $servicio["Estatus"], $servicio["Resultado"]];
-	}
-
-	require_once "model/usuario.php";
 	$usuario = new Usuario();
 	$usuario->set_cedula($_SESSION['user']['cedula']);
-
 	$datos = $_SESSION['user'];
 	$datos = $datos + $usuario->Transaccion(['peticion' => 'perfil']);
+
+	if (isset($_POST['consultar'])) {
+		$solicitud = new Solicitud();
+		$solicitud->set_cedula_solicitante($_SESSION['user']['cedula']);
+		$peticion["peticion"] = "solicitud_usuario";
+		echo json_encode($solicitud->Transaccion($peticion));
+		exit;
+	}
+
 	if (isset($_POST["solicitud"]) and $_POST["motivo"] != NULL) {
-		require_once "model/solicitud.php";
 		$solicitud = new Solicitud();
 		$solicitud->set_cedula_solicitante($datos["cedula"]);
 		$solicitud->set_motivo($_POST["motivo"]);
 		$peticion["peticion"] = "registrar";
-		ob_start();
-		echo  json_encode($solicitud->Transaccion($peticion));
-		$respuesta = ob_get_contents();
-		ob_end_clean();
+		echo json_encode($solicitud->Transaccion($peticion));
+		exit;
 	}
 
 	if (isset($_POST["reporte"])) {
-		require_once "model/hoja_servicio.php";
+
 		$hoja = new Hoja();
 		$hoja->set_nro_solicitud($_POST["reporte"]);
 		$hojas = $hoja->Transaccion('listar');
@@ -70,7 +65,6 @@ if (is_file("view/mis_servicios.php")) {
 		ob_clean();
 		$reporte->mis_servicios($info);
 	}
-
 	require_once "view/mis_servicios.php";
 } else {
 	require_once "view/404.php";

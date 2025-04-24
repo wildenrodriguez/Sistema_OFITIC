@@ -31,9 +31,10 @@
         htmlElement.classList.add("dark");
       }
     </script>
-    <script defer src="assets/js/jquery.min.js"></script>
-    <script defer src="assets/js/main.js"></script>
-    <script defer src="assets/js/utils.js"></script>
-    <script defer src="assets/DataTables/datatables.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="vendor/components/jquery/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/sweetalert2.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="vendor/datatables.net/datatables.net/js/dataTables.js"></script>
   </head>

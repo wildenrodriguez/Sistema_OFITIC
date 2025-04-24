@@ -3,7 +3,7 @@
         'name' => 'leizer/sistema_ofitic',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '4e18dc124cae64ed2bf6ee3997ca67472b55445c',
+        'reference' => '9ca3bae378c5be902dac2307dc54b411d4816c3b',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -58,7 +58,7 @@
         'leizer/sistema_ofitic' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '4e18dc124cae64ed2bf6ee3997ca67472b55445c',
+            'reference' => '9ca3bae378c5be902dac2307dc54b411d4816c3b',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

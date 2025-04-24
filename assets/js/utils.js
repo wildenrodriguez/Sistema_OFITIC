@@ -36,21 +36,4 @@ function validarKeyPress(er, e) {
       confirmButtonText: 'Aceptar',
     });
   }
-
-  function ajax(datos, func) {
-    $.ajax({
-      url: "archivo.php",
-      data: datos,
-      type: "POST",
-  
-      success: function (response) {
-        console.log(response);
-        const res = JSON.parse(response);
-        func(res);
-      },
-      error: function (error) {
-        console.log(error);
-      },
-    });
-  }
   

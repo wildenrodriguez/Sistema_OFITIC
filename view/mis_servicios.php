@@ -24,30 +24,18 @@ require_once("Componentes/modal_solicitar.php");?>
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Mis Solicitudes</h5>     
-              <button type="button" class="btn btn-primary mx-auto my-4" data-bs-toggle="modal" data-bs-target="#Falla">
+              <button type="button" class="btn btn-primary mx-auto my-4" id="btn-solicitud">
       Hacer Solicitud
     </button>    
               <div class="table-responsive">
-                  <table class="table" id="tabla">
+                  <table class="table" id="tabla1">
                       <thead>
                           <tr>
                               <?php foreach ($cabecera as $campo) echo "<th scope='col'>$campo</th>"; ?>
-                              <th scope='col'></th>
                           </tr>
                       </thead>
                       <tbody>
-                          <?php foreach ($registros as $informacion){ ?>
-                          <tr>
-                              <?php foreach ($informacion as $campo) echo "<td>$campo</td>"; ?>
-                              <td>
-                                  <form method="post" autocomplete="off">
-                                  <?php if ($informacion[3]=="Finalizado") {?><button formtarget="_blank" class="btn btn-sm btn-<?php echo $btn_color?>" type="submit" name="reporte" value="<?php echo "$origen $informacion[$btn_value]"; ?>" data-bs-toggle="tooltip" data-bs-placement="top"
-                                  data-bs-custom-class="custom-tooltip"
-                                  data-bs-title="Generar reporte"><i class="bi bi-<?php echo $btn_icon?>"></i></button><?php } ?>
-                                  </form>
-                              </td>
-                          </tr>
-                          <?php  }?>
+
                       </tbody>
                   </table>
               </div>
@@ -65,7 +53,7 @@ require_once("Componentes/modal_solicitar.php");?>
   <?php require_once "Componentes/footer.php"; ?>
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-  <script src="js/mis_servicios.js"></script>
+  <script defer src="assets/js/mis_servicios.js"></script>
 
 </body>
 
