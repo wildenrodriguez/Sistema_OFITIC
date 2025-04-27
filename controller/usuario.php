@@ -6,29 +6,31 @@
 	ob_start();
 
 	require_once "model/usuario.php";
+	require_once "model/empleado.php";
+	require_once "model/bitacora.php";
+	
+	$usuario = new Usuario();
+	$empleado = new Empleado();
 	$peticion = [];
 	$peticion['peticion'] = "permiso";
 	$peticion['user'] = $_SESSION['user']['rol'];
 	$peticion['rol'] = 'ADMINISTRADOR';
-	$usuario = new Usuario();
 	$permiso = $usuario->Transaccion($peticion);
 
-	//if($permiso == 0){ echo'<script>window.location="?page=404"</script>';}
+	if($permiso == 0){ echo'<script>window.location="?page=404"</script>';}
 
+	$cabecera = array("Cedula","Nombre","Apellido","Rol","Técnico", "Servicio", "Acciones");
+	
 	if (is_file("view/".$page.".php")) {
-		// Estilos de Pagina
 		$titulo = "Usuarios";
 		$css = ["alert"];
 
-		// Datos del Usuario Actual
 		$usuario->set_cedula($_SESSION['user']['cedula']);
 		
 		$datos = $_SESSION['user'];
 		$datos = $datos + $usuario->Transaccion(['peticion' => 'perfil']);
 
-        require_once "model/empleado.php";
-		$emp = new empleado();
-		$cedulas = $emp->no_usuarios();
+		$cedulas = $empleado->no_usuarios();
 
 		if (isset($_POST["registrar_usuario"])) {
 			
@@ -52,6 +54,13 @@
 			}
 
 		}
+
+		if(isset($_POST['consultar'])){
+			$peticion['peticion'] = "consultar"; 
+			echo json_encode($usuario->Transaccion($peticion));
+			exit;
+		}
+		
 		if (isset($_POST['eliminar'])) {
 			
 			$usuario->set_cedula($_POST['eliminar']);
@@ -60,19 +69,6 @@
 			header("Refresh:0");
 		}
 
-		$registros=[];
-		$peticion['peticion'] = "consultar";
-		$info = $usuario->Transaccion($peticion);
-
-		$cabecera = array("Cedula","Nombre","Apellido","Rol","Técnico", "Servicio"); //Cabecera de la Tabla
-		foreach ($info as $id => $user) {
-				$registros[$id] = $user;
-		}
-		$btn_color = "danger";
-		$btn_icon = "trash3";
-		$btn_name = "eliminar";
-		$btn_value = "0";
-		$origen = "";
 
 		require_once "view/$page.php";
 	} else {

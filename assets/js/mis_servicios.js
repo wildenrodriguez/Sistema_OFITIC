@@ -67,7 +67,7 @@ function enviaAjax(datos) {
 					consultar();
 
 				} else if (lee.resultado == "consultar") {
-					crearDataTable(lee.datos);
+					iniciarTabla(lee.datos);
 
 				} else if (lee.resultado == "error") {
 					mensajes("error", null, lee.mensaje, null);
@@ -103,33 +103,29 @@ function validarenvio() {
 
 var tabla;
 
-function crearDataTable(arreglo) {
-	console.log(arreglo);
+function iniciarTabla(arreglo) {
 	if (tabla == null) {
-		tabla = $('#tabla1').DataTable({
-			data: arreglo,
-			columns: [
-				{ data: 'ID' },
-				{ data: 'Motivo' },
-				{ data: 'Inicio' },
-				{ data: 'Estatus' },
-				{ data: 'Resultado' }
-			]
-		});
+		crearDataTable(arreglo);
 	} else {
 		tabla.destroy();
-
-		tabla = $('#tabla1').DataTable({
-			data: arreglo,
-			columns: [
-				{ data: 'ID' },
-				{ data: 'Motivo' },
-				{ data: 'Inicio' },
-				{ data: 'Estatus' },
-				{ data: 'Resultado' }
-			]
-		});
+		crearDataTable(arreglo);
 	}
+};
+
+function crearDataTable(arreglo) {
+
+	console.log(arreglo);
+	tabla = $('#tabla1').DataTable({
+		data: arreglo,
+		columns: [
+			{ data: 'ID' },
+			{ data: 'Motivo' },
+			{ data: 'Inicio' },
+			{ data: 'Estatus' },
+			{ data: 'Resultado' }
+		]
+	});
+
 }
 
 

@@ -37,22 +37,10 @@
                     <thead>
                         <tr>
                             <?php foreach ($cabecera as $campo) echo "<th scope='col'>$campo</th>"; ?>
-                            <th scope='col'></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($registros as $informacion){ ?>
-                        <tr>
-                            <?php foreach ($informacion as $campo) echo "<td>$campo</td>"; ?>
-                            <td>
-                              <form action="" method="post" autocomplete="off">
-                            <?php if($informacion["rol"]!="ADMINISTRADOR"){ ?>
-                              <input type="text" hidden name="<?php echo $btn_name?>" value="<?php echo "$informacion[$btn_value]"; ?>">
-                              <button id="eliminar" class="btn btn-sm btn-<?php echo $btn_color?>" type="button"><i class="bi bi-<?php echo $btn_icon?>" title="Eliminar"></i></button><?php } ?>
-                            </form>  
-                          </td>
-                        </tr>
-                        <?php  }?>
+
                     </tbody>
                 </table>
             </div>

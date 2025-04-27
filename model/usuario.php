@@ -195,7 +195,9 @@ class Usuario extends Conexion
 
     private function ConsultaUsuarios()
     {
-        $query = "SELECT
+        $datos = [];
+        try {
+            $query = "SELECT
                 usuario.cedula,
                 usuario.nombres,
                 usuario.apellidos,
@@ -209,13 +211,20 @@ class Usuario extends Conexion
             INNER JOIN rol ON usuario.id_rol = rol.id_rol
             ORDER BY usuario.cedula = :cedula";  
 
-        $records = $this->conex->prepare($query);
-        $records->bindValue(':cedula', $this->cedula);
-        $records->execute();
+        $stm = $this->conex->prepare($query);
+        $stm->bindValue(':cedula', $this->cedula);
+        $stm->execute();
 
-        $datos = $records->fetchAll(PDO::FETCH_ASSOC); 
+        $datos['resultado'] = "consultar";
+        $datos['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC); 
 
         $this->Cerrar_Conexion($this->conex, $records);
+
+        } catch (PDOException $e) {
+            $datos['resultado'] = "error";
+            $datos['mensaje'] = $e->getMessage();
+        }
+        
 
         return $datos;
     }
