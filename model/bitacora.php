@@ -103,9 +103,11 @@ class Bitacora extends Conexion
             
             $stm = $this->conex->prepare($query);
             $stm->execute();
-            $dato['arreglo'] = $stm->fetchAll(PDO::FETCH_ASSOC);
+            $dato['resultado'] = "consultar";
+            $dato['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $dato['error'] = $e->getMessage();
+            $dato['resultado'] = "error";
+            $dato['mensaje'] = $e->getMessage();
         }
         $this->Cerrar_Conexion($this->conex, $stm);
         return $dato;

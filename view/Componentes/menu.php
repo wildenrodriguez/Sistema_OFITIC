@@ -61,7 +61,13 @@
               <span class="menu-text">Gestión de usuario</span>
             </a>
           </li>
-
+          <li class="menu-item <?php echo ($page == "usuario") ? "active" : "" ?>">
+            <a href="?page=bitacora">
+            <i class="fa-solid fa-user-clock"></i>
+              <span class="menu-text">Bitácora</span>
+            </a>
+          </li>
+          
         <?php } ?>
 
 
@@ -133,7 +139,7 @@
   <div class="sidebar-footer">
     <ul>
 
-      <?php if ($datos["rol"] == "Super usuario") { ?>
+      <?php if ($datos["rol"] == "ADMINISTRADOR") { ?>
 
         <li class="menu-item <?php echo ($page == "Configuracion") ? "active" : "" ?>">
           <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
@@ -299,8 +305,6 @@
       </div>
     </div>
   </header>
-
-  <?php if (isset($msg)) require_once("alert.php");?>
 
   <!-- Page Content -->
   <main class="page-content" style="flex: 1;">
