@@ -31,7 +31,7 @@
                     ]
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -53,48 +53,34 @@
             "install-path": "../components/jquery"
         },
         {
-            "name": "datatables.net/datatables.net",
-            "version": "2.2.2",
-            "version_normalized": "2.2.2.0",
+            "name": "datatables/datatables",
+            "version": "1.10.21",
+            "version_normalized": "1.10.21.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/DataTables/Dist-DataTables.git",
-                "reference": "4833d613799e351975d072fd86b155d2c779b18d"
+                "url": "https://github.com/DataTables/DataTables.git",
+                "reference": "83e59694a105225ff889ddfa0d723a3ab24fda78"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DataTables/Dist-DataTables/zipball/4833d613799e351975d072fd86b155d2c779b18d",
-                "reference": "4833d613799e351975d072fd86b155d2c779b18d",
+                "url": "https://api.github.com/repos/DataTables/DataTables/zipball/83e59694a105225ff889ddfa0d723a3ab24fda78",
+                "reference": "83e59694a105225ff889ddfa0d723a3ab24fda78",
                 "shasum": ""
             },
-            "require": {
-                "components/jquery": ">=1.7"
-            },
-            "time": "2025-02-04T15:55:23+00:00",
+            "time": "2020-05-21T10:08:44+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
-            "authors": [
-                {
-                    "name": "SpryMedia",
-                    "homepage": "https://datatables.net"
-                }
-            ],
-            "description": "DataTables is a plug-in for the jQuery Javascript library. It is a highly flexible tool, based upon the foundations of progressive enhancement, which will add advanced interaction controls to any HTML table. This is jQuery DataTables",
+            "description": "DataTables is a plug-in for the jQuery Javascript library. It is a highly flexible tool, based upon the foundations of progressive enhancement, which will add advanced interaction controls to any HTML table.",
             "homepage": "http://www.datatables.net/",
-            "keywords": [
-                "datatables",
-                "jquery",
-                "table"
-            ],
             "support": {
                 "forum": "https://datatables.net/forums",
-                "source": "https://github.com/DataTables/Dist-DataTables"
+                "source": "https://github.com/DataTables/DataTablesSrc/"
             },
-            "install-path": "../datatables.net/datatables.net"
+            "install-path": "../datatables/datatables"
         },
         {
             "name": "dompdf/dompdf",
@@ -136,7 +122,7 @@
             },
             "time": "2025-01-15T14:09:04+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Dompdf\\": "src/"
@@ -187,7 +173,7 @@
             },
             "time": "2024-12-02T14:37:59+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "FontLib\\": "src/FontLib"
@@ -236,7 +222,7 @@
             },
             "time": "2024-04-29T13:26:35+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Svg\\": "src/Svg"
@@ -289,7 +275,7 @@
                     "dev-master": "2.7-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Masterminds\\": "src"
@@ -362,7 +348,7 @@
                     "dev-main": "9.0.x-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Sabberworm\\CSS\\": "src/"

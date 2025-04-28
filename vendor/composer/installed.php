@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
-        'name' => 'leizer/sistema_ofitic',
+        'name' => 'jorge/sistema_ofitic',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '9ca3bae378c5be902dac2307dc54b411d4816c3b',
+        'reference' => '4e220e05c453fbc7f00b61908f64dde0ab378bb9',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -19,12 +19,12 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'datatables.net/datatables.net' => array(
-            'pretty_version' => '2.2.2',
-            'version' => '2.2.2.0',
-            'reference' => '4833d613799e351975d072fd86b155d2c779b18d',
+        'datatables/datatables' => array(
+            'pretty_version' => '1.10.21',
+            'version' => '1.10.21.0',
+            'reference' => '83e59694a105225ff889ddfa0d723a3ab24fda78',
             'type' => 'library',
-            'install_path' => __DIR__ . '/../datatables.net/datatables.net',
+            'install_path' => __DIR__ . '/../datatables/datatables',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
@@ -55,10 +55,10 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'leizer/sistema_ofitic' => array(
+        'jorge/sistema_ofitic' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '9ca3bae378c5be902dac2307dc54b411d4816c3b',
+            'reference' => '4e220e05c453fbc7f00b61908f64dde0ab378bb9',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
