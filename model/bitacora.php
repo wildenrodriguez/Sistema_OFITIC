@@ -40,6 +40,30 @@ class Bitacora extends Conexion
         $this->hora = $hora;
     }
 
+    public function get_id($id){
+        return $this->id;
+    }
+
+    public function get_usuario($usuario){
+        return $this->usuario;
+    }
+
+    public function get_modulo($modulo){
+        return $this->modulo;
+    }
+
+    public function get_accion($accion){
+        return $this->accion;
+    }
+
+    public function get_fecha($fecha){
+        return $this->fecha;
+    }
+
+    public function get_hora($hora){
+        return $this->hora;
+    }
+
     private function Validar(){
         $dato = [];
 

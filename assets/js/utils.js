@@ -37,3 +37,14 @@ function validarKeyPress(er, e) {
     });
   }
   
+  function consultar() {
+    var peticion = new FormData();
+    peticion.append('consultar', 'consultar');
+    enviaAjax(peticion);
+  }
+  
+  function registrarEntrada() {
+    var peticion = new FormData();
+    peticion.append('entrada', 'entrada');
+    enviaAjax(peticion);
+  }

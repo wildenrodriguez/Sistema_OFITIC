@@ -165,9 +165,11 @@ class Solicitud extends Conexion
 
             $datos['resultado'] = 'registrar';
             $datos['datos'] = $nro->fetchAll(PDO::FETCH_ASSOC)[0]["nro_solicitud"];
+            $datos['bool'] = 1;
         } catch (PDOException $e) {
             $datos['resultado'] = 'error';
             $datos['mensaje'] = $e->getMessage();
+            $datos['bool'] = -1;
         }
 
         $this->Cerrar_Conexion($this->conex, $nro);

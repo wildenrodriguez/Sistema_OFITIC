@@ -8,16 +8,16 @@
       </div>
       <div class="modal-body">
         <div class="mb-3">
-          <label for="motivo" class="form-label">Solicitud</label>
-          <input placeholder="Describa el servicio solicitado" class="form-control" name="motivo" type="text"
-            id="motivo" maxlength="200">
-          <span id="smotivo"></span>
+          <label for="material" class="form-label">Nombre del Material</label>
+          <input placeholder="Nombre del Material" class="form-control" name="material" type="text"
+            id="material" maxlength="45">
+          <span id="smaterial"></span>
         </div>
       </div>
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        <button id="solicitar" name="solicitud" class="btn btn-primary">Enviar</button>
+        <button id="enviar" name="enviar" class="btn btn-primary"></button>
       </div>
     </div>
   </div>

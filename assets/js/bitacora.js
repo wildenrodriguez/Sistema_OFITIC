@@ -1,11 +1,6 @@
-function consultar() {
-	var peticion = new FormData();
-	peticion.append('consultar', 'consultar');
-	enviaAjax(peticion);
-}
-
 $(document).ready(function () {
 	consultar();
+	registrarEntrada();
 });
 
 function enviaAjax(datos) {
@@ -26,7 +21,10 @@ function enviaAjax(datos) {
 				if (lee.resultado == "consultar") {
 					iniciarTabla(lee.datos);
 
-				} else if (lee.resultado == "error") {
+				} else if (lee.resultado == "entrada") {
+
+
+				}else if (lee.resultado == "error") {
 					mensajes("error", null, lee.mensaje, null);
 				}
 			} catch (e) {

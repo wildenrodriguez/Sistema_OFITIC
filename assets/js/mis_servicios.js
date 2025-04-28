@@ -1,11 +1,6 @@
-function consultar() {
-	var peticion = new FormData();
-	peticion.append('consultar', 'consultar');
-	enviaAjax(peticion);
-}
-
 $(document).ready(function () {
 	consultar();
+	registrarEntrada();
 
 	$("#motivo").on("keypress", function (e) {
 		validarKeyPress(/^[0-9 a-zA-ZáéíóúüñÑçÇ -.\b]*$/, e);
@@ -69,7 +64,10 @@ function enviaAjax(datos) {
 				} else if (lee.resultado == "consultar") {
 					iniciarTabla(lee.datos);
 
-				} else if (lee.resultado == "error") {
+				} else if (lee.resultado == "entrada") {
+					
+
+				}else if (lee.resultado == "error") {
 					mensajes("error", null, lee.mensaje, null);
 				}
 			} catch (e) {

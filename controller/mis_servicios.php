@@ -12,6 +12,7 @@ if (is_file("view/".$page.".php")) {
 	require_once "model/hoja_servicio.php";
 
 	$peticion = [];
+	$json = [];
 
 	$titulo = "Mis Solicitudes";
 	$css = ["alert", "style"];
@@ -31,22 +32,31 @@ if (is_file("view/".$page.".php")) {
 	$datos = $_SESSION['user'];
 	$datos = $datos + $usuario->Transaccion(['peticion' => 'perfil']);
 
-	$peticion['peticion'] = "registrar";
-	$msg = "(".$_SESSION['user']['nombre_usuario']."), Ingresó al módulo de Solicitudes, lugar: Mis servicios";
-	$hora = date('H:i:s');
-	$fecha = date('Y-m-d');
+	
+	if(isset($_POST['entrada'])){
+		$json['resultado'] = "entrada";
 
-	$bitacora->set_usuario($_SESSION['user']['nombre_usuario']);
-	$bitacora->set_modulo("Solicitudes");
-	$bitacora->set_accion($msg);
-	$bitacora->set_fecha($fecha);
-	$bitacora->set_hora($hora);
-	$bitacora->Transaccion($peticion);
+		echo json_encode($json);
+
+		$peticion['peticion'] = "registrar";
+		$msg = "(".$_SESSION['user']['nombre_usuario']."), Ingresó al módulo de Solicitudes, lugar: Mis servicios";
+		$hora = date('H:i:s');
+		$fecha = date('Y-m-d');
+	
+		$bitacora->set_usuario($_SESSION['user']['nombre_usuario']);
+		$bitacora->set_modulo("Solicitudes");
+		$bitacora->set_accion($msg);
+		$bitacora->set_fecha($fecha);
+		$bitacora->set_hora($hora);
+		$bitacora->Transaccion($peticion);
+		exit;
+	}
 
 	if (isset($_POST['consultar'])) {
 		$solicitud->set_cedula_solicitante($_SESSION['user']['cedula']);
 		$peticion["peticion"] = "solicitud_usuario";
-		echo json_encode($solicitud->Transaccion($peticion));
+		$json = $solicitud->Transaccion($peticion);
+		echo json_encode($json);
 		exit;
 	}
 
@@ -54,11 +64,21 @@ if (is_file("view/".$page.".php")) {
 		$solicitud->set_cedula_solicitante($datos["cedula"]);
 		$solicitud->set_motivo($_POST["motivo"]);
 		$peticion["peticion"] = "registrar";
-		echo json_encode($solicitud->Transaccion($peticion));
+		$json = $solicitud->Transaccion($peticion);
+		echo json_encode($json);
 
-		$msg = "(".$_SESSION['user']['nombre_usuario']."), Realizó una solicitud";
 		$hora = date('H:i:s');
 		$fecha = date('Y-m-d');
+
+		if ($json['bool'] == 1){
+
+			$msg = "(".$_SESSION['user']['nombre_usuario']."), Realizó una solicitud exitosamente";
+
+		} else {
+
+			$msg = "(".$_SESSION['user']['nombre_usuario']."), error al enviar la solicitud";
+
+		}
 	
 		$bitacora->set_usuario($_SESSION['user']['nombre_usuario']);
 		$bitacora->set_modulo("Solicitudes");
