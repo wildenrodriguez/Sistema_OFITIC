@@ -1,17 +1,15 @@
 <?php
-
 require_once('model/conexion.php');
 
 class Equipo extends Conexion
 {
-
     private $data;
 
     public function __construct()
     {
         parent::__construct();
         $this->conex = parent::Conex();
-        $data = array();
+        $this->data = array();
     }
 
     public function set_datos($datos)
@@ -19,213 +17,144 @@ class Equipo extends Conexion
         $this->data = $datos;
     }
 
-    public function set_serial($serial)
-    {
-        $this->data["serial"] = $serial;
-    }
-    public function set_nro_bien($nro_bien)
-    {
-        $this->data["nro_bien"] = $nro_bien;
-    }
-    public function set_tipo($tipo)
-    {
-        $this->data["tipo"] = $tipo;
-    }
-    public function set_marca($marca)
-    {
-        $this->data["marca"] = $marca;
-    }
-
-    public function get_serial()
-    {
-        return $this->data['serial'];
-    }
-
-    public function get_nro_bien()
-    {
-        return $this->data['nro_bien'];
-    }
-
-    public function get_marca()
-    {
-        return $this->data['marca'];
-    }
-
-    public function get_tipo()
-    {
-        return $this->data['tipo'];
-    }
-
-    public function get_id()
-    {
-        return $this->data['id'];
-    }
-
-    public function get_data()
-    {
-        return $this->data;
-    }
-
     private function Validar()
     {
-        $query = "SELECT `id_equipo` FROM equipo WHERE (`serial` = :serial_)";
-        $insert = $this->conex->prepare($query);
-        $insert->bindParam(':serial_', $this->data['serial']);
+        $query = "SELECT id_equipo FROM equipo WHERE serial = :serial";
+        $stmt = $this->conex->prepare($query);
+        $stmt->bindParam(':serial', $this->data['serial']);
+        $stmt->execute();
+        return $stmt->rowCount() > 0;
+    }
 
-        $insert->execute();
-        if ($insert->rowCount() > 0) {
-            return true;
-        } else {
-            return false;
+    private function ValidarBien()
+    {
+        $query = "SELECT id_equipo FROM equipo WHERE nro_bien = :nro_bien";
+        
+        // Si estamos excluyendo un equipo (para edición)
+        if (!empty($this->data['excluir'])) {
+            $query .= " AND id_equipo != :excluir";
         }
-
+        
+        $stmt = $this->conex->prepare($query);
+        $stmt->bindParam(':nro_bien', $this->data['nro_bien']);
+        
+        if (!empty($this->data['excluir'])) {
+            $stmt->bindParam(':excluir', $this->data['excluir']);
+        }
+        
+        $stmt->execute();
+        return $stmt->rowCount() > 0;
     }
 
     private function Registrar()
     {
-        $query = "INSERT INTO equipo() VALUES (NULL,:tipo,:serial_,:marca,:nro_bien,:dependencia);
-            SELECT SCOPE_IDENTITY();";
-
-        $insert = $this->conex->prepare($query);
-
-        $insert->bindParam(':serial_', $this->data['serial']);
-        $insert->bindParam(':tipo', $this->data['tipo']);
-        $insert->bindParam(':marca', $this->data['marca']);
-        $insert->bindParam(':nro_bien', $this->data['nro_bien']);
-        $insert->bindParam(':dependencia', $this->data['dependencia']);
-
-        $insert->execute();
-
-        if ($insert->rowCount() > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        $query = "INSERT INTO equipo (tipo, serial, marca, nro_bien, dependencia) 
+                 VALUES (:tipo, :serial, :marca, :nro_bien, :dependencia)";
+        
+        $stmt = $this->conex->prepare($query);
+        $stmt->bindParam(':tipo', $this->data['tipo']);
+        $stmt->bindParam(':serial', $this->data['serial']);
+        $stmt->bindParam(':marca', $this->data['marca']);
+        $stmt->bindParam(':nro_bien', $this->data['nro_bien']);
+        $stmt->bindParam(':dependencia', $this->data['dependencia']);
+        
+        return $stmt->execute();
     }
 
     private function Consultar()
     {
-        $query = "SELECT e.id_equipo,e.tipo,e.serial,e.marca AS id_marca,m.nombre AS marca,nro_bien,e.dependencia AS id_dependencia,d.nombre AS dependencia FROM equipo AS e INNER JOIN marca AS m ON e.marca=m.codigo INNER JOIN dependencia AS d ON e.dependencia=d.codigo";
-
-        $select = $this->conex->prepare($query);
-
-        $select->execute();
-
-        if ($select->rowCount() > 0) {
-            return $select->fetchAll(PDO::FETCH_ASSOC);
-        } else {
-            return false;
-        }
+        $query = "SELECT e.id_equipo, e.tipo, e.serial, e.marca AS id_marca, 
+                 m.nombre AS marca, e.nro_bien, e.dependencia AS id_dependencia, 
+                 d.nombre AS dependencia, b.tipo_bien
+                 FROM equipo AS e 
+                 INNER JOIN marca AS m ON e.marca = m.codigo 
+                 INNER JOIN dependencia AS d ON e.dependencia = d.codigo
+                 LEFT JOIN bien AS b ON e.nro_bien = b.codigo_bien";
+        
+        $stmt = $this->conex->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     private function Modificar()
     {
-
-        $query = "UPDATE equipo SET serial=:serial_1 , nro_bien=:nro_bien , marca=:marca , dependencia=:dependencia ,tipo=:tipo WHERE id_equipo=:id";
-
-        $update = $this->conex->prepare($query);
-
-        $update->bindParam(':serial_1', $this->data['serial']);
-        $update->bindParam(':nro_bien', $this->data['nro_bien']);
-        $update->bindParam(':marca', $this->data['marca']);
-        $update->bindParam(':dependencia', $this->data['dependencia']);
-        $update->bindParam(':tipo', $this->data['tipo']);
-        $update->bindParam(':id', $this->data['modificar']);
-        $update->execute();
-
-        if ($update->rowCount() > 0) {
-            return true;
-        } else {
-            return false;
-        }
-
+        $query = "UPDATE equipo SET 
+                 tipo = :tipo, 
+                 serial = :serial, 
+                 marca = :marca, 
+                 nro_bien = :nro_bien, 
+                 dependencia = :dependencia 
+                 WHERE id_equipo = :id";
+        
+        $stmt = $this->conex->prepare($query);
+        $stmt->bindParam(':tipo', $this->data['tipo']);
+        $stmt->bindParam(':serial', $this->data['serial']);
+        $stmt->bindParam(':marca', $this->data['marca']);
+        $stmt->bindParam(':nro_bien', $this->data['nro_bien']);
+        $stmt->bindParam(':dependencia', $this->data['dependencia']);
+        $stmt->bindParam(':id', $this->data['id']);
+        
+        return $stmt->execute();
     }
 
     private function Eliminar()
     {
-        $query = "DELETE FROM equipo WHERE id_equipo=:id_equipo";
-
-        $update = $this->conex->prepare($query);
-        $update->bindParam(':id_equipo', $this->data);
-        $update->execute();
-
-        if ($update->rowCount() > 0) {
-            return true;
-        } else {
-            return NULL;
-        }
-
-    }
-
-    private function ConsultarReporte()
-    {
-
-        $query = "SELECT * FROM equipo";
-        $records = $this->conex->prepare($query);
-        $records->execute();
-
-        return $records->fetchAll(PDO::FETCH_ASSOC);
+        $query = "DELETE FROM equipo WHERE id_equipo = :id";
+        $stmt = $this->conex->prepare($query);
+        $stmt->bindParam(':id', $this->data['id']);
+        return $stmt->execute();
     }
 
     private function ConsultarMarcas()
     {
         $query = "SELECT * FROM marca ORDER BY nombre ASC";
-
-        $select = $this->conex->prepare($query);
-
-        $select->execute();
-
-        if ($select->rowCount() > 0) {
-            return $select->fetchAll(PDO::FETCH_ASSOC);
-        } else {
-            return NULL;
-        }
-    }
-
-    private function EquiposDependencia($dependenciaId)
-    {
-
-        $sql = "SELECT `id_equipo` AS id, serial, tipo FROM equipo WHERE dependencia = ?";
-        $stmt = $this->conex->prepare($sql);
-        $stmt->bindParam(1, $dependenciaId);
-
+        $stmt = $this->conex->prepare($query);
         $stmt->execute();
-        $equipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        return $equipos;
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+
+private function cargarBienesDisponibles($excluirBien = null)
+{
+    require_once('model/bien.php');
+    $bien = new Bien();
+    return $bien->Transaccion([
+        'peticion' => 'listar_disponibles',
+        'excluir_bien' => $excluirBien
+    ]);
+}
+
+
 
     public function Transaccion($peticion)
     {
         switch ($peticion["peticion"]) {
-
-            case "crear":
+            case "registrar":
                 return $this->Registrar();
-
+                
             case "validar":
                 return $this->Validar();
-
+                
+            case "validar_bien":
+                return $this->ValidarBien();
+                
             case "consultar":
                 return $this->Consultar();
-
+                
             case "modificar":
                 return $this->Modificar();
-
+                
             case "eliminar":
                 return $this->Eliminar();
                 
-            case "equipos":
-                return $this->EquiposDependencia($peticion["dependencia_id"]);
-
             case "consulta_marcas":
                 return $this->ConsultarMarcas();
 
-            case "reporte":
-                return $this->ConsultarReporte();
-
+            case "cargar_bienes":
+                return $this->cargarBienesDisponibles($peticion['excluir_bien'] ?? null);
+                
             default:
-                "error";
-                break;
+                return false;
         }
     }
 }

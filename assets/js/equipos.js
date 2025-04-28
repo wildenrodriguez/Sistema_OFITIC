@@ -1,167 +1,264 @@
-$(document).ready(function(){
-
-  var texto_alert;
-  var color_alert;
-  var cerrar;
-
-  $('#boton').on('click',mostrarAlert)
-  $('#btnCerrarAlert').on('click',cerrarAlert);
-
-  function mostrarAlert () {
-    clearTimeout(cerrar);
-    $('#alertjs').addClass('show');
-    $('#alertjs').addClass(color_alert);
-    $('#alertjs').find('strong').text(texto_alert);
-    cerrar = setTimeout(cerrarAlert,5000);
-  }
-  function cerrarAlert() {
-    $('#alertjs').removeClass('show');
-    clearTimeout(cerrar);
-    setTimeout(()=>{
-      $('#alertjs').removeClass(color_alert);
-    },100);
+document.addEventListener('DOMContentLoaded', function() {
+  // Cargar DataTables si no está disponible
+  if (typeof $.fn.DataTable == 'undefined') {
+      loadDataTablesDependencies().then(initializeDataTable).catch(mostrarErrorDataTables);
+  } else {
+      initializeDataTable();
   }
 
-
-  obtener_equipos();
-  function obtener_equipos(){
-    enviaAjax('obtener_equipos','obtener_equipos');
+  function loadDataTablesDependencies() {
+      return new Promise(function(resolve, reject) {
+          const cssLink = document.createElement('link');
+          cssLink.rel = 'stylesheet';
+          cssLink.href = 'https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css';
+          document.head.appendChild(cssLink);
+          
+          const script = document.createElement('script');
+          script.src = 'https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js';
+          script.onload = function() {
+              const bsScript = document.createElement('script');
+              bsScript.src = 'https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js';
+              bsScript.onload = resolve;
+              bsScript.onerror = reject;
+              document.body.appendChild(bsScript);
+          };
+          script.onerror = reject;
+          document.body.appendChild(script);
+      });
   }
 
-  function mostrar_equipos(respuesta){
-    $('#t_equipos').html("");
-
-    if (respuesta){
-      respuesta.forEach((valor)=>{
-        let tr = `
-        <tr>
-          <td>${valor.id_equipo}</td>
-          <td>${valor.serial}</td>
-          <td>${valor.tipo}</td>
-          <td id="${valor.id_marca}">${valor.marca}</td>
-          <td>${valor.nro_bien}</td>
-          <td id="${valor.id_dependencia}">${valor.dependencia}</td>
-          <td>
-            <button id="modificar" title="Modificar" class="btn btn-warning h-100" data-bs-toggle="modal" data-bs-target="#m_equipo"><i class="bi bi-pencil-square"></i></button>
-            <button id="eliminar" title="Eliminar" type="button" class="btn btn-danger h-100" name="eliminar" value="${valor.id_equipo}"><i class="bi bi-trash3"></i></button>
-          </td>
-        </tr>`;
-
-        $('#t_equipos').append(tr);
-      })
-    }else{
-      let tr = '<tr><td colspan="7"><h3 class="text-center">No hay Equipos Registrados</h3></td></tr>';
-      $('#t_equipos').append(tr);
-    }
-  }
-  $('#btn_modal_equipo').on('click',(e)=>{
-    
-    let inputs=$('#m_equipo').find(':input');
-    let btn = e.target;
-    let datos = {
-      serial: inputs[1].value,
-      nro_bien: inputs[2].value,
-      marca: inputs[3].value,
-      dependencia: inputs[4].value,
-      tipo: inputs[5].value
-    };
-    $(datos).prop(btn.name,btn.value);
-    
-    if(e.target.name=='modificar'){
-
-      if(confirm('¿Seguro que quiere Guardar los Cambios?')){
-        enviaAjax(datos,'equipos');
-      }
-    }else {
-      enviaAjax(datos,'equipos');
-    }
-
-    $('#m_equipo').modal('hide');
-  })
-  $('#btnreg').on('click',(e)=>{
-    $(".registrar").prop("disabled", true);
-    let formulario = $('#m_equipo');
-    let inputs=$('#m_equipo').find(':input');
-    formulario.find(':input').val('');
-    inputs[6].name = "registrar";
-    inputs[6].innerText = "Registrar Equipo";
-    inputs[6].classList.remove('btn-success');
-    inputs[6].classList.add('btn-primary');
-    inputs[3].value ="Seleccionar";
-    inputs[4].value ="Seleccionar";
-  })
-  $('#t_equipos').on('click','#modificar',(e)=>{
-    $(".registrar").prop("disabled", false);
-    let tr = e.target.closest('tr');
-    let btn = $('#btn_modal_equipo');
-    let inputs=$('#m_equipo').find(':input');
-
-    inputs[1].value = $(tr).find('td:eq(1)').text();
-    inputs[5].value = $(tr).find('td:eq(2)').text();
-    inputs[3].value = $(tr).find('td:eq(3)').prop('id');
-    inputs[2].value = $(tr).find('td:eq(4)').text();
-    inputs[4].value = $(tr).find('td:eq(5)').prop('id');
-
-    btn.prop('name','modificar');
-    btn.text('Guardar Cambios');
-    btn.val($(tr).find('td:eq(0)').text());
-    inputs[6].classList.remove('btn-primary');
-    inputs[6].classList.add('btn-success');
-  })
-
-  $('#t_equipos').on('click','#eliminar',(e)=>{
-    if (confirm('¿Seguro que quiere eliminar este Equipo?')) {
-      let btn = e.target.closest('button');
-      let datos = {};
-      $(datos).prop(btn.name,btn.value);
-      enviaAjax(datos,'equipos');
-    }else {
-      return;
-    }
-  })
-
-  // ========================== AJAX ==========================
-
-  function enviaAjax(datos,opc) {
-    
-    $.ajax({
-      async: true,
-      url: "",
-      type: "POST",
-      data: datos,
-      timeout: 10000,
-
-      success: function (respuesta) {
-        respuesta = JSON.parse(respuesta);
-        // console.log(respuesta);
-        if (respuesta && 'mensaje' in respuesta) {
-          texto_alert = respuesta.mensaje;
-          color_alert = respuesta.color;
-          mostrarAlert();
-        }
-        try {
-
-          if(opc == 'obtener_equipos'){
-            mostrar_equipos(respuesta);
-          }else if (opc == 'equipos') {
-            enviaAjax('obtener_equipos','obtener_equipos');
+  function initializeDataTable() {
+      const tablaEquipos = $('#tabla-equipos').DataTable({
+          ajax: {
+              url: '',
+              type: 'POST',
+              data: { accion: 'consultar' },
+              dataSrc: 'data',
+              error: mostrarErrorDatos
+          },
+          columns: [
+              { data: 'id_equipo' },
+              { data: 'serial' },
+              { data: 'tipo' },
+              { data: 'marca' },
+              { 
+                  data: 'nro_bien',
+                  render: function(data, type, row) {
+                      return data ? `${data} (${row.tipo_bien || 'Sin tipo'})` : 'No asignado';
+                  }
+              },
+              { data: 'dependencia' },
+              {
+                  data: null,
+                  render: function(data, type, row) {
+                      return `
+                          <div class="btn-group">
+                              <button class="btn btn-warning btn-sm btn-editar" data-id="${row.id_equipo}" title="Editar">
+                                  <i class="fa-solid fa-pencil"></i>
+                              </button>
+                              <button class="btn btn-danger btn-sm btn-eliminar" data-id="${row.id_equipo}" title="Eliminar">
+                                  <i class="fa-solid fa-trash"></i>
+                              </button>
+                          </div>
+                      `;
+                  },
+                  orderable: false
+              }
+          ],
+          language: {
+              url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
           }
+      });
 
-        } catch (e) {
+      // Registrar nuevo equipo
+      $('#btn-registrar').click(function() {
+          $('#modal-equipo-label').text('Registrar Nuevo Equipo');
+          $('#form-equipo')[0].reset();
+          $('#id-equipo').val('');
+          $('#btn-guardar').text('Registrar').removeClass('btn-success').addClass('btn-primary');
+          
+          // Cargar bienes disponibles
+          //cargarBienesDisponibles();
+          $('#modal-equipo').modal('show');
+      });
 
-          alert("Error en JSON " + e.name);
-
-        }
-      },
-
-      error: function (request, status, err) {
-        if (status == "timeout") {
-          muestraMensaje("Servidor ocupado, intente de nuevo");
-        } else {
-          muestraMensaje("ERROR: <br/>" + request + status + err);
-        }
-      },
-
-    });
+      // Editar equipo
+      // Modificar la función de edición para recargar los bienes disponibles
+$('#tabla-equipos').on('click', '.btn-editar', function() {
+  const id = $(this).data('id');
+  const tr = $(this).closest('tr');
+  const data = tablaEquipos.row(tr).data();
+  
+  if (data) {
+      // Cargar bienes disponibles (excluyendo los ya asignados, excepto este si tiene)
+      $.ajax({
+          url: '',
+          type: 'POST',
+          data: { 
+              accion: 'cargar_bienes',
+              excluir_bien: data.nro_bien || null
+          },
+          success: function(response) {
+              const $select = $('#nro-bien');
+              $select.empty().append('<option value="" selected>No vincular a bien</option>');
+              
+              response.data.forEach(function(bien) {
+                  $select.append(
+                      `<option value="${bien.codigo_bien}" ${data.nro_bien == bien.codigo_bien ? 'selected' : ''}>
+                          ${bien.codigo_bien} - ${bien.tipo_bien}
+                      </option>`
+                  );
+              });
+              
+              // Continuar con el resto de la edición
+              $('#modal-equipo-label').text('Editar Equipo');
+              $('#id-equipo').val(data.id_equipo);
+              $('#serial').val(data.serial);
+              $('#tipo').val(data.tipo);
+              $('#marca').val(data.id_marca);
+              $('#dependencia').val(data.id_dependencia);
+              $('#btn-guardar').text('Actualizar');
+              $('#btn-guardar').removeClass('btn-primary').addClass('btn-success');
+              
+              $('#modal-equipo').modal('show');
+          }
+      });
   }
-})
+});
+
+      // Eliminar equipo
+      $('#tabla-equipos').on('click', '.btn-eliminar', function() {
+          const id = $(this).data('id');
+          
+          Swal.fire({
+              title: '¿Eliminar equipo?',
+              text: "Esta acción no se puede deshacer",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#d33',
+              cancelButtonColor: '#3085d6',
+              confirmButtonText: 'Sí, eliminar',
+              cancelButtonText: 'Cancelar'
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  $.ajax({
+                      url: '',
+                      type: 'POST',
+                      data: { accion: 'eliminar', id: id },
+                      success: function(response) {
+                          if (!response.success) {
+                              Swal.fire('¡Eliminado!', response.message, 'success');
+                              tablaEquipos.ajax.reload();
+                          } else {
+                              Swal.fire('Error', response.message, 'error');
+                          }
+                      },
+                      error: function() {
+                          Swal.fire('Error', 'Error al eliminar el equipo', 'error');
+                      }
+                  });
+              }
+          });
+      });
+
+      // Guardar equipo (registrar/actualizar)
+      $('#form-equipo').submit(function(e) {
+          e.preventDefault();
+          
+          const formData = $(this).serializeArray();
+          const accion = $('#id-equipo').val() ? 'modificar' : 'registrar';
+          const $btn = $('#btn-guardar');
+          
+          // Mostrar loading
+          $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Procesando...');
+          
+          $.ajax({
+              url: '',
+              type: 'POST',
+              data: { 
+                  accion: accion,
+                  ...Object.fromEntries(formData.map(item => [item.name, item.value]))
+              },
+              success: function(response) {
+                  if (!response.success) {
+                      Swal.fire('¡Éxito!', response.message, 'success');
+                      $('#modal-equipo').modal('hide');
+                      tablaEquipos.ajax.reload();
+                  } else {
+                      // Mostrar errores de validación
+                      if (response.errors) {
+                          Object.entries(response.errors).forEach(([field, error]) => {
+                              $(`#${field}`).addClass('is-invalid');
+                              $(`#error-${field}`).text(error);
+                          });
+                      } else {
+                          Swal.fire('Error', response.message, 'error');
+                      }
+                  }
+              },
+              error: function() {
+                  Swal.fire('Error', 'Error al procesar la solicitud', 'error');
+              },
+              complete: function() {
+                  $btn.prop('disabled', false).text(accion === 'registrar' ? 'Registrar' : 'Actualizar');
+              }
+          });
+      });
+
+      // Cargar bienes disponibles para el select
+      /*function cargarBienesDisponibles(bienActual = null) {
+          $.ajax({
+              url: '',
+              type: 'POST',
+              data: { 
+                  accion: 'bienes_disponibles',
+                  excluir_bien: bienActual
+              },
+              success: function(response) {
+                  const $select = $('#nro-bien');
+                  $select.empty().append('<option value="">No vincular a bien</option>');
+                  
+                  response.forEach(bien => {
+                      $select.append(
+                          `<option value="${bien.codigo_bien}">${bien.codigo_bien} - ${bien.tipo_bien}</option>`
+                      );
+                  });
+                  
+                  // Seleccionar el bien actual si existe
+                  if (bienActual) {
+                      $select.val(bienActual);
+                  }
+              }
+          });
+      }*/
+  }
+
+  function mostrarErrorDataTables() {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = 'alert alert-danger';
+      alertDiv.innerHTML = `
+          <strong>Error al cargar la tabla:</strong> 
+          No se pudo cargar la librería DataTables. Por favor recarga la página.
+          <button class="btn btn-sm btn-outline-danger ms-2" onclick="window.location.reload()">
+              Recargar
+          </button>
+      `;
+      document.querySelector('.card-body').prepend(alertDiv);
+  }
+
+  function mostrarErrorDatos() {
+      const tabla = document.getElementById('tabla-equipos');
+      const tbody = tabla.querySelector('tbody');
+      tbody.innerHTML = `
+          <tr>
+              <td colspan="7" class="text-center text-danger">
+                  <i class="bi bi-exclamation-triangle"></i> 
+                  Error al cargar los datos. Por favor intente recargar la página.
+                  <button class="btn btn-sm btn-outline-danger ms-2" onclick="window.location.reload()">
+                      <i class="bi bi-arrow-clockwise"></i> Recargar
+                  </button>
+              </td>
+          </tr>
+      `;
+  }
+});

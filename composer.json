@@ -1,19 +1,19 @@
 {
-    "name": "leizer/sistema_ofitic",
+    "name": "jorge/sistema_ofitic",
     "autoload": {
         "psr-4": {
-            "Leizer\\SistemaOfitic\\": "src/"
+            "Jorge\\SistemaOfitic\\": "src/"
         }
     },
     "authors": [
         {
-            "name": "lz2712",
-            "email": "leizeraponte2020@gmail.com"
+            "name": "Jorge Cabrera",
+            "email": "126417840+JorgeCabrera2003@users.noreply.github.com"
         }
     ],
     "require": {
         "dompdf/dompdf": "^3.1",
         "components/jquery": "^3.7",
-        "datatables.net/datatables.net": "^2.2"
+        "datatables/datatables": "^1.10"
     }
 }
