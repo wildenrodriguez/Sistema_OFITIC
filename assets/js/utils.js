@@ -1,3 +1,5 @@
+const idiomaTabla = 'assets/js/datatable-plugin-es.js';
+
 function validarKeyPress(er, e) {
     key = e.keyCode;
     tecla = String.fromCharCode(key);

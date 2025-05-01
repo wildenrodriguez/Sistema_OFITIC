@@ -24,7 +24,7 @@ function enviaAjax(datos) {
 				} else if (lee.resultado == "entrada") {
 
 
-				}else if (lee.resultado == "error") {
+				} else if (lee.resultado == "error") {
 					mensajes("error", null, lee.mensaje, null);
 				}
 			} catch (e) {
@@ -69,7 +69,11 @@ function crearDataTable(arreglo) {
 			{ data: 'accion' },
 			{ data: 'fecha' },
 			{ data: 'hora' }
-		]
+
+		],
+		language: {
+			url: idiomaTabla,
+		}
 	});
 
 }

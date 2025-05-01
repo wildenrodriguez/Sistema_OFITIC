@@ -121,8 +121,10 @@ function crearDataTable(arreglo) {
 			{ data: 'Inicio' },
 			{ data: 'Estatus' },
 			{ data: 'Resultado' }
-		]
-	});
+		],
+		language: {
+			url: idiomaTabla,
+		}});
 
 }
 
