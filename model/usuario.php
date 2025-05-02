@@ -145,16 +145,15 @@ class Usuario extends Conexion
                 usuario.telefono,
                 usuario.correo,
                 usuario.clave,
+                empleado.cargo,
                 unidad.nombre AS unidad,
                 dependencia.nombre AS dependencia,
-                tecnico.tipo AS especialidad,
                 rol.nombre as rol
                 FROM usuario
                 INNER JOIN empleado ON usuario.cedula = empleado.cedula
                 INNER JOIN unidad ON empleado.cod_unidad = unidad.codigo
                 INNER JOIN dependencia ON empleado.cod_dependencia = dependencia.codigo
                 INNER JOIN rol ON usuario.id_rol = rol.id_rol
-                LEFT JOIN tecnico ON usuario.cedula = tecnico.cedula
                 WHERE usuario.cedula = :cedula";
 
         $con = $this->conex->prepare($query);

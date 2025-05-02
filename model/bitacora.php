@@ -123,7 +123,7 @@ class Bitacora extends Conexion
         $dato = [];
 
         try {
-            $query = "SELECT * FROM bitacora";
+            $query = "SELECT * FROM bitacora ORDER BY bitacora.id DESC";
             
             $stm = $this->conex->prepare($query);
             $stm->execute();

@@ -35,7 +35,6 @@ if (is_file("view/".$page.".php")) {
 	
 	if(isset($_POST['entrada'])){
 		$json['resultado'] = "entrada";
-
 		echo json_encode($json);
 
 		$peticion['peticion'] = "registrar";

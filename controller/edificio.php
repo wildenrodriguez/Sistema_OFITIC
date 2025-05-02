@@ -7,15 +7,14 @@ if (!$_SESSION) {
 ob_start();
 if (is_file("view/" . $page . ".php")) {
 	require_once "model/usuario.php";
-	require_once "model/empleado.php";
 	require_once "model/bitacora.php";
-	require_once "model/material.php";
+	require_once "model/edificio.php";
 
 	$peticion = [];
 
-	$titulo = "Gestionar Material";
+	$titulo = "Gestionar Edificios";
 	$css = ["alert", "style"];
-	$cabecera = array('#', "Nombre", "Cantidad", "Ubicación", "Reponer/Gastar", "Modificar/Eliminar");
+	$cabecera = array('#', "Nombre", "Ubicación", "Modificar/Eliminar");
 
 	$btn_color = "warning";
 	$btn_icon = "filetype-pdf";
@@ -24,8 +23,7 @@ if (is_file("view/" . $page . ".php")) {
 	$origen = "";
 
 	$usuario = new Usuario();
-	$empleado = new Empleado();
-	$material = new Material();
+	$edificio = new Edificio();
 	$bitacora = new Bitacora();
 
 	$usuario->set_cedula($_SESSION['user']['cedula']);
@@ -37,12 +35,12 @@ if (is_file("view/" . $page . ".php")) {
 		$json['resultado'] = "entrada";
 		echo json_encode($json);
 		$peticion['peticion'] = "registrar";
-		$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Ingresó al Módulo de Materiales";
+		$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Ingresó al Módulo de Edificio";
 		$hora = date('H:i:s');
 		$fecha = date('Y-m-d');
 
 		$bitacora->set_usuario($_SESSION['user']['nombre_usuario']);
-		$bitacora->set_modulo("Material");
+		$bitacora->set_modulo("Edificio");
 		$bitacora->set_accion($msg);
 		$bitacora->set_fecha($fecha);
 		$bitacora->set_hora($hora);
@@ -52,21 +50,21 @@ if (is_file("view/" . $page . ".php")) {
 
 	if (isset($_POST["registrar"])) {
 		if ($_POST['lugar'] == NULL) {
-			$material->set_lugar(NULL);
+			$edificio->set_lugar(NULL);
 		} else {
-			$material->set_lugar($_POST["lugar"]);
+			$edificio->set_lugar($_POST["lugar"]);
 		}
-		$material->set_nombre($_POST["nombre"]);
-		$material->set_stock($_POST["stock"]);
+		$edificio->set_nombre($_POST["nombre"]);
+		$edificio->set_stock($_POST["stock"]);
 		$peticion["peticion"] = "registrar";
-		echo json_encode($material->Transaccion($peticion));
+		echo json_encode($edificio->Transaccion($peticion));
 
-		$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se registró un nuevo material";
+		$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se registró un nuevo edificio";
 		$hora = date('H:i:s');
 		$fecha = date('Y-m-d');
 
 		$bitacora->set_usuario($_SESSION['user']['nombre_usuario']);
-		$bitacora->set_modulo("Material");
+		$bitacora->set_modulo("Edificio");
 		$bitacora->set_accion($msg);
 		$bitacora->set_fecha($fecha);
 		$bitacora->set_hora($hora);
@@ -76,23 +74,23 @@ if (is_file("view/" . $page . ".php")) {
 
 	if (isset($_POST['consultar'])) {
 		$peticion["peticion"] = "consultar";
-		echo json_encode($material->Transaccion($peticion));
+		echo json_encode($edificio->Transaccion($peticion));
 		exit;
 	}
 
 
 	if (isset($_POST["actualizar"])) {
-		$material->set_id($datos["cedula"]);
-		$material->set_nombre($_POST["nombre"]);
+		$edificio->set_id($datos["cedula"]);
+		$edificio->set_nombre($_POST["nombre"]);
 		$peticion["peticion"] = "actualizar";
-		echo json_encode($material->Transaccion($peticion));
+		echo json_encode($edificio->Transaccion($peticion));
 
-		$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Actualizo registro de un material";
+		$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Actualizo registro de un edificio";
 		$hora = date('H:i:s');
 		$fecha = date('Y-m-d');
 
 		$bitacora->set_usuario($_SESSION['user']['nombre_usuario']);
-		$bitacora->set_modulo("Material");
+		$bitacora->set_modulo("Edificio");
 		$bitacora->set_accion($msg);
 		$bitacora->set_fecha($fecha);
 		$bitacora->set_hora($hora);
@@ -101,35 +99,16 @@ if (is_file("view/" . $page . ".php")) {
 	}
 
 	if (isset($_POST["eliminar"])) {
-		$material->set_id($_POST["id"]);
+		$edificio->set_id($_POST["id"]);
 		$peticion["peticion"] = "eliminar";
-		echo json_encode($material->Transaccion($peticion));
+		echo json_encode($edificio->Transaccion($peticion));
 
-		$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Eliminó un material";
+		$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Eliminó un edificio";
 		$hora = date('H:i:s');
 		$fecha = date('Y-m-d');
 
 		$bitacora->set_usuario($_SESSION['user']['nombre_usuario']);
-		$bitacora->set_modulo("Material");
-		$bitacora->set_accion($msg);
-		$bitacora->set_fecha($fecha);
-		$bitacora->set_hora($hora);
-		$bitacora->Transaccion($peticion);
-		exit;
-	}
-
-	if (isset($_POST["stock"])) {
-		$material->set_id($_POST["id"]);
-		$material->set_stock($_POST["stock"]);
-		$peticion["peticion"] = "registrar";
-		echo json_encode($material->Transaccion($peticion));
-
-		$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), " . $_POST['operacion'] . " " . $material->set_stock($_POST["stock"]);
-		$hora = date('H:i:s');
-		$fecha = date('Y-m-d');
-
-		$bitacora->set_usuario($_SESSION['user']['nombre_usuario']);
-		$bitacora->set_modulo("Material");
+		$bitacora->set_modulo("Edificio");
 		$bitacora->set_accion($msg);
 		$bitacora->set_fecha($fecha);
 		$bitacora->set_hora($hora);

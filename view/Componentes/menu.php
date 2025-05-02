@@ -22,7 +22,7 @@
         <li class="menu-item <?php echo ($page == "mis_servicios") ? "active" : "" ?>">
           <a href="?page=mis_servicios">
             <i class="fa-solid fa-list-check"></i>
-            <span class="menu-text">Mis Servicios</span>
+            <span class="menu-text">Mis Solicitudes</span>
           </a>
         </li>
 
@@ -52,13 +52,38 @@
           <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
             <a href="?page=solicitantes">
               <i class="fa-solid fa-address-book"></i>
-              <span class="menu-text">Gestión de solicitantes</span>
+              <span class="menu-text">Gestión de Solicitantes</span>
+            </a>
+          </li>
+          
+          <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
+            <a href="?page=material">
+            <i class="fa-solid fa-toolbox"></i>
+              <span class="menu-text">Gestión de Materiales</span>
+            </a>
+          </li>
+          <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
+            <a href="?page=edificio">
+            <i class="fa-solid fa-building"></i>
+              <span class="menu-text">Gestión de Edificios</span>
+            </a>
+          </li>
+          <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
+            <a href="?page=piso">
+            <i class="fa-solid fa-stairs"></i>
+              <span class="menu-text">Gestión de Pisos</span>
+            </a>
+          </li>
+          <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
+            <a href="?page=oficina">
+            <i class="fa-solid fa-building-user"></i>
+              <span class="menu-text">Gestión de Oficinas</span>
             </a>
           </li>
           <li class="menu-item <?php echo ($page == "usuario") ? "active" : "" ?>">
             <a href="?page=usuario">
               <i class="fa-solid fa-address-book"></i>
-              <span class="menu-text">Gestión de usuario</span>
+              <span class="menu-text">Gestión de Usuarios</span>
             </a>
           </li>
           <li class="menu-item <?php echo ($page == "usuario") ? "active" : "" ?>">

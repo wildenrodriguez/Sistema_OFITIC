@@ -8,7 +8,7 @@ require_once("Componentes/modal_solicitar.php");?>
   <main id="main" class="main">
     <?php require_once "Componentes/mi_servicio.php";?>
     <div class="pagetitle">
-      <h1>Gestionar Material<</h1>
+      <h1>Gestionar Material</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="">Home</a></li>
@@ -53,7 +53,7 @@ require_once("Componentes/modal_solicitar.php");?>
   <?php require_once "Componentes/footer.php"; ?>
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-  <script defer src="assets/js/mis_servicios.js"></script>
+  <script defer src="assets/js/material.js"></script>
 
 </body>
 

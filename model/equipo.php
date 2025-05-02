@@ -64,11 +64,11 @@ class Equipo extends Conexion
     private function Consultar()
     {
         $query = "SELECT e.id_equipo, e.tipo, e.serial, e.marca AS id_marca, 
-                 m.nombre AS marca, e.nro_bien, e.dependencia AS id_dependencia, 
+                 m.nombre AS marca, e.nro_bien, e.cod_dependencia AS id_dependencia, 
                  d.nombre AS dependencia, b.tipo_bien
                  FROM equipo AS e 
                  INNER JOIN marca AS m ON e.marca = m.codigo 
-                 INNER JOIN dependencia AS d ON e.dependencia = d.codigo
+                 INNER JOIN dependencia AS d ON e.cod_dependencia = d.codigo
                  LEFT JOIN bien AS b ON e.nro_bien = b.codigo_bien";
         
         $stmt = $this->conex->prepare($query);
