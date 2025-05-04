@@ -30,7 +30,6 @@ class Equipo extends Conexion
     {
         $query = "SELECT id_equipo FROM equipo WHERE nro_bien = :nro_bien";
         
-        // Si estamos excluyendo un equipo (para edición)
         if (!empty($this->data['excluir'])) {
             $query .= " AND id_equipo != :excluir";
         }
@@ -48,7 +47,7 @@ class Equipo extends Conexion
 
     private function Registrar()
     {
-        $query = "INSERT INTO equipo (tipo, serial, marca, nro_bien, dependencia) 
+        $query = "INSERT INTO equipo (tipo, serial, marca, nro_bien, cod_dependencia) 
                  VALUES (:tipo, :serial, :marca, :nro_bien, :dependencia)";
         
         $stmt = $this->conex->prepare($query);
@@ -83,7 +82,7 @@ class Equipo extends Conexion
                  serial = :serial, 
                  marca = :marca, 
                  nro_bien = :nro_bien, 
-                 dependencia = :dependencia 
+                 cod_dependencia = :dependencia 
                  WHERE id_equipo = :id";
         
         $stmt = $this->conex->prepare($query);
@@ -113,18 +112,15 @@ class Equipo extends Conexion
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
-private function cargarBienesDisponibles($excluirBien = null)
-{
-    require_once('model/bien.php');
-    $bien = new Bien();
-    return $bien->Transaccion([
-        'peticion' => 'listar_disponibles',
-        'excluir_bien' => $excluirBien
-    ]);
-}
-
-
+    private function cargarBienesDisponibles($excluirBien = null)
+    {
+        require_once('model/bien.php');
+        $bien = new Bien();
+        return $bien->Transaccion([
+            'peticion' => 'listar_disponibles',
+            'excluir_bien' => $excluirBien
+        ]);
+    }
 
     public function Transaccion($peticion)
     {

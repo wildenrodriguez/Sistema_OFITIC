@@ -1,21 +1,31 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Cargar DataTables si no está disponible
-    if (typeof $.fn.DataTable == 'undefined') {
-        loadDataTablesDependencies().then(initializeDataTable).catch(mostrarErrorDataTables);
-    } else {
-        initializeDataTable();
+    // Verificar si jQuery está cargado
+    if (typeof jQuery == 'undefined') {
+        console.error('jQuery no está cargado');
+        mostrarErrorDatos('jQuery no está cargado. La página necesita recargarse.');
+        return;
     }
 
-    function loadDataTablesDependencies() {
-        return new Promise(function (resolve, reject) {
+    // Función para cargar DataTables si no está disponible
+    function cargarDataTables() {
+        return new Promise((resolve, reject) => {
+            // Verificar si DataTables ya está cargado
+            if (typeof $.fn.DataTable !== 'undefined') {
+                resolve();
+                return;
+            }
+
+            // Cargar CSS de DataTables
             const cssLink = document.createElement('link');
             cssLink.rel = 'stylesheet';
             cssLink.href = 'https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css';
             document.head.appendChild(cssLink);
 
+            // Cargar JavaScript de DataTables
             const script = document.createElement('script');
             script.src = 'https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js';
-            script.onload = function () {
+            script.onload = function() {
+                // Cargar integración con Bootstrap
                 const bsScript = document.createElement('script');
                 bsScript.src = 'https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js';
                 bsScript.onload = resolve;
@@ -27,14 +37,23 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function initializeDataTable() {
+    // Función principal para inicializar la tabla
+    function inicializarTabla() {
+        // Verificar nuevamente que DataTables está disponible
+        if (typeof $.fn.DataTable === 'undefined') {
+            mostrarErrorDatos('DataTables no se pudo cargar correctamente.');
+            return;
+        }
+
         const tablaEquipos = $('#tabla-equipos').DataTable({
             ajax: {
                 url: '',
                 type: 'POST',
                 data: { accion: 'consultar' },
                 dataSrc: 'data',
-                error: mostrarErrorDatos
+                error: function(xhr, error, thrown) {
+                    mostrarErrorDatos('Error al cargar los datos de la tabla.');
+                }
             },
             columns: [
                 { data: 'id_equipo' },
@@ -52,15 +71,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     data: null,
                     render: function (data, type, row) {
                         return `
-                          <div class="btn-group">
-                              <button class="btn btn-warning btn-sm btn-editar" data-id="${row.id_equipo}" title="Editar">
-                                  <i class="fa-solid fa-pencil"></i>
-                              </button>
-                              <button class="btn btn-danger btn-sm btn-eliminar" data-id="${row.id_equipo}" title="Eliminar">
-                                  <i class="fa-solid fa-trash"></i>
-                              </button>
-                          </div>
-                      `;
+                            <div class="btn-group">
+                                <button class="btn btn-warning btn-sm btn-editar" data-id="${row.id_equipo}" title="Editar">
+                                    <i class="fa-solid fa-pencil"></i>
+                                </button>
+                                <button class="btn btn-danger btn-sm btn-eliminar" data-id="${row.id_equipo}" title="Eliminar">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        `;
                     },
                     orderable: false
                 }
@@ -76,53 +95,25 @@ document.addEventListener('DOMContentLoaded', function () {
             $('#form-equipo')[0].reset();
             $('#id-equipo').val('');
             $('#btn-guardar').text('Registrar').removeClass('btn-success').addClass('btn-primary');
-
-            // Cargar bienes disponibles
-            //cargarBienesDisponibles();
             $('#modal-equipo').modal('show');
         });
 
         // Editar equipo
-        // Modificar la función de edición para recargar los bienes disponibles
         $('#tabla-equipos').on('click', '.btn-editar', function () {
             const id = $(this).data('id');
             const tr = $(this).closest('tr');
             const data = tablaEquipos.row(tr).data();
 
             if (data) {
-                // Cargar bienes disponibles (excluyendo los ya asignados, excepto este si tiene)
-                $.ajax({
-                    url: '',
-                    type: 'POST',
-                    data: {
-                        accion: 'cargar_bienes',
-                        excluir_bien: data.nro_bien || null
-                    },
-                    success: function (response) {
-                        const $select = $('#nro-bien');
-                        $select.empty().append('<option value="" selected>No vincular a bien</option>');
-
-                        response.data.forEach(function (bien) {
-                            $select.append(
-                                `<option value="${bien.codigo_bien}" ${data.nro_bien == bien.codigo_bien ? 'selected' : ''}>
-                          ${bien.codigo_bien} - ${bien.tipo_bien}
-                      </option>`
-                            );
-                        });
-
-                        // Continuar con el resto de la edición
-                        $('#modal-equipo-label').text('Editar Equipo');
-                        $('#id-equipo').val(data.id_equipo);
-                        $('#serial').val(data.serial);
-                        $('#tipo').val(data.tipo);
-                        $('#marca').val(data.id_marca);
-                        $('#dependencia').val(data.id_dependencia);
-                        $('#btn-guardar').text('Actualizar');
-                        $('#btn-guardar').removeClass('btn-primary').addClass('btn-success');
-
-                        $('#modal-equipo').modal('show');
-                    }
-                });
+                $('#modal-equipo-label').text('Editar Equipo');
+                $('#id-equipo').val(data.id_equipo);
+                $('#serial').val(data.serial);
+                $('#tipo').val(data.tipo);
+                $('#marca').val(data.id_marca);
+                $('#dependencia').val(data.id_dependencia);
+                $('#nro-bien').val(data.nro_bien || '');
+                $('#btn-guardar').text('Actualizar').removeClass('btn-primary').addClass('btn-success');
+                $('#modal-equipo').modal('show');
             }
         });
 
@@ -161,104 +152,72 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-        // Guardar equipo (registrar/actualizar)
+        // Guardar equipo
         $('#form-equipo').submit(function (e) {
             e.preventDefault();
-
-            const formData = $(this).serializeArray();
-            const accion = $('#id-equipo').val() ? 'modificar' : 'registrar';
-            const $btn = $('#btn-guardar');
-
-            // Mostrar loading
-            $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Procesando...');
-
-            $.ajax({
-                url: '',
-                type: 'POST',
-                data: {
-                    accion: accion,
-                    ...Object.fromEntries(formData.map(item => [item.name, item.value]))
-                },
-                success: function (response) {
-                    if (!response.success) {
-                        Swal.fire('¡Éxito!', response.message, 'success');
-                        $('#modal-equipo').modal('hide');
-                        tablaEquipos.ajax.reload();
-                    } else {
-                        // Mostrar errores de validación
-                        if (response.errors) {
-                            Object.entries(response.errors).forEach(([field, error]) => {
-                                $(`#${field}`).addClass('is-invalid');
-                                $(`#error-${field}`).text(error);
-                            });
-                        } else {
-                            Swal.fire('Error', response.message, 'error');
-                        }
-                    }
-                },
-                error: function () {
-                    Swal.fire('Error', 'Error al procesar la solicitud', 'error');
-                },
-                complete: function () {
-                    $btn.prop('disabled', false).text(accion === 'registrar' ? 'Registrar' : 'Actualizar');
-                }
-            });
+            guardarEquipo(tablaEquipos);
         });
+    }
 
-        // Cargar bienes disponibles para el select
-        /*function cargarBienesDisponibles(bienActual = null) {
-            $.ajax({
-                url: '',
-                type: 'POST',
-                data: { 
-                    accion: 'bienes_disponibles',
-                    excluir_bien: bienActual
-                },
-                success: function(response) {
-                    const $select = $('#nro-bien');
-                    $select.empty().append('<option value="">No vincular a bien</option>');
-                    
-                    response.forEach(bien => {
-                        $select.append(
-                            `<option value="${bien.codigo_bien}">${bien.codigo_bien} - ${bien.tipo_bien}</option>`
-                        );
-                    });
-                    
-                    // Seleccionar el bien actual si existe
-                    if (bienActual) {
-                        $select.val(bienActual);
-                    }
+    // Función para guardar equipo (registrar/actualizar)
+    function guardarEquipo(tabla) {
+        const formData = $('#form-equipo').serializeArray();
+        const accion = $('#id-equipo').val() ? 'modificar' : 'registrar';
+        const $btn = $('#btn-guardar');
+
+        $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Procesando...');
+
+        $.ajax({
+            url: '',
+            type: 'POST',
+            data: {
+                accion: accion,
+                ...Object.fromEntries(formData.map(item => [item.name, item.value]))
+            },
+            success: function (response) {
+                if (!response.success) {
+                    Swal.fire('¡Éxito!', response.message, 'success');
+                    $('#modal-equipo').modal('hide');
+                    tabla.ajax.reload();
+                } else {
+                    Swal.fire('Error', response.message, 'error');
                 }
-            });
-        }*/
+            },
+            error: function () {
+                Swal.fire('Error', 'Error al procesar la solicitud', 'error');
+            },
+            complete: function () {
+                $btn.prop('disabled', false).text(accion === 'registrar' ? 'Registrar' : 'Actualizar');
+            }
+        });
     }
 
-    function mostrarErrorDataTables() {
-        const alertDiv = document.createElement('div');
-        alertDiv.className = 'alert alert-danger';
-        alertDiv.innerHTML = `
-          <strong>Error al cargar la tabla:</strong> 
-          No se pudo cargar la librería DataTables. Por favor recarga la página.
-          <button class="btn btn-sm btn-outline-danger ms-2" onclick="window.location.reload()">
-              Recargar
-          </button>
-      `;
-        document.querySelector('.card-body').prepend(alertDiv);
-    }
-
-    function mostrarErrorDatos() {
+    // Función para mostrar errores
+    function mostrarErrorDatos(mensaje) {
         const tabla = document.getElementById('tabla-equipos');
+        if (!tabla) return;
+
         const tbody = tabla.querySelector('tbody');
+        if (!tbody) return;
+
         tbody.innerHTML = `
-          <tr>
-              <td colspan="7" class="text-center text-danger">
-                  <i class="bi bi-exclamation-triangle"></i> 
-                  Error al cargar los datos. Por favor intente recargar la página.
-                  <button class="btn btn-sm btn-outline-danger ms-2" onclick="window.location.reload()">
-                      <i class="bi bi-arrow-clockwise"></i> Recargar
-                  </button>
-              </td>
-          </tr>
-      `;
+            <tr>
+                <td colspan="7" class="text-center text-danger">
+                    <i class="bi bi-exclamation-triangle"></i> 
+                    ${mensaje || 'Error al cargar los datos.'}
+                    <button class="btn btn-sm btn-outline-danger ms-2" onclick="window.location.reload()">
+                        <i class="bi bi-arrow-clockwise"></i> Recargar
+                    </button>
+                </td>
+            </tr>
+        `;
     }
+
+    // Cargar DataTables y luego inicializar la tabla
+    cargarDataTables()
+        .then(inicializarTabla)
+        .catch(function(error) {
+            console.error('Error al cargar DataTables:', error);
+            mostrarErrorDatos('Error al cargar las dependencias necesarias.');
+        });
 });

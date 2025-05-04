@@ -25,7 +25,6 @@ if(is_file("view/$page.php")){
     $bien = new Bien();
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        
         if (isset($_POST['accion'])) {
             $equipo->set_datos($_POST);
             
@@ -130,7 +129,7 @@ if(is_file("view/$page.php")){
     $config->set_tabla('dependencia');
     $dependencias = $config->Transaccion("consultar");
     
-    $bienes = $bien->Transaccion(['peticion' => 'listar_disponibles','excluir_bien' => isset($_GET['editar']) ? $_GET['editar'] : null]);
+    $bienes = $bien->Transaccion(['peticion' => 'listar_disponibles']);
     require_once "view/$page.php";
 } else {
     require_once "view/404.php";
