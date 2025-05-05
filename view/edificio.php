@@ -15,7 +15,7 @@
           </li>
         </ol>
       </nav>
-    </div><!-- End Page Title -->
+    </div>                                          <!-- End Page Title -->
 
     <section class="section">
       <div class="row">
