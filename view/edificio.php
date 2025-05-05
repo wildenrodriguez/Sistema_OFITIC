@@ -15,7 +15,7 @@ require_once("Componentes/modal_solicitar.php");?>
           <li class="breadcrumb-item active"><a href="">Gestionar Edificios<</a></li>
         </ol>
       </nav>
-    </div><!-- End Page Title -->
+    </div>                                          <!-- End Page Title -->
 
     <section class="section">
       <div class="row">
