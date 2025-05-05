@@ -22,7 +22,7 @@ function enviaAjax(datos) {
 					iniciarTabla(lee.datos);
 
 				} else if (lee.resultado == "entrada") {
-
+					consultar();
 
 				} else if (lee.resultado == "error") {
 					mensajes("error", null, lee.mensaje, null);
@@ -30,8 +30,7 @@ function enviaAjax(datos) {
 			} catch (e) {
 				mensajes("error", null, "Error en JSON Tipo: " + e.name + "\n" +
 					"Mensaje: " + e.message + "\n" +
-					"Posición: " + e.lineNumber + ":" + e.columnNumber + "\n" +
-					"Stack: " + e.stack, null);
+					"Posición: " + e.lineNumber);
 			}
 		},
 		error: function (request, status, err) {

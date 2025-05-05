@@ -7,11 +7,11 @@
         <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="mb-3">
-          <label for="motivo" class="form-label">Solicitud</label>
-          <input placeholder="Describa el servicio solicitado" class="form-control" name="motivo" type="text"
-            id="motivo" maxlength="200">
+        <div class="form-floating mb-3 mt-4">
+          <input placeholder="" class="form-control" name="motivo" type="text"
+          id="motivo" maxlength="200">
           <span id="smotivo"></span>
+          <label for="motivo" class="form-label">Describa su Solicitud</label>
         </div>
       </div>
 

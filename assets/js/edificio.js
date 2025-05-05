@@ -2,22 +2,22 @@ $(document).ready(function () {
 	consultar();
 	registrarEntrada();
 
-	$("#motivo").on("keypress", function (e) {
+	$("#nombre").on("keypress", function (e) {
 		validarKeyPress(/^[0-9 a-zA-ZáéíóúüñÑçÇ -.\b]*$/, e);
 	});
-	$("#motivo").on("keyup", function () {
+	$("#nombre").on("keyup", function () {
 		validarKeyUp(
-			/^[0-9 a-zA-ZáéíóúüñÑçÇ -.]{3,30}$/,
+			/^[0-9 a-zA-ZáéíóúüñÑçÇ -.]{3,45}$/,
 			$(this),
-			$("#smotivo"),
-			"El motivo debe tener entre 3 y 30 caracteres"
+			$("#snombre"),
+			"El nombre del edificio debe tener de 4 a 45 carácteres"
 		);
 	});
 
-	$("#solicitar").on("click", function () {
+	$("#enviar").on("click", function () {
 		switch ($(this).text()) {
 
-			case "Enviar":
+			case "Registrar":
 				if (validarenvio()) {
 					var datos = new FormData();
 					datos.append('solicitud', '');
@@ -33,10 +33,10 @@ $(document).ready(function () {
 
 	});
 
-	$("#btn-solicitud").on("click", function () { //<---- Evento del Boton Registrar
+	$("#btn-registrar").on("click", function () { //<---- Evento del Boton Registrar
 		limpia();
-		$("#modalTitleId").text("Crear Solicitud");
-		$("#solicitar").text("Enviar");
+		$("#modalTitleId").text("Registrar Edificio");
+		$("#solicitar").text("Registrar");
 		$("#modal1").modal("show");
 	}); //<----Fin Evento del Boton Registrar
 });
@@ -66,15 +66,13 @@ function enviaAjax(datos) {
 
 				} else if (lee.resultado == "entrada") {
 
-
 				} else if (lee.resultado == "error") {
 					mensajes("error", null, lee.mensaje, null);
 				}
 			} catch (e) {
 				mensajes("error", null, "Error en JSON Tipo: " + e.name + "\n" +
 					"Mensaje: " + e.message + "\n" +
-					"Posición: " + e.lineNumber + ":" + e.columnNumber + "\n" +
-					"Stack: " + e.stack, null);
+					"Posición: " + e.lineNumber);
 			}
 		},
 		error: function (request, status, err) {
@@ -121,7 +119,9 @@ function crearDataTable(arreglo) {
 			{ data: 'ubicacion' },
 			{
 				data: null, render: function () {
-					return '<button onclick=rellenar(this, 2) class="btn btn-primary"><i class="fa-solid fa-pen-to-square"></i></button><button onclick=rellenar(this, 3) class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>';
+					const botones = `<button onclick=rellenar(this, 2) class="btn btn-update"><i class="fa-solid fa-pen-to-square"></i></button>'
+					<button onclick=rellenar(this, 3) class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>`;
+					return botones;
 				}
 			}],
 		language: {
@@ -133,7 +133,6 @@ function crearDataTable(arreglo) {
 
 
 function limpia() {
-	$("#motivo").last().removeClass("is-valid");
-	$("#motivo").last().removeClass("is-invalid");
-	$("#motivo").val("");
+	$("#nombre").removeClass("is-valid is-invalid");
+	$("#nombre").val("");
 }

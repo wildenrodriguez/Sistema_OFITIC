@@ -15,6 +15,8 @@
   --input: #f3f4f6;
   --primary: #7C1D21; /* Rojo corporativo */
   --primary-foreground: #ffffff;
+  --update: #3b28a3;
+  --update-foreground: #ffffff;
   --secondary: #8FD16F; /* Verde más claro */
   --secondary-foreground: #ffffff;
   --accent: #F4C542; /* Amarillo más cálido */
@@ -48,6 +50,8 @@
   --input: #2a2a2a;
   --primary: #A52D33; /* Rojo más claro */
   --primary-foreground: #ffffff;
+  --update: #3b28a3;
+  --update-foreground: #ffffff;
   --secondary: #9FEA7C; /* Verde más claro para modo oscuro */
   --secondary-foreground: #ffffff;
   --accent: #E6B93A; /* Amarillo suavizado */
@@ -669,6 +673,40 @@ ul {
   border-color: var(--primary-foreground) !important;
 }
 
+.btn-update {
+  background-color: var(--update);
+  border-color: var(--update);
+  color: var(--update-foreground);
+}
+
+.btn-update:hover {
+  background-color: #5547a3;
+  color: var(--update-foreground);
+  border-color: #5547a3;
+}
+
+.btn-update:active {
+  background-color: var(--light) !important;
+  color: var(--update-foreground) !important;
+  border-color: var(--light) !important;
+}
+
+.btn-outline-update {
+  color: var(--update);
+  border-color: var(--update);
+}
+
+.btn-outline-update:hover {
+  background-color: var(--update);
+  color: var(--update-foreground);
+  border-color: var(--update-foreground);
+}
+.btn-outline-update:active {
+  background-color: var(--update) !important;
+  color: var(--update-foreground) !important;
+  border-color: var(--update-foreground) !important;
+}
+
 .btn-success,
 .btn-info,
 .btn-warning {
@@ -891,6 +929,16 @@ ul {
 
 .form-range::-moz-range-thumb {
   background-color: var(--input);
+}
+
+.form-floating>.form-control-plaintext~label::after, .form-floating>.form-control:focus~label::after, .form-floating>.form-control:not(:placeholder-shown)~label::after, .form-floating>.form-select~label::after {
+  position: absolute;
+  inset: 1rem 0.375rem;
+  z-index: -1;
+  height: 1.5em;
+  content: "";
+  background-color: #ffffff00;
+  border-radius: var(--bs-border-radius);
 }
 
 .input-group-text {
