@@ -13,7 +13,7 @@
           <li class="breadcrumb-item active"><a><?php echo $titulo ?></a></li>
         </ol>
       </nav>
-    </div><!-- End Page Title -->
+    </div>                                 <!-- End Page Title -->
 
     <?php
     switch ($datos_hoja["tipo_s"]) {
