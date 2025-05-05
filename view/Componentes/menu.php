@@ -43,60 +43,87 @@
               <span class="menu-text">Solicitudes</span>
             </a>
           </li>
-          <li class="menu-item <?php echo ($page == "gestion_equipos") ? "active" : "" ?>">
-            <a href="?page=gestion_equipos">
-              <i class="fa-solid fa-computer"></i>
-              <span class="menu-text">Equipos</span>
-            </a>
-          </li>
-          <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
-            <a href="?page=solicitantes">
-              <i class="fa-solid fa-address-book"></i>
-              <span class="menu-text">Gestión de Solicitantes</span>
-            </a>
-          </li>
-          
-          <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
-            <a href="?page=material">
-            <i class="fa-solid fa-toolbox"></i>
-              <span class="menu-text">Gestión de Materiales</span>
-            </a>
-          </li>
-          <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
-            <a href="?page=edificio">
-            <i class="fa-solid fa-building"></i>
-              <span class="menu-text">Gestión de Edificios</span>
-            </a>
-          </li>
-          <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
-            <a href="?page=piso">
-            <i class="fa-solid fa-stairs"></i>
-              <span class="menu-text">Gestión de Pisos</span>
-            </a>
-          </li>
-          <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
-            <a href="?page=oficina">
-            <i class="fa-solid fa-building-user"></i>
-              <span class="menu-text">Gestión de Oficinas</span>
-            </a>
-          </li>
-          <li class="menu-item <?php echo ($page == "usuario") ? "active" : "" ?>">
-            <a href="?page=usuario">
-              <i class="fa-solid fa-address-book"></i>
-              <span class="menu-text">Gestión de Usuarios</span>
-            </a>
-          </li>
-          <li class="menu-item <?php echo ($page == "usuario") ? "active" : "" ?>">
-            <a href="?page=bitacora">
-            <i class="fa-solid fa-user-clock"></i>
-              <span class="menu-text">Bitácora</span>
-            </a>
-          </li>
-          
-        <?php } ?>
+
+          <ul>
+            <li class="menu-item <?php echo ($page == "gestion_equipos" || $page == "Configuracion") ? "active" : "" ?>">
+              <a class="nav-link collapsed" data-bs-target="#icons-nava" data-bs-toggle="collapse" href="#">
+                <i class="fas fa-cog"></i>
+                <span class="menu-text">Gestion de equipos</span>
+                <i class="fa-solid fa-angle-right"></i>
+              </a>
+            </li>
+
+            <ul id="icons-nava" style="margin-left: 1em;" class="nav-content <?php echo ($page == "gestion_equipos") ? "" : "collapse" ?>" data-bs-parent="#sidebar-nav">
+
+              <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "unidad") ? "active" : "" ?>">
+                <a href="?page=gestion_equipos">
+                  <i class="fa-solid fa-computer"></i>
+                  <span class="menu-text">Equipos</span>
+                </a>
+              </li>
+              <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "Bien") ? "active" : "" ?>">
+                <a href="?page=gestion_bienes">
+                  <i class="fas fa-cog"></i>
+                  <span class="menu-text">Bienes</span>
+                </a>
+              </li>
+              <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "marca") ? "active" : "" ?>">
+                <a href="?page=Configuracion&dato=marca">
+                  <i class="fas fa-cog"></i>
+                  <span class="menu-text">Marca</span>
+                </a>
+              </li>
+
+            </ul>
+
+            <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
+              <a href="?page=solicitantes">
+                <i class="fa-solid fa-address-book"></i>
+                <span class="menu-text">Gestión de Solicitantes</span>
+              </a>
+            </li>
+
+            <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
+              <a href="?page=material">
+                <i class="fa-solid fa-toolbox"></i>
+                <span class="menu-text">Gestión de Materiales</span>
+              </a>
+            </li>
+            <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
+              <a href="?page=edificio">
+                <i class="fa-solid fa-building"></i>
+                <span class="menu-text">Gestión de Edificios</span>
+              </a>
+            </li>
+            <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
+              <a href="?page=piso">
+                <i class="fa-solid fa-stairs"></i>
+                <span class="menu-text">Gestión de Pisos</span>
+              </a>
+            </li>
+            <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
+              <a href="?page=oficina">
+                <i class="fa-solid fa-building-user"></i>
+                <span class="menu-text">Gestión de Oficinas</span>
+              </a>
+            </li>
+            <li class="menu-item <?php echo ($page == "usuario") ? "active" : "" ?>">
+              <a href="?page=usuario">
+                <i class="fa-solid fa-address-book"></i>
+                <span class="menu-text">Gestión de Usuarios</span>
+              </a>
+            </li>
+            <li class="menu-item <?php echo ($page == "usuario") ? "active" : "" ?>">
+              <a href="?page=bitacora">
+                <i class="fa-solid fa-user-clock"></i>
+                <span class="menu-text">Bitácora</span>
+              </a>
+            </li>
+
+          <?php } ?>
 
 
-        <!-- <li class="menu-item">
+          <!-- <li class="menu-item">
           <a href="#">
             <i class="fas fa-chart-bar"></i>
             <span class="menu-text">Analytics</span>
@@ -157,14 +184,14 @@
           </a>
         </li> -->
 
-      </ul>
+          </ul>
     </nav>
   </div>
 
   <div class="sidebar-footer">
     <ul>
 
-      <?php if ($datos["rol"] == "ADMINISTRADOR") { ?>
+      <?php if ($datos["rol"] == "ADMINISTRADOR" || $datos["rol"] == "Super usuario") { ?>
 
         <li class="menu-item <?php echo ($page == "Configuracion") ? "active" : "" ?>">
           <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
@@ -205,7 +232,7 @@
           <span class="menu-text">Ayuda</span>
         </a>
       </li>
-      
+
     </ul>
   </div>
 </aside>
@@ -302,8 +329,8 @@
               </button>
               <div class="dropdown-menu user-menu">
                 <div class="dropdown-header">
-                  <h6><?php echo $datos["nombres"]." ".$datos["apellidos"]; ?></h6>
-                  <span><?php echo $datos["unidad"]."/".$datos["dependencia"]; ?></span>
+                  <h6><?php echo $datos["nombres"] . " " . $datos["apellidos"]; ?></h6>
+                  <span><?php echo $datos["unidad"] . "/" . $datos["dependencia"]; ?></span>
                 </div>
                 <div class="dropdown-body">
                   <ul>
@@ -333,3 +360,13 @@
 
   <!-- Page Content -->
   <main class="page-content" style="flex: 1;">
+
+
+
+    </head>        <link rel="icon" href="assets/img/favicon.ico">    <head>    <head>
+      <!-- Agregar referencias a DataTables -->
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+      <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    </head>
