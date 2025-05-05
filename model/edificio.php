@@ -88,7 +88,7 @@ class Edificio extends Conexion
 
         if ($bool['bool'] == 0) {
             try {
-                $query = "INSERT INTO material(id_edificio, nombre, ubicacion) VALUES 
+                $query = "INSERT INTO edificio(id_edificio, nombre, ubicacion) VALUES 
             (NULL, :nombre, :ubicacion)";
 
                 $stm = $this->conex->prepare($query);
@@ -96,13 +96,16 @@ class Edificio extends Conexion
                 $stm->bindParam(":ubicacion", $this->ubicacion);
                 $stm->execute();
                 $dato['resultado'] = "registrar";
-                $dato['mensaje'] = "Se registro con éxito";
+                $dato['estado'] = -1;
+                $dato['mensaje'] = "Se registró el edificio exitosamente";
             } catch (PDOException $e) {
                 $dato['resultado'] = "error";
+                $dato['estado'] = -1;
                 $dato['mensaje'] = $e->getMessage();
             }
         } else {
             $dato['resultado'] = "error";
+            $dato['estado'] = -1;
             $dato['mensaje'] = "Registro duplicado";
         }
         $this->Cerrar_Conexion($this->conex, $stm);
@@ -112,26 +115,23 @@ class Edificio extends Conexion
     private function Actualizar()
     {
         $dato = [];
-        $bool = $this->Validar();
 
-        if ($bool['bool'] == 0) {
             try {
-                $query = "UPDATE edificio SET nombre= :nombre, ubicacion= :ubicacion WHERE id= :id";
+                $query = "UPDATE edificio SET nombre= :nombre, ubicacion= :ubicacion WHERE id_edificio = :id";
 
                 $stm = $this->conex->prepare($query);
+                $stm->bindParam(":id", $this->id);
                 $stm->bindParam(":nombre", $this->nombre);
                 $stm->bindParam(":ubicacion", $this->ubicacion);
                 $stm->execute();
-                $dato['resultado'] = "actualizar";
-                $dato['mensaje'] = "Se actualizó el registro con éxito";
+                $dato['resultado'] = "modificar";
+                $dato['estado'] = 1;
+                $dato['mensaje'] = "Se modificaron los datos edificio con éxito";
             } catch (PDOException $e) {
+                $dato['estado'] = -1;
                 $dato['resultado'] = "error";
                 $dato['mensaje'] = $e->getMessage();
             }
-        } else {
-            $dato['resultado'] = "error";
-            $dato['mensaje'] = "Registro duplicado";
-        }
         $this->Cerrar_Conexion($this->conex, $stm);
         return $dato;
     }
@@ -141,47 +141,24 @@ class Edificio extends Conexion
         $dato = [];
         $bool = $this->Validar();
 
-        if ($bool['bool'] == 0) {
+        if ($bool['bool'] != 0) {
             try {
-                $query = "UPDATE edificio SET estatus = 0 WHERE id= :id";
+                $query = "UPDATE edificio SET estatus = 0 WHERE id_edificio = :id";
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":id", $this->id);
                 $stm->execute();
                 $dato['resultado'] = "eliminar";
-                $dato['mensaje'] = "Se eliminó el registro con éxito";
+                $dato['estado'] = 1;
+                $dato['mensaje'] = "Se eliminó el edificio exitosamente";
             } catch (PDOException $e) {
                 $dato['resultado'] = "error";
+                $dato['estado'] = -1;
                 $dato['mensaje'] = $e->getMessage();
             }
         } else {
             $dato['resultado'] = "error";
-            $dato['mensaje'] = "Error al eliminar el registro";
-        }
-        $this->Cerrar_Conexion($this->conex, $stm);
-        return $dato;
-    }
-
-    private function ModificarStock($operacion)
-    {
-        $dato = [];
-        $bool = $this->Validar();
-
-        if ($bool['bool'] == 0) {
-            try {
-                $query = "UPDATE material SET stock = :stock WHERE id= :id";
-
-                $stm = $this->conex->prepare($query);
-                $stm->bindParam(":id", $this->id);
-                $stm->execute();
-                $dato['resultado'] = "stock";
-                $dato['mensaje'] = "Se ".$operacion." el stock del material: ".$this->nombre.".";
-            } catch (PDOException $e) {
-                $dato['resultado'] = "error";
-                $dato['mensaje'] = $e->getMessage();
-            }
-        } else {
-            $dato['resultado'] = "error";
+            $dato['estado'] = -1;
             $dato['mensaje'] = "Error al eliminar el registro";
         }
         $this->Cerrar_Conexion($this->conex, $stm);
@@ -223,9 +200,6 @@ class Edificio extends Conexion
 
             case 'eliminar':
                 return $this->Eliminar();
-
-            case 'stock':
-                return $this->ModificarStock($peticion['operacion']);
 
             default:
                 return "Operacion: " . $peticion['peticion'] . " no valida";

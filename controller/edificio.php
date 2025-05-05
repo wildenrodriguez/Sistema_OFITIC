@@ -49,17 +49,18 @@ if (is_file("view/" . $page . ".php")) {
 	}
 
 	if (isset($_POST["registrar"])) {
-		if ($_POST['lugar'] == NULL) {
-			$edificio->set_lugar(NULL);
-		} else {
-			$edificio->set_lugar($_POST["lugar"]);
-		}
 		$edificio->set_nombre($_POST["nombre"]);
-		$edificio->set_stock($_POST["stock"]);
+		$edificio->set_ubicacion($_POST["direccion"]);
 		$peticion["peticion"] = "registrar";
-		echo json_encode($edificio->Transaccion($peticion));
+		$datos = $edificio->Transaccion($peticion);
+		echo json_encode($datos);
 
-		$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se registró un nuevo edificio";
+		if($datos['estado'] = 1){
+			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se registró un nuevo edificio";
+		} else {
+			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al registrar un nuevo edificio";
+		}
+		
 		$hora = date('H:i:s');
 		$fecha = date('Y-m-d');
 
@@ -79,13 +80,19 @@ if (is_file("view/" . $page . ".php")) {
 	}
 
 
-	if (isset($_POST["actualizar"])) {
-		$edificio->set_id($datos["cedula"]);
+	if (isset($_POST["modificar"])) {
+		$edificio->set_id($_POST["id_edificio"]);
 		$edificio->set_nombre($_POST["nombre"]);
+		$edificio->set_ubicacion($_POST["direccion"]);
 		$peticion["peticion"] = "actualizar";
-		echo json_encode($edificio->Transaccion($peticion));
+		$datos = $edificio->Transaccion($peticion);
+		echo json_encode($datos);
 
-		$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Actualizo registro de un edificio";
+		if($datos['estado'] = 1){
+			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se modificó el registro del edificio";
+		} else {
+			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al modificar edificio";
+		}
 		$hora = date('H:i:s');
 		$fecha = date('Y-m-d');
 
@@ -99,11 +106,17 @@ if (is_file("view/" . $page . ".php")) {
 	}
 
 	if (isset($_POST["eliminar"])) {
-		$edificio->set_id($_POST["id"]);
+		$edificio->set_id($_POST["id_edificio"]);
 		$peticion["peticion"] = "eliminar";
-		echo json_encode($edificio->Transaccion($peticion));
+		$datos = $edificio->Transaccion($peticion);
+		echo json_encode($datos);
 
-		$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Eliminó un edificio";
+		if($datos['estado'] = 1){
+			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se eliminó un edificio";
+		} else {
+			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al eliminar un edificio";
+		}
+
 		$hora = date('H:i:s');
 		$fecha = date('Y-m-d');
 
