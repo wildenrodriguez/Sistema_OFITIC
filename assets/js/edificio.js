@@ -37,7 +37,7 @@ $(document).ready(function () {
 			default:
 				mensajes("question", 10000, "Error", "Acción desconocida: " + $(this).text());;
 		}
-
+		$('#enviar').prop('disabled', true);
 	});
 
 	$("#btn-registrar").on("click", function () { //<---- Evento del Boton Registrar
@@ -82,25 +82,25 @@ function enviaAjax(datos) {
 					mensajes("success", 10000, lee.mensaje, null);
 					consultar();
 
-				} else if(lee.resultado == "entrada") {
+				} else if (lee.resultado == "entrada") {
 
-	} else if (lee.resultado == "error") {
-		mensajes("error", null, lee.mensaje, null);
-	}
-} catch (e) {
-	mensajes("error", null, "Error en JSON Tipo: " + e.name + "\n" +
-		"Mensaje: " + e.message + "\n" +
-		"Posición: " + e.lineNumber);
-}
+				} else if (lee.resultado == "error") {
+					mensajes("error", null, lee.mensaje, null);
+				}
+			} catch (e) {
+				mensajes("error", null, "Error en JSON Tipo: " + e.name + "\n" +
+					"Mensaje: " + e.message + "\n" +
+					"Posición: " + e.lineNumber);
+			}
 		},
-error: function (request, status, err) {
-	if (status == "timeout") {
-		mensajes("error", null, "Servidor ocupado", "Intente de nuevo");
-	} else {
-		mensajes("error", null, "Ocurrió un error", "ERROR: <br/>" + request + status + err);
-	}
-},
-complete: function () { },
+		error: function (request, status, err) {
+			if (status == "timeout") {
+				mensajes("error", null, "Servidor ocupado", "Intente de nuevo");
+			} else {
+				mensajes("error", null, "Ocurrió un error", "ERROR: <br/>" + request + status + err);
+			}
+		},
+		complete: function () { },
 	});
 }
 
@@ -180,6 +180,8 @@ function limpia() {
 
 	$("#direccion").removeClass("is-valid is-invalid");
 	$("#direccion").val("");
+
+	$('#enviar').prop('disabled', false);
 }
 
 
@@ -209,5 +211,6 @@ function rellenar(pos, accion) {
 		$("#modalTitleId").text("Eliminar Edificio")
 		$("#enviar").text("Eliminar");
 	}
+	$('#enviar').prop('disabled', false);
 	$("#modal1").modal("show");
 }
