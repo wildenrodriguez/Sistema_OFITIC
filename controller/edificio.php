@@ -55,7 +55,7 @@ if (is_file("view/" . $page . ".php")) {
 		$datos = $edificio->Transaccion($peticion);
 		echo json_encode($datos);
 
-		if($datos['estado'] = 1){
+		if($datos['estado'] == 1){
 			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se registró un nuevo edificio";
 		} else {
 			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al registrar un nuevo edificio";
@@ -88,11 +88,12 @@ if (is_file("view/" . $page . ".php")) {
 		$datos = $edificio->Transaccion($peticion);
 		echo json_encode($datos);
 
-		if($datos['estado'] = 1){
+		if($datos['estado'] == 1){
 			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se modificó el registro del edificio";
 		} else {
 			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al modificar edificio";
 		}
+		$peticion["peticion"] = "registrar";
 		$hora = date('H:i:s');
 		$fecha = date('Y-m-d');
 
@@ -111,12 +112,13 @@ if (is_file("view/" . $page . ".php")) {
 		$datos = $edificio->Transaccion($peticion);
 		echo json_encode($datos);
 
-		if($datos['estado'] = 1){
+		if($datos['estado'] == 1){
 			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se eliminó un edificio";
 		} else {
 			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al eliminar un edificio";
 		}
 
+		$peticion["peticion"] = "registrar";
 		$hora = date('H:i:s');
 		$fecha = date('Y-m-d');
 

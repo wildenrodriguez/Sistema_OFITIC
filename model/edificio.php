@@ -96,7 +96,7 @@ class Edificio extends Conexion
                 $stm->bindParam(":ubicacion", $this->ubicacion);
                 $stm->execute();
                 $dato['resultado'] = "registrar";
-                $dato['estado'] = -1;
+                $dato['estado'] = 1;
                 $dato['mensaje'] = "Se registró el edificio exitosamente";
             } catch (PDOException $e) {
                 $dato['resultado'] = "error";
@@ -126,7 +126,7 @@ class Edificio extends Conexion
                 $stm->execute();
                 $dato['resultado'] = "modificar";
                 $dato['estado'] = 1;
-                $dato['mensaje'] = "Se modificaron los datos edificio con éxito";
+                $dato['mensaje'] = "Se modificaron los datos del edificio con éxito";
             } catch (PDOException $e) {
                 $dato['estado'] = -1;
                 $dato['resultado'] = "error";
