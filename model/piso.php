@@ -5,6 +5,7 @@ class Piso extends Conexion
 
     private $id;
     private $id_edificio;
+    private $tipo;
     private $nro_piso;
 
     public function __construct()
@@ -24,6 +25,11 @@ class Piso extends Conexion
         $this->id_edificio = $id_edificio;
     }
 
+    public function set_tipo($tipo)
+    {
+        $this->tipo = $tipo;
+    }
+
     public function set_nro_piso($nro_piso)
     {
         $this->nro_piso = $nro_piso;
@@ -39,6 +45,12 @@ class Piso extends Conexion
         return $this->id_edificio;
     }
 
+    
+    public function get_tipo()
+    {
+        return $this->tipo;
+    }
+
     public function get_nro_piso()
     {
         return $this->nro_piso;
@@ -49,10 +61,10 @@ class Piso extends Conexion
         $dato = [];
 
         try {
-            $query = "SELECT * FROM piso WHERE id = :id";
+            $query = "SELECT * FROM piso WHERE id_piso = :id_piso";
 
             $stm = $this->conex->prepare($query);
-            $stm->bindParam(":id", $this->id);
+            $stm->bindParam(":id_piso", $this->id);
             $stm->execute();
 
             if ($stm->rowCount() > 0) {
@@ -71,16 +83,17 @@ class Piso extends Conexion
 
     private function Registrar()
     {
-        $dato = [];
         $bool = $this->Validar();
+        $dato = [];
 
         if ($bool['bool'] == 0) {
             try {
-                $query = "INSERT INTO piso(id_edificio, nro_piso) 
-                VALUES (:id_edificio, :nro_piso)";
+                $query = "INSERT INTO piso(id_edificio, tipo_piso, nro_piso) 
+                VALUES (:id_edificio, :tipo_piso, :nro_piso)";
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":id_edificio", $this->id_edificio);
+                $stm->bindParam(":tipo_piso", $this->tipo);
                 $stm->bindParam(":nro_piso", $this->nro_piso);
                 $stm->execute();
                 $dato['resultado'] = "registrar";
@@ -166,7 +179,10 @@ class Piso extends Conexion
         $dato = [];
 
         try {
-            $query = "SELECT * FROM piso";
+            $query = "SELECT piso.id_piso, piso.id_edificio, edificio.nombre, piso.tipo_piso, piso.nro_piso
+            FROM piso
+            INNER JOIN edificio ON piso.id_edificio = edificio.id_edificio
+            WHERE piso.estatus = 1";
 
             $stm = $this->conex->prepare($query);
             $stm->execute();

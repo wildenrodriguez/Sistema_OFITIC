@@ -42,7 +42,8 @@ if (is_file("view/" . $page . ".php")) {
 
 	if (isset($_POST['consultar'])) {
 		$peticion["peticion"] = "consultar";
-		echo json_encode($edificio->Transaccion($peticion));
+		$datos = $edificio->Transaccion($peticion);
+		echo json_encode($datos);
 		exit;
 	}
 

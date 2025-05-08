@@ -1,5 +1,6 @@
 $(document).ready(function () {
 	consultar();
+	datosEdificio();
 	registrarEntrada();
 	capaValidar();
 
@@ -10,8 +11,9 @@ $(document).ready(function () {
 				if (validarenvio()) {
 					var datos = new FormData();
 					datos.append('registrar', 'registrar');
-					datos.append('nombre', $("#nombre").val());
-					datos.append('direccion', $("#direccion").val());
+					datos.append('id_edificio', $("#id_edificio").val());
+					datos.append('tipo_piso', $("#tipo_piso").val());
+					datos.append('nro_piso', $("#nro_piso").val());
 					enviaAjax(datos);
 				}
 				break;
@@ -20,8 +22,8 @@ $(document).ready(function () {
 					var datos = new FormData();
 					datos.append('modificar', 'modificar');
 					datos.append('id_edificio', $("#id_edificio").val());
-					datos.append('nombre', $("#nombre").val());
-					datos.append('direccion', $("#direccion").val());
+					datos.append('tipo_piso', $("#tipo_piso").val());
+					datos.append('nro_piso', $("#nro_piso").val());
 					enviaAjax(datos);
 				}
 				break;
@@ -29,7 +31,7 @@ $(document).ready(function () {
 				if (validarenvio()) {
 					var datos = new FormData();
 					datos.append('eliminar', 'eliminar');
-					datos.append('id_edificio', $("#id_edificio").val());
+					datos.append('id_piso', $("#id_piso").val());
 					enviaAjax(datos);
 				}
 				break;
@@ -37,17 +39,27 @@ $(document).ready(function () {
 			default:
 				mensajes("question", 10000, "Error", "Acción desconocida: " + $(this).text());;
 		}
-		$('#enviar').prop('disabled', true);
+		if (!validarenvio()) {
+			$('#enviar').prop('disabled', false);
+		} else {
+			$('#enviar').prop('disabled', true)
+		};
 	});
 
 	$("#btn-registrar").on("click", function () { //<---- Evento del Boton Registrar
 		limpia();
 		$("#idEdificio").remove();
-		$("#modalTitleId").text("Registrar Edificio");
+		$("#modalTitleId").text("Registrar Piso");
 		$("#enviar").text("Registrar");
 		$("#modal1").modal("show");
 	}); //<----Fin Evento del Boton Registrar
 });
+
+function datosEdificio() {
+	var datos = new FormData();
+	datos.append('listar_edificio', 'listar_edificio');
+	enviaAjax(datos);
+};
 
 function enviaAjax(datos) {
 	$.ajax({
@@ -84,6 +96,9 @@ function enviaAjax(datos) {
 
 				} else if (lee.resultado == "entrada") {
 
+				} else if (lee.resultado == "lista_edificio") {
+					selectEdificio(lee.datos);
+
 				} else if (lee.resultado == "error") {
 					mensajes("error", null, lee.mensaje, null);
 				}
@@ -106,34 +121,99 @@ function enviaAjax(datos) {
 
 
 function capaValidar() {
-	$("#nombre").on("keypress", function (e) {
-		validarKeyPress(/^[0-9 a-zA-ZáéíóúüñÑçÇ -.\b]*$/, e);
-	});
-	$("#nombre").on("keyup", function () {
-		validarKeyUp(
-			/^[0-9 a-zA-ZáéíóúüñÑçÇ -.]{3,45}$/, $(this), $("#snombre"),
-			"El nombre del edificio debe tener de 4 a 45 carácteres"
-		);
+	$('#id_edificio').on('change blur', function () {
+		if ($(this).val() === 'null') {
+			$(this).removeClass("is-valid");
+			$(this).addClass("is-invalid");
+			$('#sid_edificio').removeClass("valid-feedback");
+			$('#sid_edificio').addClass("invalid-feedback");
+			$('#sid_edificio').text("Debe seleccionar un edificio");
+		} else {
+			$(this).removeClass("is-invalid");
+			$(this).addClass("is-valid")
+			$('#sid_edificio').removeClass("invalid-feedback");
+			$('#sid_edificio').addClass("valid-feedback");
+			$('#sid_edificio').text("");
+		}
 	});
 
-	$("#direccion").on("keypress", function (e) {
-		validarKeyPress(/^[0-9 a-zA-ZáéíóúüñÑçÇ -.\b]*$/, e);
-	});
-	$("#direccion").on("keyup", function () {
-		validarKeyUp(/^[0-9 a-zA-ZáéíóúüñÑçÇ -./#]{10,100}$/, $(this), $("#sdireccion"),
-			"La dirección del edificio debe tener de 10 a 100 carácteres"
-		);
+	$('#tipo_piso').on('change blur input focusout mouseleave', function () {
+		;
+
+		const obj = validarSelect();
+
+		if (obj.bool === 0) { }
+	})
+
+	$('#nro_piso').on('change blur input focusout mouseleave', function () {
+		;
+
+		const obj = validarSelect();
+
+		if (obj.bool === 0) { }
 	});
 }
 
+function validarSelect() {
+
+	let bool = null;
+	let mensaje = "";
+
+	const validar = { bool, mensaje };
+
+	if ($('#tipo_piso').val() === 'default') {
+
+		estadoSelect('#tipo_piso', '#stipo_piso', "Seleccione un tipo de Piso", 0);
+		estadoSelect('#nro_piso', '#snro_piso', "", 0);
+		validar.bool = 0;
+		validar.mensaje = "Seleccione un tipo de Piso";
+
+	} else if ($('#nro_piso').val() === 'default') {
+
+		estadoSelect('#nro_piso', '#snro_piso', "Seleccione un número de Piso", 0);
+		validar.bool = 0;
+		validar.mensaje = "Seleccione un número de Piso";
+	}
+
+	else if ($('#nro_piso').val() === '0' && $('#tipo_piso').val() != 'Planta Baja') {
+
+		estadoSelect('#nro_piso', '#snro_piso', "", 0);
+		estadoSelect('#tipo_piso', '#stipo_piso', "Solo Planta Baja empieza en 0", 0);
+
+		validar.bool = 0;
+		validar.mensaje = "Solo Planta Baja empieza en 0";
+
+	} else if ($(nro_piso).val() != '0' && $('#tipo_piso').val() === 'Planta Baja') {
+
+		estadoSelect('#nro_piso', '#snro_piso', "", 0);
+		estadoSelect('#tipo_piso', '#stipo_piso', "Solo Planta Baja empieza en 0", 0);
+
+		validar.bool = 0;
+		validar.mensaje = "Solo Planta Baja empieza en 0";
+
+	} else {
+
+		estadoSelect('#nro_piso', '#snro_piso', "", 1);
+		estadoSelect('#tipo_piso', '#stipo_piso', "", 1);
+
+		validar.bool = 1;
+		validar.mensaje = "";
+
+	}
+
+	return validar;
+}
+
 function validarenvio() {
-	//OJO TAREA, AGREGAR LA VALIDACION DEL nro	
-	if (validarKeyUp(/^[0-9 a-zA-ZáéíóúüñÑçÇ -.]{3,45}$/, $("#nombre"), $("#snombre"), "") == 0) {
-		mensajes("error", 10000, "Verifica", "El nombre del edificio debe tener de 4 a 45 carácteres");
+
+	const obj = validarSelect();
+
+	if ($("#id_edificio").val() === 'null') {
+		mensajes("error", 10000, "Verifica", "Debe seleccionar un edificio");
 		return false;
 
-	} else if (validarKeyUp(/^[0-9 a-zA-ZáéíóúüñÑçÇ -./#]{10,100}$/, $("#direccion"), $("#sdireccion"), "") == 0) {
-		mensajes("error", 10000, "Verifica", "La dirección del edificio debe tener de 10 a 100 carácteres");
+	} else if (obj.bool == 0) {
+		mensajes("error", 10000, "Verifica", obj.mensaje);
 		return false;
 	}
 	return true;
@@ -158,7 +238,9 @@ function crearDataTable(arreglo) {
 		columns: [
 			{ data: 'id_edificio' },
 			{ data: 'nombre' },
-			{ data: 'ubicacion' },
+			{ data: 'id_piso' },
+			{ data: 'tipo_piso' },
+			{ data: 'nro_piso' },
 			{
 				data: null, render: function () {
 					const botones = `<button onclick="rellenar(this, 0)" class="btn btn-update"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -166,13 +248,28 @@ function crearDataTable(arreglo) {
 					return botones;
 				}
 			}],
+		order: [
+			[1, 'asc'], 
+			[4, 'asc']   
+		],
 		language: {
 			url: idiomaTabla,
 		}
 	});
-
 }
 
+function selectEdificio(arreglo) {
+	$("#id_edificio").empty();
+
+	$("#id_edificio").append(
+		new Option('Seleccione un Edificio', null)
+	);
+	arreglo.forEach(item => {
+		$("#id_edificio").append(
+			new Option(item.nombre, item.id_edificio)
+		);
+	});
+}
 
 function limpia() {
 	$("#nombre").removeClass("is-valid is-invalid");
@@ -204,11 +301,11 @@ function rellenar(pos, accion) {
 
 
 	if (accion == 0) {
-		$("#modalTitleId").text("Modificar Edificio")
+		$("#modalTitleId").text("Modificar Piso")
 		$("#enviar").text("Modificar");
 	}
 	else {
-		$("#modalTitleId").text("Eliminar Edificio")
+		$("#modalTitleId").text("Eliminar Piso")
 		$("#enviar").text("Eliminar");
 	}
 	$('#enviar').prop('disabled', false);

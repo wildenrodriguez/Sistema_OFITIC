@@ -2,11 +2,10 @@
 
 <body>
 <?php require_once("Componentes/menu.php"); 
-require_once("Componentes/modal_solicitar.php");?>
+require_once("Componentes/modal_piso.php");?>
 
 
   <main id="main" class="main">
-    <?php require_once "Componentes/mi_servicio.php";?>
     <div class="pagetitle">
       <h1>Gestionar Pisos</h1>
       <nav>
@@ -26,9 +25,9 @@ require_once("Componentes/modal_solicitar.php");?>
               <h5 class="card-title">Gestionar Pisos</h5>     
               <button type="button" class="btn btn-primary mx-auto my-4" id="btn-registrar">
       Registrar Piso
-    </button>    
+    </button>
               <div class="table-responsive">
-                  <table class="table" id="tabla1">
+                  <table class="table" id="tabla1" style="width: 1024px;">
                       <thead>
                           <tr>
                               <?php foreach ($cabecera as $campo) echo "<th scope='col'>$campo</th>"; ?>
