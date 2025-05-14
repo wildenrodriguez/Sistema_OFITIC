@@ -280,8 +280,8 @@ function enviaAjax(datos) { //<---Objeto FormData con datos de formularios o otr
       try {
         var lee = JSON.parse(respuesta);
         if (lee.resultado == "consultar") {
-          console.log("consulta");
-          console.log(lee.datos);
+          //console.log("consulta");
+          //console.log(lee.datos);
           DataTable(lee.datos);
         }
         else if (lee.resultado == "registrar") {
@@ -292,7 +292,7 @@ function enviaAjax(datos) { //<---Objeto FormData con datos de formularios o otr
         }
         
         else if (lee.resultado == "actividad") {
-          console.log("Ya registro");
+          //console.log("Ya registro");
         }
 
         else if (lee.resultado == "modificar") {
