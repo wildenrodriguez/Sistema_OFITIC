@@ -15,7 +15,7 @@ function enviaAjax(datos) {
 		beforeSend: function () { },
 		timeout: 10000, //tiempo maximo de espera por la respuesta del servidor
 		success: function (respuesta) {
-			console.log(respuesta);
+			////console.log(respuesta);
 			try {
 				var lee = JSON.parse(respuesta);
 				if (lee.resultado == "consultar") {
@@ -58,17 +58,18 @@ function iniciarTabla(arreglo) {
 
 function crearDataTable(arreglo) {
 
-	console.log(arreglo);
+	////console.log(arreglo);
 	tabla = $('#tabla1').DataTable({
 		data: arreglo,
+		order: [[0, "desc"]],
 		columns: [
-			{ data: 'id' },
+			{ data: 'id'},
 			{ data: 'usuario' },
 			{ data: 'modulo' },
 			{ data: 'accion' },
 			{ data: 'fecha' },
 			{ data: 'hora' }
-
+			
 		],
 		language: {
 			url: idiomaTabla,
