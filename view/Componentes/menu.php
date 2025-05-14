@@ -109,7 +109,7 @@
             </li>
             <li class="menu-item <?php echo ($page == "usuario") ? "active" : "" ?>">
               <a href="?page=usuario">
-                <i class="fa-solid fa-address-book"></i>
+                <i class="fa-solid fa-users-rectangle"></i>
                 <span class="menu-text">Gestión de Usuarios</span>
               </a>
             </li>
@@ -205,25 +205,29 @@
 
           <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "unidad") ? "active" : "" ?>">
             <a href="?page=Configuracion&dato=unidad">
-              <i class="fas fa-cog"></i>
+              <i class="fa-solid fa-users-gear"></i>
               <span class="menu-text">Unidad</span>
             </a>
           </li>
           <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "dependencia") ? "active" : "" ?>">
             <a href="?page=Configuracion&dato=dependencia">
-              <i class="fas fa-cog"></i>
+              <i class="fa-solid fa-users-gear"></i>
               <span class="menu-text">Dependencia</span>
             </a>
           </li>
           <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "marca") ? "active" : "" ?>">
-            <a href="?page=Configuracion&dato=marca">
-              <i class="fas fa-cog"></i>
+            <a href="?page=marca">
+              <i class="fa-solid fa-trademark"></i>
               <span class="menu-text">Marca</span>
             </a>
           </li>
-
+          <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "tipo_servicio") ? "active" : "" ?>">
+            <a href="?page=tipo_servicio">
+              <i class="fa-solid fa-screwdriver-wrench"></i>
+              <span class="menu-text">Tipo de Servicio</span>
+            </a>
+          </li>
         </ul>
-
       <?php } ?>
 
       <li class="menu-item <?php echo ($page == "ayuda") ? "active" : "" ?>">
