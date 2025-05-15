@@ -12,7 +12,7 @@ if (is_file("view/" . $page . ".php")) {
     $titulo = "Gestión de Backups";
     $backup = new Backup();
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
         if (isset($_POST["generar"])) {
             $peticion["peticion"] = "generar";
             $datos = $backup->Transaccion($peticion);
@@ -59,7 +59,7 @@ if (is_file("view/" . $page . ".php")) {
             Bitacora($msg, "Backup");
             exit;
         }
-    }
+
 
     $backups = $backup->Transaccion(['peticion' => 'listar']);
     require_once "view/" . $page . ".php";
