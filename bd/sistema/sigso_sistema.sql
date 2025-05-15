@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-05-2025 a las 20:13:39
+-- Tiempo de generación: 15-05-2025 a las 23:55:13
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -98,6 +98,7 @@ CREATE TABLE `empleado` (
   `nombre_empleado` varchar(45) NOT NULL,
   `apellido_empleado` varchar(45) NOT NULL,
   `id_cargo` int(11) DEFAULT NULL,
+  `id_servicio` int(11) DEFAULT NULL,
   `id_unidad` int(11) NOT NULL,
   `id_dependencia` int(11) NOT NULL,
   `telefono_empleado` varchar(15) DEFAULT NULL,
@@ -108,13 +109,13 @@ CREATE TABLE `empleado` (
 -- Volcado de datos para la tabla `empleado`
 --
 
-INSERT INTO `empleado` (`cedula_empleado`, `nombre_empleado`, `apellido_empleado`, `id_cargo`, `id_unidad`, `id_dependencia`, `telefono_empleado`, `correo_empleado`) VALUES
-('V-1234567', 'Maria', 'Peres', NULL, 1, 1, '0426-5575858', 'prueba@gmail.com'),
-('V-21140325', 'Félix', 'Mujica', NULL, 1, 1, '0400-0000000', 'ejemplo@gmail.com'),
-('V-30266398', 'Leizer', 'Torrealba', NULL, 1, 1, '0416-0506544', 'leizeraponte2020@gmail.com'),
-('V-30454597', 'Franklin', 'Fonseca', NULL, 1, 1, '0424-5041921', 'franklinjavierfonsecavasquez@gmail.com'),
-('V-30587785', 'Mariangel', 'Bokor', NULL, 1, 1, '0424-5319088', 'bokorarcangel447@gmail.com'),
-('V-31843937', 'Jorge', 'Cabrera', NULL, 1, 1, '0424-5567016', 'cabrerajorge2003@gmail.com');
+INSERT INTO `empleado` (`cedula_empleado`, `nombre_empleado`, `apellido_empleado`, `id_cargo`, `id_servicio`, `id_unidad`, `id_dependencia`, `telefono_empleado`, `correo_empleado`) VALUES
+('V-1234567', 'Maria', 'Peres', NULL, NULL, 1, 1, '0426-5575858', 'prueba@gmail.com'),
+('V-21140325', 'Félix', 'Mujica', NULL, NULL, 1, 1, '0400-0000000', 'ejemplo@gmail.com'),
+('V-30266398', 'Leizer', 'Torrealba', NULL, NULL, 1, 1, '0416-0506544', 'leizeraponte2020@gmail.com'),
+('V-30454597', 'Franklin', 'Fonseca', NULL, NULL, 1, 1, '0424-5041921', 'franklinjavierfonsecavasquez@gmail.com'),
+('V-30587785', 'Mariangel', 'Bokor', NULL, NULL, 1, 1, '0424-5319088', 'bokorarcangel447@gmail.com'),
+('V-31843937', 'Jorge', 'Cabrera', NULL, NULL, 1, 1, '0424-5567016', 'cabrerajorge2003@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -402,7 +403,8 @@ ALTER TABLE `empleado`
   ADD PRIMARY KEY (`cedula_empleado`),
   ADD KEY `empleado_ibfk_1` (`id_unidad`),
   ADD KEY `empleado_ibfk_2` (`id_dependencia`),
-  ADD KEY `tipo` (`id_cargo`);
+  ADD KEY `tipo` (`id_cargo`),
+  ADD KEY `empleado_ibfk_4` (`id_servicio`);
 
 --
 -- Indices de la tabla `equipo`
@@ -630,7 +632,8 @@ ALTER TABLE `detalle_hoja`
 ALTER TABLE `empleado`
   ADD CONSTRAINT `empleado_ibfk_1` FOREIGN KEY (`id_unidad`) REFERENCES `unidad` (`id_unidad`) ON UPDATE CASCADE,
   ADD CONSTRAINT `empleado_ibfk_2` FOREIGN KEY (`id_dependencia`) REFERENCES `dependencia` (`id_dependencia`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `empleado_ibfk_3` FOREIGN KEY (`id_cargo`) REFERENCES `cargo` (`id_cargo`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `empleado_ibfk_3` FOREIGN KEY (`id_cargo`) REFERENCES `cargo` (`id_cargo`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `empleado_ibfk_4` FOREIGN KEY (`id_servicio`) REFERENCES `tipo_servicio` (`id_tipo_servicio`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `equipo`
