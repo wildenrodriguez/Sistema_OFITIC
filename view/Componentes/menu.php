@@ -107,18 +107,43 @@
                 <span class="menu-text">Gestión de Oficinas</span>
               </a>
             </li>
-            <li class="menu-item <?php echo ($page == "usuario") ? "active" : "" ?>">
-              <a href="?page=usuario">
-                <i class="fa-solid fa-users-rectangle"></i>
-                <span class="menu-text">Gestión de Usuarios</span>
-              </a>
-            </li>
-            <li class="menu-item <?php echo ($page == "usuario") ? "active" : "" ?>">
-              <a href="?page=bitacora">
-                <i class="fa-solid fa-user-clock"></i>
-                <span class="menu-text">Bitácora</span>
-              </a>
-            </li>
+
+            <ul>
+              <?php if ($datos["rol"] == "ADMINISTRADOR" || $datos["rol"] == "Super usuario") { ?>
+                <li class="menu-item <?php echo ($page == "Mantenimiento") ? "active" : "" ?>">
+                  <a class="nav-link collapsed" data-bs-target="#icons-nave" data-bs-toggle="collapse" href="#">
+                    <i class="fas fa-cog"></i>
+                    <span class="menu-text">Mantenimiento</span>
+                    <i class="fa-solid fa-angle-right"></i>
+                  </a>
+                </li>
+
+                <ul id="icons-nave" style="margin-left: 1em;" class="nav-content <?php echo ($page == "Mantenimiento") ? "" : "collapse" ?>" data-bs-parent="#sidebar-nav">
+
+                  <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "backup") ? "active" : "" ?>">
+                    <a href="?page=backup">
+                      <i class="fas fa-cog"></i>
+                      <span class="menu-text">Backup</span>
+                    </a>
+                  </li>
+                  <li class="menu-item <?php echo ($page == "usuario") ? "active" : "" ?>">
+                    <a href="?page=bitacora">
+                      <i class="fa-solid fa-user-clock"></i>
+                      <span class="menu-text">Bitácora</span>
+                    </a>
+                  </li>
+                  <li class="menu-item <?php echo ($page == "usuario") ? "active" : "" ?>">
+                    <a href="?page=usuario">
+                      <i class="fa-solid fa-users-rectangle"></i>
+                      <span class="menu-text">Gestión de Usuarios</span>
+                    </a>
+                  </li>
+
+                </ul>
+
+              <?php } ?>
+
+            </ul>
 
           <?php } ?>
 
@@ -367,10 +392,15 @@
 
 
 
-    </head>        <link rel="icon" href="assets/img/favicon.ico">    <head>    <head>
-      <!-- Agregar referencias a DataTables -->
-      <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
-      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-      <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-      <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     </head>
+    <link rel="icon" href="assets/img/favicon.ico">
+
+    <head>
+
+      <head>
+        <!-- Agregar referencias a DataTables -->
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+      </head>
