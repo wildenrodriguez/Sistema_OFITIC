@@ -7,7 +7,7 @@ class Equipo extends Conexion
 
     public function __construct()
     {
-        parent::__construct();
+        parent::__construct("sistema");
         $this->conex = parent::Conex();
         $this->data = array();
     }

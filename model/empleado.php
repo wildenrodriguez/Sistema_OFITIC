@@ -7,7 +7,7 @@
         private $data;
 
         public function __construct(){
-            $this->conex = new Conexion();
+            $this->conex = new Conexion("sistema");
             $this->conex = $this->conex->Conex();
             $data=array();
         }

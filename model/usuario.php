@@ -142,17 +142,11 @@ class Usuario extends Conexion
                 usuario.nombres,
                 usuario.apellidos,
                 usuario.id_rol,
+                rol.nombre_rol as rol,
                 usuario.telefono,
                 usuario.correo,
-                usuario.clave,
-                empleado.cargo,
-                unidad.nombre AS unidad,
-                dependencia.nombre AS dependencia,
-                rol.nombre as rol
+                usuario.clave
                 FROM usuario
-                INNER JOIN empleado ON usuario.cedula = empleado.cedula
-                INNER JOIN unidad ON empleado.cod_unidad = unidad.codigo
-                INNER JOIN dependencia ON empleado.cod_dependencia = dependencia.codigo
                 INNER JOIN rol ON usuario.id_rol = rol.id_rol
                 WHERE usuario.cedula = :cedula";
 
@@ -200,13 +194,8 @@ class Usuario extends Conexion
                 usuario.cedula,
                 usuario.nombres,
                 usuario.apellidos,
-                rol.nombre as rol,
-                tecnico.tipo AS tipo_c,
-                tipo_servicio.nombre AS Tipo
+                rol.nombre as rol
             FROM usuario
-            LEFT JOIN empleado ON usuario.cedula = empleado.cedula
-            LEFT JOIN tecnico ON tecnico.cedula = empleado.cedula
-            LEFT JOIN tipo_servicio ON tecnico.tipo = tipo_servicio.codigo
             INNER JOIN rol ON usuario.id_rol = rol.id_rol
             ORDER BY usuario.cedula = :cedula";  
 
