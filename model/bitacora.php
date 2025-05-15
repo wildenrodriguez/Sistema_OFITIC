@@ -68,7 +68,7 @@ class Bitacora extends Conexion
         $dato = [];
 
         try {
-            $query = "SELECT * FROM bitacora WHERE id = :id";
+            $query = "SELECT * FROM bitacora WHERE id_bitacora = :id";
             
             $stm = $this->conex->prepare($query);
             $stm->bindParam(":id", $this->id);
@@ -94,7 +94,7 @@ class Bitacora extends Conexion
 
         if($bool['bool'] == 0){
         try {
-            $query = "INSERT INTO bitacora (id, usuario, modulo, accion, fecha, hora)
+            $query = "INSERT INTO bitacora (id_bitacora, usuario, modulo, accion_bitacora, fecha, hora)
             VALUES (NULL, :usuario, :modulo, :accion, :fecha, :hora)";
             
             $stm = $this->conex->prepare($query);
@@ -123,7 +123,7 @@ class Bitacora extends Conexion
         $dato = [];
 
         try {
-            $query = "SELECT * FROM bitacora ORDER BY bitacora.id DESC";
+            $query = "SELECT * FROM bitacora ORDER BY bitacora.id_bitacora DESC";
             
             $stm = $this->conex->prepare($query);
             $stm->execute();
