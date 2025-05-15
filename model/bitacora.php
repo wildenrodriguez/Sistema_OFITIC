@@ -12,7 +12,7 @@ class Bitacora extends Conexion
 
     public function __construct(){
         
-        $this->conex = new Conexion();
+        $this->conex = new Conexion("usuario");
         $this->conex = $this->conex->Conex();
     }
 
@@ -44,23 +44,23 @@ class Bitacora extends Conexion
         return $this->id;
     }
 
-    public function get_usuario($usuario){
+    public function get_usuario(){
         return $this->usuario;
     }
 
-    public function get_modulo($modulo){
+    public function get_modulo(){
         return $this->modulo;
     }
 
-    public function get_accion($accion){
+    public function get_accion(){
         return $this->accion;
     }
 
-    public function get_fecha($fecha){
+    public function get_fecha(){
         return $this->fecha;
     }
 
-    public function get_hora($hora){
+    public function get_hora(){
         return $this->hora;
     }
 

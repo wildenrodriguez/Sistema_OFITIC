@@ -7,7 +7,7 @@ class Backup extends Conexion
 
     public function __construct()
     {
-        $this->conex = new Conexion();
+        $this->conex = new Conexion("usuario");
         $this->conex = $this->conex->Conex();
         $this->backupPath = "backups/"; // Carpeta donde se guardarán los backups
     }

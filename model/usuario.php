@@ -15,7 +15,7 @@ class Usuario extends Conexion
 
     public function __construct()
     {
-        $this->conex = new Conexion();
+        $this->conex = new Conexion("usuario");
         $this->conex = $this->conex->Conex();
     }
 

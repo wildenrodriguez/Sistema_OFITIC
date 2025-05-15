@@ -1,17 +1,16 @@
 <?php
 require_once "model/conexion.php";
-class Piso extends Conexion
+class Rol extends Conexion
 {
 
     private $id;
-    private $id_edificio;
-    private $tipo;
-    private $nro_piso;
+    private $nombre;
+
 
     public function __construct()
     {
 
-        $this->conex = new Conexion();
+        $this->conex = new Conexion("usuario");
         $this->conex = $this->conex->Conex();
     }
 
@@ -20,19 +19,9 @@ class Piso extends Conexion
         $this->id = $id;
     }
 
-    public function set_id_edificio($id_edificio)
+    public function set_nombre($nombre)
     {
-        $this->id_edificio = $id_edificio;
-    }
-
-    public function set_tipo($tipo)
-    {
-        $this->tipo = $tipo;
-    }
-
-    public function set_nro_piso($nro_piso)
-    {
-        $this->nro_piso = $nro_piso;
+        $this->nombre = $nombre;
     }
 
     public function get_id()
@@ -40,31 +29,21 @@ class Piso extends Conexion
         return $this->id;
     }
 
-    public function get_id_edificio()
+    public function get_nombre()
     {
-        return $this->id_edificio;
+        return $this->nombre;
     }
 
-    
-    public function get_tipo()
-    {
-        return $this->tipo;
-    }
-
-    public function get_nro_piso()
-    {
-        return $this->nro_piso;
-    }
 
     private function Validar()
     {
         $dato = [];
 
         try {
-            $query = "SELECT * FROM piso WHERE id_piso = :id_piso";
+            $query = "SELECT * FROM rol WHERE id = :id";
 
             $stm = $this->conex->prepare($query);
-            $stm->bindParam(":id_piso", $this->id);
+            $stm->bindParam(":id", $this->id);
             $stm->execute();
 
             if ($stm->rowCount() > 0) {
@@ -75,7 +54,6 @@ class Piso extends Conexion
             }
 
         } catch (PDOException $e) {
-            $dato['bool'] = 0;
             $dato['error'] = $e->getMessage();
         }
         $this->Cerrar_Conexion($none, $stm);
@@ -84,22 +62,20 @@ class Piso extends Conexion
 
     private function Registrar()
     {
-        $bool = $this->Validar();
         $dato = [];
+        $bool = $this->Validar();
 
         if ($bool['bool'] == 0) {
             try {
-                $query = "INSERT INTO piso(id_edificio, tipo_piso, nro_piso) 
-                VALUES (:id_edificio, :tipo_piso, :nro_piso)";
+                $query = "INSERT INTO rol (id, nombre) VALUES 
+            (NULL, :nombre)";
 
                 $stm = $this->conex->prepare($query);
-                $stm->bindParam(":id_edificio", $this->id_edificio);
-                $stm->bindParam(":tipo_piso", $this->tipo);
-                $stm->bindParam(":nro_piso", $this->nro_piso);
+                $stm->bindParam(":nombre", $this->nombre);
                 $stm->execute();
                 $dato['resultado'] = "registrar";
                 $dato['estado'] = 1;
-                $dato['mensaje'] = "Se registro con éxito";
+                $dato['mensaje'] = "Se registró la servicio exitosamente";
             } catch (PDOException $e) {
                 $dato['resultado'] = "error";
                 $dato['estado'] = -1;
@@ -119,43 +95,39 @@ class Piso extends Conexion
         $dato = [];
 
             try {
-                $query = "UPDATE piso SET id_edificio= :id_edificio, tipo_piso= :tipo_piso,
-                nro_piso= :nro_piso WHERE id_piso= :id_piso";
+                $query = "UPDATE rol SET nombre= :nombre WHERE id = :id";
 
                 $stm = $this->conex->prepare($query);
-                $stm->bindParam(":id_piso", $this->id);
-                $stm->bindParam(":id_edificio", $this->id_edificio);
-                $stm->bindParam(":tipo_piso", $this->tipo);
-                $stm->bindParam(":nro_piso", $this->nro_piso);
+                $stm->bindParam(":id", $this->id);
+                $stm->bindParam(":nombre", $this->nombre);
                 $stm->execute();
                 $dato['resultado'] = "modificar";
                 $dato['estado'] = 1;
-                $dato['mensaje'] = "Se actualizó el registro con éxito";
+                $dato['mensaje'] = "Se modificaron los datos del servicio con éxito";
             } catch (PDOException $e) {
-                $dato['resultado'] = "error";
                 $dato['estado'] = -1;
+                $dato['resultado'] = "error";
                 $dato['mensaje'] = $e->getMessage();
             }
-
         $this->Cerrar_Conexion($this->conex, $stm);
         return $dato;
     }
 
     private function Eliminar()
     {
-        $bool = $this->Validar();
         $dato = [];
+        $bool = $this->Validar();
 
-        if ($bool['bool'] == 1) {
+        if ($bool['bool'] != 0) {
             try {
-                $query = "UPDATE piso SET estatus = 0 WHERE id_piso= :id_piso";
+                $query = "UPDATE rol SET estatus = 0 WHERE id = :id";
 
                 $stm = $this->conex->prepare($query);
-                $stm->bindParam(":id_piso", $this->id);
+                $stm->bindParam(":id", $this->id);
                 $stm->execute();
                 $dato['resultado'] = "eliminar";
                 $dato['estado'] = 1;
-                $dato['mensaje'] = "Se eliminó el registro con éxito";
+                $dato['mensaje'] = "Se eliminó el servicio exitosamente";
             } catch (PDOException $e) {
                 $dato['resultado'] = "error";
                 $dato['estado'] = -1;
@@ -175,10 +147,7 @@ class Piso extends Conexion
         $dato = [];
 
         try {
-            $query = "SELECT piso.id_piso, piso.id_edificio, edificio.nombre, piso.tipo_piso, piso.nro_piso
-            FROM piso
-            INNER JOIN edificio ON piso.id_edificio = edificio.id_edificio
-            WHERE piso.estatus = 1";
+            $query = "SELECT * FROM rol";
 
             $stm = $this->conex->prepare($query);
             $stm->execute();
@@ -208,7 +177,6 @@ class Piso extends Conexion
 
             case 'eliminar':
                 return $this->Eliminar();
-
 
             default:
                 return "Operacion: " . $peticion['peticion'] . " no valida";

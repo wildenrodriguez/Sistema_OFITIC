@@ -3,14 +3,24 @@ require_once 'config/config.php';
 class Conexion extends PDO
 {
     private $conex;
-    protected function __construct()
+    protected function __construct($bd)
     {
-        $conexstring = "mysql:host=" . _DB_HOST_ . ";dbname=" . _DB_NAME_ . ";charset=utf8";
+        $nombre_bd = "";
+        if($bd == "sistema"){
+            require_once 'config/system.php';
+             $nombre_bd = _DB_NAME_SYSTEM_;
+        } else if($bd == "usuario"){
+            require_once 'config/user.php';
+            $nombre_bd = _DB_NAME_USER_;
+        } else {
+             $nombre_bd = "error";
+        }
+        $conexstring = "mysql:host=" . _DB_HOST_ . ";dbname=" .  $nombre_bd . ";charset=utf8";
         try {
             $this->conex = new PDO($conexstring, _DB_USER_, _DB_PASS_);
             $this->conex->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            die("Conexión Fallida" . _DB_HOST_ . _DB_NAME_ . _DB_USER_ . _DB_PASS_ . $e->getMessage());
+            die("Conexión Fallida" . _DB_HOST_ .  $nombre_bd . _DB_USER_ . _DB_PASS_ . $e->getMessage());
         }
     }
     protected function Conex()
