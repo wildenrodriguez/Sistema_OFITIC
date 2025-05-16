@@ -7,76 +7,76 @@ if (!$_SESSION) {
 ob_start();
 if (is_file("view/" . $page . ".php")) {
 	require_once "controller/utileria.php";
-	require_once "model/edificio.php";
+	require_once "model/unidad.php";
 
 
-	$titulo = "Gestionar Edificios";
-	$cabecera = array('#', "Nombre", "Ubicación", "Modificar/Eliminar");
+	$titulo = "Gestionar Unidades";
+	$cabecera = array('#', "Nombre", "Modificar/Eliminar");
 
-	$edificio = new Edificio();
+	$unidad = new Unidad();
 
 	if (isset($_POST["entrada"])) {
 		$json['resultado'] = "entrada";
 		echo json_encode($json);
-		$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Ingresó al Módulo de Edificio";
+		$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Ingresó al Módulo de Unidad";
 		
-		Bitacora($msg, "Edificio");
+		Bitacora($msg, "Unidad");
 		exit;
 	}
 
 	if (isset($_POST["registrar"])) {
-		$edificio->set_nombre($_POST["nombre"]);
-		$edificio->set_ubicacion($_POST["direccion"]);
+		$unidad->set_nombre($_POST["nombre"]);
+		$unidad->set_ubicacion($_POST["direccion"]);
 		$peticion["peticion"] = "registrar";
-		$datos = $edificio->Transaccion($peticion);
+		$datos = $unidad->Transaccion($peticion);
 		echo json_encode($datos);
 
 		if($datos['estado'] == 1){
-			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se registró un nuevo edificio";
+			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se registró un nuevo Unidad";
 		} else {
-			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al registrar un nuevo edificio";
+			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al registrar un nuevo Unidad";
 		}
-		Bitacora($msg, "Edificio");
+		Bitacora($msg, "Unidad");
 		exit;
 	}
 
 	if (isset($_POST['consultar'])) {
 		$peticion["peticion"] = "consultar";
-		$datos = $edificio->Transaccion($peticion);
+		$datos = $unidad->Transaccion($peticion);
 		echo json_encode($datos);
 		exit;
 	}
 
 
 	if (isset($_POST["modificar"])) {
-		$edificio->set_id($_POST["id_edificio"]);
-		$edificio->set_nombre($_POST["nombre"]);
-		$edificio->set_ubicacion($_POST["direccion"]);
+		$unidad->set_id($_POST["id_Unidad"]);
+		$unidad->set_nombre($_POST["nombre"]);
+		$unidad->set_ubicacion($_POST["direccion"]);
 		$peticion["peticion"] = "actualizar";
-		$datos = $edificio->Transaccion($peticion);
+		$datos = $unidad->Transaccion($peticion);
 		echo json_encode($datos);
 
 		if($datos['estado'] == 1){
-			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se modificó el registro del edificio";
+			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se modificó el registro del Unidad";
 		} else {
-			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al modificar edificio";
+			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al modificar Unidad";
 		}
-		Bitacora($msg, "Edificio");
+		Bitacora($msg, "Unidad");
 		exit;
 	}
 
 	if (isset($_POST["eliminar"])) {
-		$edificio->set_id($_POST["id_edificio"]);
+		$unidad->set_id($_POST["id_Unidad"]);
 		$peticion["peticion"] = "eliminar";
-		$datos = $edificio->Transaccion($peticion);
+		$datos = $unidad->Transaccion($peticion);
 		echo json_encode($datos);
 
 		if($datos['estado'] == 1){
-			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se eliminó un edificio";
+			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se eliminó un Unidad";
 		} else {
-			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al eliminar un edificio";
+			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al eliminar un Unidad";
 		}
-		Bitacora($msg, "Edificio");
+		Bitacora($msg, "Unidad");
 		exit;
 	}
 

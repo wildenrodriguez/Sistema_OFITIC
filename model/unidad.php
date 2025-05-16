@@ -1,12 +1,10 @@
 <?php
 require_once "model/conexion.php";
-class Edificio extends Conexion
+class Unidad extends Conexion
 {
 
     private $id;
     private $nombre;
-    private $ubicacion;
-    private $estatus;
 
     public function __construct()
     {
@@ -25,17 +23,6 @@ class Edificio extends Conexion
         $this->nombre = $nombre;
     }
 
-    public function set_ubicacion($ubicacion)
-    {
-        $this->ubicacion = $ubicacion;
-    }
-
-
-    public function set_estatus($estatus)
-    {
-        $this->estatus = $estatus;
-    }
-
     public function get_id()
     {
         return $this->id;
@@ -46,22 +33,12 @@ class Edificio extends Conexion
         return $this->nombre;
     }
 
-    public function get_ubicacion()
-    {
-        return $this->ubicacion;
-    }
-
-    public function get_estatus()
-    {
-        return $this->estatus;
-    }
-
     private function Validar()
     {
         $dato = [];
 
         try {
-            $query = "SELECT * FROM edificio WHERE id_edificio = :id";
+            $query = "SELECT * FROM unidad WHERE id_unidad = :id";
 
             $stm = $this->conex->prepare($query);
             $stm->bindParam(":id", $this->id);
@@ -88,16 +65,15 @@ class Edificio extends Conexion
 
         if ($bool['bool'] == 0) {
             try {
-                $query = "INSERT INTO edificio(id_edificio, nombre, ubicacion) VALUES 
+                $query = "INSERT INTO unidad(id_unidad, nombre, ubicacion) VALUES 
             (NULL, :nombre, :ubicacion)";
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":nombre", $this->nombre);
-                $stm->bindParam(":ubicacion", $this->ubicacion);
                 $stm->execute();
                 $dato['resultado'] = "registrar";
                 $dato['estado'] = 1;
-                $dato['mensaje'] = "Se registró el edificio exitosamente";
+                $dato['mensaje'] = "Se registró el unidad exitosamente";
             } catch (PDOException $e) {
                 $dato['resultado'] = "error";
                 $dato['estado'] = -1;
@@ -117,16 +93,15 @@ class Edificio extends Conexion
         $dato = [];
 
             try {
-                $query = "UPDATE edificio SET nombre= :nombre, ubicacion= :ubicacion WHERE id_edificio = :id";
+                $query = "UPDATE unidad SET nombre_unidad = :nombre WHERE id_unidad = :id";
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":id", $this->id);
                 $stm->bindParam(":nombre", $this->nombre);
-                $stm->bindParam(":ubicacion", $this->ubicacion);
                 $stm->execute();
                 $dato['resultado'] = "modificar";
                 $dato['estado'] = 1;
-                $dato['mensaje'] = "Se modificaron los datos del edificio con éxito";
+                $dato['mensaje'] = "Se modificaron los datos del unidad con éxito";
             } catch (PDOException $e) {
                 $dato['estado'] = -1;
                 $dato['resultado'] = "error";
@@ -143,14 +118,14 @@ class Edificio extends Conexion
 
         if ($bool['bool'] != 0) {
             try {
-                $query = "UPDATE edificio SET estatus = 0 WHERE id_edificio = :id";
+                $query = "UPDATE unidad SET estatus = 0 WHERE id_unidad = :id";
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":id", $this->id);
                 $stm->execute();
                 $dato['resultado'] = "eliminar";
                 $dato['estado'] = 1;
-                $dato['mensaje'] = "Se eliminó el edificio exitosamente";
+                $dato['mensaje'] = "Se eliminó el unidad exitosamente";
             } catch (PDOException $e) {
                 $dato['resultado'] = "error";
                 $dato['estado'] = -1;
@@ -170,7 +145,7 @@ class Edificio extends Conexion
         $dato = [];
 
         try {
-            $query = "SELECT * FROM edificio WHERE estatus = 1";
+            $query = "SELECT * FROM unidad WHERE estatus = 1";
 
             $stm = $this->conex->prepare($query);
             $stm->execute();

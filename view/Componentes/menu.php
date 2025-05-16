@@ -223,7 +223,7 @@
         <ul id="icons-nav" style="margin-left: 1em;" class="nav-content <?php echo ($page == "Configuracion") ? "" : "collapse" ?>" data-bs-parent="#sidebar-nav">
 
           <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "unidad") ? "active" : "" ?>">
-            <a href="?page=Configuracion&dato=unidad">
+            <a href="?page=unidad">
               <i class="fa-solid fa-users-gear"></i>
               <span class="menu-text">Unidad</span>
             </a>
