@@ -168,10 +168,9 @@ function crearDataTable(arreglo) {
 	tabla = $('#tabla1').DataTable({
 		data: arreglo,
 		columns: [
-			{ data: 'id_oficiona' },
-			{ data: 'nombre' },
+			{ data: 'id_oficina' },
+			{ data: 'nombre_oficina' },
 			{ data: 'nro_piso' },
-			{ data: 'nombre_edificio' },
 			{
 				data: null, render: function () {
 					const botones = `<button onclick="rellenar(this, 0)" class="btn btn-update"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -256,10 +255,9 @@ function consultarEliminadas() {
                     $('#tablaEliminadas').DataTable({
                         data: lee.datos,
                         columns: [
-                            { data: 'id_oficiona' },
-                            { data: 'nombre' },
+                            { data: 'id_oficina' },
+                            { data: 'nombre_oficina' },
                             { data: 'nro_piso' },
-                            { data: 'nombre_edificio' },
                             {
                                 data: null, 
                                 render: function() {

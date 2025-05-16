@@ -10,7 +10,7 @@ if (is_file("view/" . $page . ".php")) {
     require_once "model/oficina.php";
 
     $titulo = "Gestionar Oficinas";
-    $cabecera = array('#', "Nombre", "Piso", "Edificio", "Modificar/Eliminar");
+    $cabecera = array('#', "Nombre", "Piso", "Modificar/Eliminar");
 
     $oficina = new Oficina();
 

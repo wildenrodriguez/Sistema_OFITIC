@@ -58,7 +58,7 @@ class Oficina extends Conexion
         $dato = [];
 
         try {
-            $query = "SELECT * FROM oficina WHERE id_oficiona = :id";
+            $query = "SELECT * FROM oficina WHERE id_oficina = :id";
 
             $stm = $this->conex->prepare($query);
             $stm->bindParam(":id", $this->id);
@@ -85,7 +85,7 @@ class Oficina extends Conexion
 
         if ($bool['bool'] == 0) {
             try {
-                $query = "INSERT INTO oficina(id_oficiona, id_piso, nombre, estatus) VALUES 
+                $query = "INSERT INTO oficina(id_oficina, id_piso, nombre_oficina, estatus) VALUES 
                 (NULL, :id_piso, :nombre, 1)";
 
                 $stm = $this->conex->prepare($query);
@@ -114,7 +114,7 @@ class Oficina extends Conexion
         $dato = [];
 
         try {
-            $query = "UPDATE oficina SET id_piso= :id_piso, nombre= :nombre WHERE id_oficiona = :id";
+            $query = "UPDATE oficina SET id_piso= :id_piso, nombre_oficina= :nombre WHERE id_oficina = :id";
 
             $stm = $this->conex->prepare($query);
             $stm->bindParam(":id", $this->id);
@@ -140,7 +140,7 @@ class Oficina extends Conexion
 
         if ($bool['bool'] != 0) {
             try {
-                $query = "UPDATE oficina SET estatus = 0 WHERE id_oficiona = :id";
+                $query = "UPDATE oficina SET estatus = 0 WHERE id_oficina = :id";
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":id", $this->id);
@@ -167,10 +167,10 @@ class Oficina extends Conexion
         $dato = [];
 
         try {
-            $query = "SELECT o.*, p.nro_piso
-                     FROM oficina o 
-                     JOIN piso p ON o.id_piso = p.id_piso 
-                     WHERE o.estatus = 1";
+            $query = "SELECT o.id_oficina, nombre_oficina, p.nro_piso
+                    FROM oficina o 
+                    JOIN piso p ON o.id_piso = p.id_piso 
+                    WHERE o.estatus = 1";
 
             $stm = $this->conex->prepare($query);
             $stm->execute();
@@ -189,10 +189,7 @@ class Oficina extends Conexion
         $dato = [];
 
         try {
-            $query = "SELECT p.*, e.nombre as nombre_edificio 
-                     FROM piso p 
-                     JOIN edificio e ON p.id_edificio = e.id_edificio 
-                     WHERE p.estatus = 1";
+            $query = "SELECT * FROM piso WHERE estatus = 1";
 
             $stm = $this->conex->prepare($query);
             $stm->execute();
@@ -207,10 +204,9 @@ class Oficina extends Conexion
     $dato = [];
 
     try {
-        $query = "SELECT o.*, p.nro_piso, e.nombre as nombre_edificio 
+        $query = "SELECT o.*, p.nro_piso
                 FROM oficina o 
                 JOIN piso p ON o.id_piso = p.id_piso 
-                JOIN edificio e ON p.id_edificio = e.id_edificio 
                 WHERE o.estatus = 0";
 
         $stm = $this->conex->prepare($query);
@@ -229,7 +225,7 @@ private function Restaurar()
 {
     $dato = [];
     try {
-        $query = "UPDATE oficina SET estatus = 1 WHERE id_oficiona = :id";
+        $query = "UPDATE oficina SET estatus = 1 WHERE id_oficina = :id";
 
         $stm = $this->conex->prepare($query);
         $stm->bindParam(":id", $this->id);

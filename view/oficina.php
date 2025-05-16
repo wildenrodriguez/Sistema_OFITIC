@@ -69,7 +69,6 @@
                                     <th>#</th>
                                     <th>Nombre</th>
                                     <th>Piso</th>
-                                    <th>Edificio</th>
                                     <th>Restaurar</th>
                                 </tr>
                             </thead>

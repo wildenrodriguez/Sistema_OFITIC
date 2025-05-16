@@ -30,7 +30,7 @@
                                 <option value="">Seleccione un piso</option>
                                 <?php foreach ($pisos as $piso): ?>
                                     <option value="<?= $piso['id_piso'] ?>">
-                                        <?= $piso['nombre_edificio'] ?> - <?= $piso['tipo_piso'] ?> <?= $piso['nro_piso'] ?>
+                                        <?= $piso['tipo_piso'] ?> <?= $piso['nro_piso'] ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
