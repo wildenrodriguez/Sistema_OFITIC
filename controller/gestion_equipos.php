@@ -4,133 +4,116 @@ if (!$_SESSION) {
     $msg["danger"] = "Sesion Finalizada.";
 }
 
-require_once "model/usuario.php";
-$usuario = new Usuario();
+ob_start();
+if (is_file("view/" . $page . ".php")) {
+    require_once "controller/utileria.php";
+    require_once "model/equipo.php";
 
-if(is_file("view/$page.php")){
-    $peticion = [];
-    $titulo = "Gestion de Equipos";
-    $css = ["alert","style"];
-    $cabecera = array("#","Serial","Tipo","Marca","Nro. bien","Dependencia", "Acciones");
+    $titulo = "Gestionar Equipos";
+    $cabecera = array('#', "Tipo", "Serial", "Código Bien", "Dependencia", "Modificar/Eliminar");
 
-    $usuario->set_cedula($_SESSION['user']['cedula']);
-    $datos = $_SESSION['user'];
-    $datos = $datos + $usuario->Transaccion(['peticion' => 'perfil']);
-
-    require_once('model/equipo.php');
     $equipo = new Equipo();
-    require_once('model/configuracion.php');
-    $config = new Configuracion();
-    require_once('model/bien.php');
-    $bien = new Bien();
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        if (isset($_POST['accion'])) {
-            $equipo->set_datos($_POST);
-            
-            switch ($_POST['accion']) {
-                case 'registrar':
-                    // Validar serial
-                    if ($equipo->Transaccion(['peticion' => 'validar'])) {
-                        echo json_encode([
-                            'success' => false,
-                            'message' => 'El serial ya está registrado'
-                        ]);
-                        exit;
-                    }
-                    
-                    // Validar que el bien no tenga equipo asignado
-                    if (!empty($_POST['nro_bien'])) {
-                        $bienAsignado = $equipo->Transaccion([
-                            'peticion' => 'validar_bien',
-                            'nro_bien' => $_POST['nro_bien']
-                        ]);
-                        
-                        if ($bienAsignado) {
-                            echo json_encode([
-                                'success' => false,
-                                'message' => 'El bien ya tiene un equipo asignado'
-                            ]);
-                            exit;
-                        }
-                    }
-                    
-                    // Registrar equipo
-                    $result = $equipo->Transaccion(['peticion' => 'registrar']);
-                    echo json_encode([
-                        'success' => $result,
-                        'message' => $result ? 'Equipo registrado exitosamente' : 'Error al registrar el equipo'
-                    ]);
-                    exit;
-                    
-                case 'modificar':
-                    // Validar que el nuevo bien no tenga equipo asignado (excepto si es el mismo equipo)
-                    if (!empty($_POST['nro_bien'])) {
-                        $bienAsignado = $equipo->Transaccion([
-                            'peticion' => 'validar_bien',
-                            'nro_bien' => $_POST['nro_bien'],
-                            'excluir' => $_POST['id']
-                        ]);
-                        
-                        if ($bienAsignado) {
-                            echo json_encode([
-                                'success' => false,
-                                'message' => 'El bien ya tiene un equipo asignado'
-                            ]);
-                            exit;
-                        }
-                    }
-                    
-                    // Actualizar equipo
-                    $result = $equipo->Transaccion(['peticion' => 'modificar']);
-                    echo json_encode([
-                        'success' => $result,
-                        'message' => $result ? 'Equipo actualizado exitosamente' : 'Error al actualizar el equipo'
-                    ]);
-                    exit;
-                    
-                case 'eliminar':
-                    $result = $equipo->Transaccion(['peticion' => 'eliminar']);
-                    echo json_encode([
-                        'success' => $result,
-                        'message' => $result ? 'Equipo eliminado exitosamente' : 'Error al eliminar el equipo'
-                    ]);
-                    exit;
-                    
-                case 'consultar':
-                    $equipos = $equipo->Transaccion(['peticion' => 'consultar']);
-                    echo json_encode([
-                        'data' => $equipos
-                    ]);
-                    exit;
-                    
-                case 'bienes_disponibles':
-                    $bienes = $bien->Transaccion([
-                        'peticion' => 'listar_disponibles',
-                        'excluir_bien' => $_POST['excluir_bien'] ?? null
-                    ]);
-                    echo json_encode($bienes);
-                    exit;
-            }
-        }
-        
-        if (isset($_POST["reporte"])) {
-            require_once "model/reporte.php";
-            $reporte = new reporte();
-            ob_clean();
-            $reporte->equipos($equipo->Transaccion(['peticion' => 'consultar']));
-            exit;
-        }
+    if (isset($_POST["entrada"])) {
+        $json['resultado'] = "entrada";
+        echo json_encode($json);
+        $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Ingresó al Módulo de Equipos";
+        Bitacora($msg, "Equipo");
+        exit;
     }
 
-    $peticion['peticion'] = "consulta_marcas";
-    $marcas = $equipo->Transaccion($peticion);
-    
-    $config->set_tabla('dependencia');
-    $dependencias = $config->Transaccion("consultar");
-    
-    $bienes = $bien->Transaccion(['peticion' => 'listar_disponibles']);
-    require_once "view/$page.php";
+    if (isset($_POST["registrar"])) {
+        $equipo->set_tipo_equipo($_POST["tipo_equipo"]);
+        $equipo->set_serial($_POST["serial"]);
+        $equipo->set_codigo_bien($_POST["codigo_bien"]);
+        $equipo->set_id_dependencia($_POST["id_dependencia"]);
+        $peticion["peticion"] = "registrar";
+        $datos = $equipo->Transaccion($peticion);
+        echo json_encode($datos);
+
+        if($datos['estado'] == 1){
+            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se registró un nuevo equipo";
+        } else {
+            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al registrar un nuevo equipo";
+        }
+        Bitacora($msg, "Equipo");
+        exit;
+    }
+
+    if (isset($_POST['consultar'])) {
+        $peticion["peticion"] = "consultar";
+        $datos = $equipo->Transaccion($peticion);
+        echo json_encode($datos);
+        exit;
+    }
+
+    if (isset($_POST["consultar_eliminadas"])) {
+        $peticion["peticion"] = "consultar_eliminadas";
+        $datos = $equipo->Transaccion($peticion);
+        echo json_encode($datos);
+        exit;
+    }
+
+    if (isset($_POST["restaurar"])) {
+        $equipo->set_id_equipo($_POST["id_equipo"]);
+        $peticion["peticion"] = "restaurar";
+        $datos = $equipo->Transaccion($peticion);
+        echo json_encode($datos);
+        exit;
+    }
+
+    if (isset($_POST['consultar_dependencias'])) {
+        $peticion["peticion"] = "consultar_dependencias";
+        $datos = $equipo->Transaccion($peticion);
+        echo json_encode($datos);
+        exit;
+    }
+
+    if (isset($_POST['consultar_bienes'])) {
+        $peticion["peticion"] = "consultar_bienes";
+        $datos = $equipo->Transaccion($peticion);
+        echo json_encode($datos);
+        exit;
+    }
+
+    if (isset($_POST["modificar"])) {
+        $equipo->set_id_equipo($_POST["id_equipo"]);
+        $equipo->set_tipo_equipo($_POST["tipo_equipo"]);
+        $equipo->set_serial($_POST["serial"]);
+        $equipo->set_codigo_bien($_POST["codigo_bien"]);
+        $equipo->set_id_dependencia($_POST["id_dependencia"]);
+        $peticion["peticion"] = "actualizar";
+        $datos = $equipo->Transaccion($peticion);
+        echo json_encode($datos);
+
+        if($datos['estado'] == 1){
+            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se modificó el registro del equipo";
+        } else {
+            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al modificar equipo";
+        }
+        Bitacora($msg, "Equipo");
+        exit;
+    }
+
+    if (isset($_POST["eliminar"])) {
+        $equipo->set_id_equipo($_POST["id_equipo"]);
+        $peticion["peticion"] = "eliminar";
+        $datos = $equipo->Transaccion($peticion);
+        echo json_encode($datos);
+
+        if($datos['estado'] == 1){
+            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se eliminó un equipo";
+        } else {
+            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al eliminar un equipo";
+        }
+        Bitacora($msg, "Equipo");
+        exit;
+    }
+
+    $dependencias = $equipo->Transaccion(['peticion' => 'consultar_dependencias']);
+    $bienes = $equipo->Transaccion(['peticion' => 'consultar_bienes']);
+
+    require_once "view/" . $page . ".php";
 } else {
     require_once "view/404.php";
 }
