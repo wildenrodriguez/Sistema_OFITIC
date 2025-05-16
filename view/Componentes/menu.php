@@ -26,7 +26,7 @@
           </a>
         </li>
 
-        <?php if ($datos["rol"] == "Super usuario" or $datos["rol"] == "ADMINISTRADOR") { ?>
+        <?php if ($datos["rol"] == "SUPERUSUARIO" or $datos["rol"] == "ADMINISTRADOR") { ?>
           <li class="menu-item <?php echo ($page == "servicios") ? "active" : "" ?>">
             <a href="?page=servicios">
               <i class="fa-solid fa-clipboard-check"></i>
@@ -35,7 +35,7 @@
           </li>
         <?php } ?>
 
-        <?php if ($datos["rol"] == "Super usuario" or $datos["rol"] == "ADMINISTRADOR") { ?>
+        <?php if ($datos["rol"] == "SUPERUSUARIO" or $datos["rol"] == "ADMINISTRADOR") { ?>
 
           <li class="menu-item <?php echo ($page == "solicitudes") ? "active" : "" ?>">
             <a href="?page=solicitudes">
@@ -103,7 +103,7 @@
             </li>
 
             <ul>
-              <?php if ($datos["rol"] == "ADMINISTRADOR" || $datos["rol"] == "Super usuario") { ?>
+              <?php if ($datos["rol"] == "ADMINISTRADOR" || $datos["rol"] == "SUPERUSUARIO") { ?>
                 <li class="menu-item <?php echo ($page == "Mantenimiento") ? "active" : "" ?>">
                   <a class="nav-link collapsed" data-bs-target="#icons-nave" data-bs-toggle="collapse" href="#">
                     <i class="fas fa-cog"></i>
