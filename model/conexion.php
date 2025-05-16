@@ -3,7 +3,7 @@ require_once 'config/config.php';
 class Conexion extends PDO
 {
     private $conex;
-    protected function __construct($bd)
+    public function __construct($bd)
     {
         $nombre_bd = "";
         if($bd == "sistema"){
@@ -25,7 +25,7 @@ class Conexion extends PDO
     }
     protected function Conex()
     {
-        return  $this->conex;
+        return $this->conex;
     }
 
     protected function Cerrar_Conexion(&$conexion, &$stm)

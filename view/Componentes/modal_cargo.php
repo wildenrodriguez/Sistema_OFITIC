@@ -7,14 +7,7 @@
                 <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="row justify-content-center">
-                    <div class="col-4">
-                        <div class="form-floating mb-3 mt-4">
-                            <input placeholder="" class="form-control" name="id_cargo" type="text" id="id_cargo" readonly>
-                            <span id="sid_cargo"></span>
-                            <label for="id_cargo" class="form-label">ID Cargo</label>
-                        </div>
-                    </div>
+                <div class="row justify-content-center" id= "Fila1">
                     <div class="col-8">
                         <div class="form-floating mb-3 mt-4">
                             <input placeholder="" class="form-control" name="nombre_cargo" type="text" id="nombre_cargo" maxlength="45">

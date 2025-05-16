@@ -59,6 +59,8 @@ if (is_file("view/" . $page . ".php")) {
 
 	if (isset($_POST["modificar"])) {
 		$piso->set_id($_POST["id_piso"]);
+		$piso->set_id_edificio($_POST["id_edificio"]);
+		$piso->set_tipo($_POST["tipo_piso"]);
 		$piso->set_nro_piso($_POST["nro_piso"]);
 		$peticion["peticion"] = "actualizar";
 		$datos = $piso->Transaccion($peticion);
@@ -74,9 +76,9 @@ if (is_file("view/" . $page . ".php")) {
 	}
 
 	if (isset($_POST["eliminar"])) {
-		$piso->set_id($_POST["id_edificio"]);
+		$piso->set_id($_POST["id_piso"]);
 		$peticion["peticion"] = "eliminar";
-		$datos = $edificio->Transaccion($peticion);
+		$datos = $piso->Transaccion($peticion);
 		echo json_encode($datos);
 
 		if ($datos['estado'] == 1) {
