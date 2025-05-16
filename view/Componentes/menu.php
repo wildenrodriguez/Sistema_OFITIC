@@ -67,12 +67,6 @@
                   <span class="menu-text">Bienes</span>
                 </a>
               </li>
-              <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "marca") ? "active" : "" ?>">
-                <a href="?page=Configuracion&dato=marca">
-                  <i class="fas fa-cog"></i>
-                  <span class="menu-text">Marca</span>
-                </a>
-              </li>
 
             </ul>
 
