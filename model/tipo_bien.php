@@ -1,9 +1,8 @@
 <?php
 require_once "model/conexion.php";
-class Oficina extends Conexion
+class TipoBien extends Conexion
 {
     private $id;
-    private $id_piso;
     private $nombre;
     private $estatus;
 
@@ -16,11 +15,6 @@ class Oficina extends Conexion
     public function set_id($id)
     {
         $this->id = $id;
-    }
-
-    public function set_id_piso($id_piso)
-    {
-        $this->id_piso = $id_piso;
     }
 
     public function set_nombre($nombre)
@@ -38,11 +32,6 @@ class Oficina extends Conexion
         return $this->id;
     }
 
-    public function get_id_piso()
-    {
-        return $this->id_piso;
-    }
-
     public function get_nombre()
     {
         return $this->nombre;
@@ -58,8 +47,7 @@ class Oficina extends Conexion
         $dato = [];
 
         try {
-            $query = "SELECT * FROM oficina WHERE id_oficina = :id";
-
+            $query = "SELECT * FROM tipo_bien WHERE id_tipo_bien = :id";
             $stm = $this->conex->prepare($query);
             $stm->bindParam(":id", $this->id);
             $stm->execute();
@@ -85,16 +73,15 @@ class Oficina extends Conexion
 
         if ($bool['bool'] == 0) {
             try {
-                $query = "INSERT INTO oficina(id_oficina, id_piso, nombre_oficina, estatus) VALUES 
-                (NULL, :id_piso, :nombre, 1)";
+                $query = "INSERT INTO tipo_bien(id_tipo_bien, nombre_tipo_bien, estatus) VALUES 
+                (NULL, :nombre, 1)";
 
                 $stm = $this->conex->prepare($query);
-                $stm->bindParam(":id_piso", $this->id_piso);
                 $stm->bindParam(":nombre", $this->nombre);
                 $stm->execute();
                 $dato['resultado'] = "registrar";
                 $dato['estado'] = 1;
-                $dato['mensaje'] = "Se registró la oficina exitosamente";
+                $dato['mensaje'] = "Se registró el tipo de bien exitosamente";
             } catch (PDOException $e) {
                 $dato['resultado'] = "error";
                 $dato['estado'] = -1;
@@ -114,16 +101,15 @@ class Oficina extends Conexion
         $dato = [];
 
         try {
-            $query = "UPDATE oficina SET id_piso= :id_piso, nombre_oficina= :nombre WHERE id_oficina = :id";
+            $query = "UPDATE tipo_bien SET nombre_tipo_bien = :nombre WHERE id_tipo_bien = :id";
 
             $stm = $this->conex->prepare($query);
             $stm->bindParam(":id", $this->id);
-            $stm->bindParam(":id_piso", $this->id_piso);
             $stm->bindParam(":nombre", $this->nombre);
             $stm->execute();
             $dato['resultado'] = "modificar";
             $dato['estado'] = 1;
-            $dato['mensaje'] = "Se modificaron los datos de la oficina con éxito";
+            $dato['mensaje'] = "Se modificaron los datos del tipo de bien con éxito";
         } catch (PDOException $e) {
             $dato['estado'] = -1;
             $dato['resultado'] = "error";
@@ -140,14 +126,14 @@ class Oficina extends Conexion
 
         if ($bool['bool'] != 0) {
             try {
-                $query = "UPDATE oficina SET estatus = 0 WHERE id_oficina = :id";
+                $query = "UPDATE tipo_bien SET estatus = 0 WHERE id_tipo_bien = :id";
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":id", $this->id);
                 $stm->execute();
                 $dato['resultado'] = "eliminar";
                 $dato['estado'] = 1;
-                $dato['mensaje'] = "Se eliminó la oficina exitosamente";
+                $dato['mensaje'] = "Se eliminó el tipo de bien exitosamente";
             } catch (PDOException $e) {
                 $dato['resultado'] = "error";
                 $dato['estado'] = -1;
@@ -167,11 +153,7 @@ class Oficina extends Conexion
         $dato = [];
 
         try {
-            $query = "SELECT o.id_oficina, nombre_oficina, p.nro_piso
-                    FROM oficina o 
-                    JOIN piso p ON o.id_piso = p.id_piso 
-                    WHERE o.estatus = 1";
-
+            $query = "SELECT * FROM tipo_bien WHERE estatus = 1";
             $stm = $this->conex->prepare($query);
             $stm->execute();
             $dato['resultado'] = "consultar";
@@ -184,66 +166,47 @@ class Oficina extends Conexion
         return $dato;
     }
 
-    public function ConsultarPisos()
+    private function ConsultarEliminadas()
     {
         $dato = [];
 
         try {
-            $query = "SELECT * FROM piso WHERE estatus = 1";
-
+            $query = "SELECT * FROM tipo_bien WHERE estatus = 0";
             $stm = $this->conex->prepare($query);
             $stm->execute();
-            return $stm->fetchAll(PDO::FETCH_ASSOC);
+            $dato['resultado'] = "consultar_eliminadas";
+            $dato['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            return [];
+            $dato['resultado'] = "error";
+            $dato['mensaje'] = $e->getMessage();
         }
+        $this->Cerrar_Conexion($this->conex, $stm);
+        return $dato;
     }
 
-    private function ConsultarEliminadas()
-{
-    $dato = [];
+    private function Restaurar()
+    {
+        $dato = [];
+        try {
+            $query = "UPDATE tipo_bien SET estatus = 1 WHERE id_tipo_bien = :id";
 
-    try {
-        $query = "SELECT o.*, p.nro_piso
-                FROM oficina o 
-                JOIN piso p ON o.id_piso = p.id_piso 
-                WHERE o.estatus = 0";
-
-        $stm = $this->conex->prepare($query);
-        $stm->execute();
-        $dato['resultado'] = "consultar_eliminadas";
-        $dato['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        $dato['resultado'] = "error";
-        $dato['mensaje'] = $e->getMessage();
+            $stm = $this->conex->prepare($query);
+            $stm->bindParam(":id", $this->id);
+            $stm->execute();
+            $dato['resultado'] = "restaurar";
+            $dato['estado'] = 1;
+            $dato['mensaje'] = "Tipo de bien restaurado exitosamente";
+            
+            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se restauró el tipo de bien ID: " . $this->id;
+            Bitacora($msg, "TipoBien");
+        } catch (PDOException $e) {
+            $dato['resultado'] = "error";
+            $dato['estado'] = -1;
+            $dato['mensaje'] = $e->getMessage();
+        }
+        $this->Cerrar_Conexion($this->conex, $stm);
+        return $dato;
     }
-    $this->Cerrar_Conexion($this->conex, $stm);
-    return $dato;
-}
-
-private function Restaurar()
-{
-    $dato = [];
-    try {
-        $query = "UPDATE oficina SET estatus = 1 WHERE id_oficina = :id";
-
-        $stm = $this->conex->prepare($query);
-        $stm->bindParam(":id", $this->id);
-        $stm->execute();
-        $dato['resultado'] = "restaurar";
-        $dato['estado'] = 1;
-        $dato['mensaje'] = "Oficina restaurada exitosamente";
-        
-        $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se restauró la oficina ID: " . $this->id;
-        Bitacora($msg, "Oficina");
-    } catch (PDOException $e) {
-        $dato['resultado'] = "error";
-        $dato['estado'] = -1;
-        $dato['mensaje'] = $e->getMessage();
-    }
-    $this->Cerrar_Conexion($this->conex, $stm);
-    return $dato;
-}
 
     public function Transaccion($peticion)
     {
@@ -257,14 +220,12 @@ private function Restaurar()
             case 'consultar_eliminadas':
                 return $this->ConsultarEliminadas();   
 
-            case 'consultar_pisos':
-                return $this->ConsultarPisos();
-
             case 'actualizar':
                 return $this->Actualizar();
 
             case 'eliminar':
                 return $this->Eliminar();
+                
             case 'restaurar':
                 return $this->Restaurar();
 

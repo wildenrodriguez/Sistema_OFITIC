@@ -10,32 +10,16 @@
                 <div class="row justify-content-center" id="Fila1">
                     <div class="col-4">
                         <div class="form-floating mb-3 mt-4">
-                            <input placeholder="" class="form-control" name="id_oficina" type="text" id="id_oficina" readonly>
-                            <span id="sid_oficina"></span>
-                            <label for="id_oficina" class="form-label">ID Oficina</label>
+                            <input placeholder="" class="form-control" name="id_tipo_bien" type="text" id="id_tipo_bien" readonly>
+                            <span id="sid_tipo_bien"></span>
+                            <label for="id_tipo_bien" class="form-label">ID Tipo de Bien</label>
                         </div>
                     </div>
                     <div class="col-8">
                         <div class="form-floating mb-3 mt-4">
                             <input placeholder="" class="form-control" name="nombre" type="text" id="nombre" maxlength="45">
                             <span id="snombre"></span>
-                            <label for="nombre" class="form-label">Nombre de la Oficina</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row justify-content-center">
-                    <div class="col-12">
-                        <div class="form-floating mb-3 mt-4">
-                            <select class="form-select" name="id_piso" id="id_piso">
-                                <option value="">Seleccione un piso</option>
-                                <?php foreach ($pisos as $piso): ?>
-                                    <option value="<?= $piso['id_piso'] ?>">
-                                        <?= $piso['tipo_piso'] ?> <?= $piso['nro_piso'] ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                            <span id="sid_piso"></span>
-                            <label for="id_piso" class="form-label">Piso</label>
+                            <label for="nombre" class="form-label">Nombre del Tipo de Bien</label>
                         </div>
                     </div>
                 </div>

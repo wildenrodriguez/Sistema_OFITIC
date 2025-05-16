@@ -10,7 +10,6 @@ $(document).ready(function () {
 				if (validarenvio()) {
 					var datos = new FormData();
 					datos.append('registrar', 'registrar');
-					datos.append('id_piso', $("#id_piso").val());
 					datos.append('nombre', $("#nombre").val());
 					enviaAjax(datos);
 				}
@@ -19,8 +18,7 @@ $(document).ready(function () {
 				if (validarenvio()) {
 					var datos = new FormData();
 					datos.append('modificar', 'modificar');
-					datos.append('id_oficina', $("#id_oficina").val());
-					datos.append('id_piso', $("#id_piso").val());
+					datos.append('id_tipo_bien', $("#id_tipo_bien").val());
 					datos.append('nombre', $("#nombre").val());
 					enviaAjax(datos);
 				}
@@ -29,7 +27,7 @@ $(document).ready(function () {
 				if (validarenvio()) {
 					var datos = new FormData();
 					datos.append('eliminar', 'eliminar');
-					datos.append('id_oficina', $("#id_oficina").val());
+					datos.append('id_tipo_bien', $("#id_tipo_bien").val());
 					enviaAjax(datos);
 				}
 				break;
@@ -42,13 +40,13 @@ $(document).ready(function () {
 
 	$("#btn-registrar").on("click", function () {
 		limpia();
-		$("#id_oficina").parent().parent().remove();
+		$("#id_tipo_bien").parent().parent().remove();
         $("#nombre").parent().parent().show();
-        $("#id_piso").parent().parent().show();
-		$("#modalTitleId").text("Registrar Oficina");
+		$("#modalTitleId").text("Registrar Tipo de Bien");
 		$("#enviar").text("Registrar");
 		$("#modal1").modal("show");
 	});
+    
     $("#btn-consultar-eliminados").on("click", function() {
         consultarEliminadas();
         $("#modalEliminadas").modal("show");
@@ -77,8 +75,8 @@ function enviaAjax(datos) {
 				} else if (lee.resultado == "consultar") {
 					iniciarTabla(lee.datos);
 
-				} else if (lee.resultado == "consultar") {
-					iniciarTabla(lee.datos);
+				} else if (lee.resultado == "consultar_eliminadas") {
+					iniciarTablaEliminadas(lee.datos);
 
 				} else if (lee.resultado == "modificar") {
 					$("#modal1").modal("hide");
@@ -112,7 +110,6 @@ function enviaAjax(datos) {
 	});
 }
 
-
 function capaValidar() {
 	$("#nombre").on("keypress", function (e) {
 		validarKeyPress(/^[0-9 a-zA-ZáéíóúüñÑçÇ -.\b]*$/, e);
@@ -120,34 +117,14 @@ function capaValidar() {
 	$("#nombre").on("keyup", function () {
 		validarKeyUp(
 			/^[0-9 a-zA-ZáéíóúüñÑçÇ -.]{3,45}$/, $(this), $("#snombre"),
-			"El nombre de la oficina debe tener de 3 a 45 carácteres"
+			"El nombre del tipo de bien debe tener de 3 a 45 carácteres"
 		);
-	});
-
-	$("#id_piso").on("change", function () {
-		if ($(this).val() == "") {
-			$(this).addClass("is-invalid");
-			$(this).removeClass("is-valid");
-			$("#sid_piso").addClass("invalid-feedback");
-			$("#sid_piso").removeClass("valid-feedback");
-			$("#sid_piso").text("Debe seleccionar un piso");
-		} else {
-			$(this).addClass("is-valid");
-			$(this).removeClass("is-invalid");
-			$("#sid_piso").addClass("valid-feedback");
-			$("#sid_piso").removeClass("invalid-feedback");
-			$("#sid_piso").text("");
-		}
 	});
 }
 
 function validarenvio() {
 	if (validarKeyUp(/^[0-9 a-zA-ZáéíóúüñÑçÇ -.]{3,45}$/, $("#nombre"), $("#snombre"), "") == 0) {
-		mensajes("error", 10000, "Verifica", "El nombre de la oficina debe tener de 3 a 45 carácteres");
-		return false;
-
-	} else if ($("#id_piso").val() == "") {
-		mensajes("error", 10000, "Verifica", "Debe seleccionar un piso");
+		mensajes("error", 10000, "Verifica", "El nombre del tipo de bien debe tener de 3 a 45 carácteres");
 		return false;
 	}
 	return true;
@@ -168,9 +145,8 @@ function crearDataTable(arreglo) {
 	tabla = $('#tabla1').DataTable({
 		data: arreglo,
 		columns: [
-			{ data: 'id_oficina' },
-			{ data: 'nombre_oficina' },
-			{ data: 'nro_piso' },
+			{ data: 'id_tipo_bien' },
+			{ data: 'nombre_tipo_bien' },
 			{
 				data: null, render: function () {
 					const botones = `<button onclick="rellenar(this, 0)" class="btn btn-update"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -184,46 +160,58 @@ function crearDataTable(arreglo) {
 	});
 }
 
+function iniciarTablaEliminadas(arreglo) {
+    if ($.fn.DataTable.isDataTable('#tablaEliminadas')) {
+        $('#tablaEliminadas').DataTable().destroy();
+    }
+    
+    $('#tablaEliminadas').DataTable({
+        data: arreglo,
+        columns: [
+            { data: 'id_tipo_bien' },
+            { data: 'nombre_tipo_bien' },
+            {
+                data: null, 
+                render: function() {
+                    return `<button onclick="restaurarTipoBien(this)" class="btn btn-success">
+                            <i class="fa-solid fa-recycle"></i>
+                            </button>`;
+                }
+            }
+        ],
+        language: {
+            url: idiomaTabla,
+        }
+    });
+}
+
 function limpia() {
 	$("#nombre").removeClass("is-valid is-invalid");
 	$("#nombre").val("");
-
-	$("#id_piso").removeClass("is-valid is-invalid");
-	$("#id_piso").val("");
-
 	$('#enviar').prop('disabled', false);
 }
 
 function rellenar(pos, accion) {
 	linea = $(pos).closest('tr');
 
-	if (!$("#id_oficina").length) {
+	if (!$("#id_tipo_bien").length) {
 		$("#Fila1").prepend(`<div class="col-4">
             <div class="form-floating mb-3 mt-4">
-                <input placeholder="" class="form-control" name="id_oficina" type="text" id="id_oficina" readonly>
-                <span id="sid_oficina"></span>
-                <label for="id_oficina" class="form-label">ID Oficina</label>
+                <input placeholder="" class="form-control" name="id_tipo_bien" type="text" id="id_tipo_bien" readonly>
+                <span id="sid_tipo_bien"></span>
+                <label for="id_tipo_bien" class="form-label">ID Tipo de Bien</label>
             </div>`);
 	}
 
-	$("#id_oficina").val($(linea).find("td:eq(0)").text());
+	$("#id_tipo_bien").val($(linea).find("td:eq(0)").text());
 	$("#nombre").val($(linea).find("td:eq(1)").text());
-	
-	var pisoTexto = $(linea).find("td:eq(2)").text() + " - " + $(linea).find("td:eq(3)").text();
-	$("#id_piso option").each(function() {
-		if ($(this).text().includes(pisoTexto)) {
-			$(this).prop("selected", true);
-			$("#id_piso").trigger("change");
-			return false;
-		}
-	});
 
 	if (accion == 0) {
-		$("#modalTitleId").text("Modificar Oficina")
+		$("#modalTitleId").text("Modificar Tipo de Bien")
 		$("#enviar").text("Modificar");
 	}
 	else {
-		$("#modalTitleId").text("Eliminar Oficina")
+		$("#modalTitleId").text("Eliminar Tipo de Bien")
 		$("#enviar").text("Eliminar");
 	}
 	$('#enviar').prop('disabled', false);
@@ -233,63 +221,16 @@ function rellenar(pos, accion) {
 function consultarEliminadas() {
     var datos = new FormData();
     datos.append('consultar_eliminadas', 'consultar_eliminadas');
-    
-    $.ajax({
-        async: true,
-        url: "",
-        type: "POST",
-        contentType: false,
-        data: datos,
-        processData: false,
-        cache: false,
-        beforeSend: function() {},
-        timeout: 10000,
-        success: function(respuesta) {
-            try {
-                var lee = JSON.parse(respuesta);
-                if (lee.resultado == "consultar_eliminadas") {
-                    if ($.fn.DataTable.isDataTable('#tablaEliminadas')) {
-                        $('#tablaEliminadas').DataTable().destroy();
-                    }
-                    
-                    $('#tablaEliminadas').DataTable({
-                        data: lee.datos,
-                        columns: [
-                            { data: 'id_oficina' },
-                            { data: 'nombre_oficina' },
-                            { data: 'nro_piso' },
-                            {
-                                data: null, 
-                                render: function() {
-                                    return `<button onclick="restaurarOficina(this)" class="btn btn-success">
-                                            <i class="fa-solid fa-recycle"></i>
-                                            </button>`;
-                                }
-                            }
-                        ],
-                        language: {
-                            url: idiomaTabla,
-                        }
-                    });
-                }
-            } catch (e) {
-                console.error("Error procesando datos:", e);
-            }
-        },
-        error: function(request, status, err) {
-            mensajes("error", null, "Error al cargar oficinas eliminadas", "Intente nuevamente");
-        }
-    });
+    enviaAjax(datos);
 }
 
-
-function restaurarOficina(boton) {
+function restaurarTipoBien(boton) {
     var linea = $(boton).closest('tr');
     var id = $(linea).find('td:eq(0)').text();
     
     Swal.fire({
-        title: '¿Restaurar Oficina?',
-        text: "¿Está seguro que desea restaurar esta oficina?",
+        title: '¿Restaurar Tipo de Bien?',
+        text: "¿Está seguro que desea restaurar este tipo de bien?",
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -300,7 +241,7 @@ function restaurarOficina(boton) {
         if (result.isConfirmed) {
             var datos = new FormData();
             datos.append('restaurar', 'restaurar');
-            datos.append('id_oficina', id);
+            datos.append('id_tipo_bien', id);
             
             $.ajax({
                 url: "",
@@ -312,7 +253,7 @@ function restaurarOficina(boton) {
                     try {
                         var lee = JSON.parse(respuesta);
                         if (lee.estado == 1) {
-                            mensajes("success", null, "Oficina restaurada", lee.mensaje);
+                            mensajes("success", null, "Tipo de bien restaurado", lee.mensaje);
                             consultarEliminadas();
                             consultar();
                         } else {
@@ -323,7 +264,7 @@ function restaurarOficina(boton) {
                     }
                 },
                 error: function() {
-                    mensajes("error", null, "Error", "No se pudo restaurar la oficina");
+                    mensajes("error", null, "Error", "No se pudo restaurar el tipo de bien");
                 }
             });
         }
