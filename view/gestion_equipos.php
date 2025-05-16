@@ -1,64 +1,99 @@
-<?php require_once "Componentes/head.php" ?>
+<?php require_once("Componentes/head.php"); ?>
 
 <body>
-    <?php require_once "Componentes/menu.php" ?>
-    <?php require_once "Componentes/alertjs.php" ?>
+    <?php require_once("Componentes/menu.php");
+    require_once("Componentes/modal_equipo.php"); ?>
 
-    <main id="main" class="main">
-        <div class="pagetitle">
-            <h1>Gestión de Equipos</h1>
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="">Home</a></li>
-                    <li class="breadcrumb-item active">Gestión de Equipos</li>
-                </ol>
-            </nav>
-        </div>
+    <div class="pagetitle">
+        <h1>Gestionar Equipos</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="">Home</a></li>
+                <li class="breadcrumb-item active"><a href="">Gestionar Equipos</a>
+                </li>
+            </ol>
+        </nav>
+    </div> <!-- End Page Title -->
 
-        <section class="section">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="d-flex gap-2">
-                                <div>
-                                    <button class="btn btn-primary" id="btn-registrar" data-bs-toggle="modal" data-bs-target="#modal-equipo">
-                                        <i class="bi bi-plus-circle"></i> Registrar Equipo
-                                    </button>
-                                </div>
-                                <form method="POST" class="" autocomplete="off">
-                                    <button formtarget="_blank" class="col btn btn-primary" type="submit" name="reporte">
-                                        <i class="bi bi-file-earmark-pdf"></i> Generar Reporte
-                                    </button>
-                                </form>
-                            </div>
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Gestionar Equipos</h5>
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-primary my-4" id="btn-registrar">
+                                Registrar Equipo
+                            </button>
+                            <button type="button" class="btn btn-primary my-4" id="btn-consultar-eliminados">
+                                Equipos Eliminados <i class="fa-solid fa-recycle"></i>
+                            </button>
                         </div>
+                        <div class="table-responsive">
+                            <table class="table" id="tabla1">
+                                <thead>
+                                    <tr>
+                                        <?php foreach ($cabecera as $campo)
+                                            echo "<th scope='col'>$campo</th>"; ?>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-hover" id="tabla-equipos">
-                                    <thead>
-                                        <tr>
-                                            <?php foreach ($cabecera as $campo) echo "<th>$campo</th>"; ?>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Datos cargados via AJAX -->
-                                    </tbody>
-                                </table>
-                            </div>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
+
             </div>
-        </section>
-    </main>
 
-    <?php require_once "Componentes/modal_equipo.php"; ?>
+        </div>
+    </section>
 
+    </main><!-- End #main -->
+
+    <!-- ModalEliminados -->
+    <div class="modal fade" id="modalEliminadas" tabindex="-1" role="dialog" aria-labelledby="modalEliminadasTitle" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title text-white" id="modalEliminadasTitle">Equipos Eliminados</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table" id="tablaEliminadas">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Tipo</th>
+                                    <th>Serial</th>
+                                    <th>Código Bien</th>
+                                    <th>Dependencia</th>
+                                    <th>Restaurar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Hola papurri -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ModalEliminados -->
+    
     <?php require_once "Componentes/footer.php"; ?>
-    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-    <script src="assets/js/equipos.js"></script>
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+            class="bi bi-arrow-up-short"></i></a>
+    <script defer src="assets/js/equipo.js"></script>
+    </div>
 </body>
+
 </html>

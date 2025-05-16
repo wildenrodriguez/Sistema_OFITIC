@@ -1,156 +1,310 @@
 <?php
-require_once('model/conexion.php');
-
+require_once "model/conexion.php";
 class Equipo extends Conexion
 {
-    private $data;
+    private $id_equipo;
+    private $tipo_equipo;
+    private $serial;
+    private $codigo_bien;
+    private $id_dependencia;
 
     public function __construct()
     {
-        parent::__construct("sistema");
-        $this->conex = parent::Conex();
-        $this->data = array();
+        $this->conex = new Conexion("sistema");
+        $this->conex = $this->conex->Conex();
     }
 
-    public function set_datos($datos)
+    public function set_id_equipo($id_equipo)
     {
-        $this->data = $datos;
+        $this->id_equipo = $id_equipo;
+    }
+
+    public function set_tipo_equipo($tipo_equipo)
+    {
+        $this->tipo_equipo = $tipo_equipo;
+    }
+
+    public function set_serial($serial)
+    {
+        $this->serial = $serial;
+    }
+
+    public function set_codigo_bien($codigo_bien)
+    {
+        $this->codigo_bien = $codigo_bien;
+    }
+
+    public function set_id_dependencia($id_dependencia)
+    {
+        $this->id_dependencia = $id_dependencia;
+    }
+
+    public function get_id_equipo()
+    {
+        return $this->id_equipo;
+    }
+
+    public function get_tipo_equipo()
+    {
+        return $this->tipo_equipo;
+    }
+
+    public function get_serial()
+    {
+        return $this->serial;
+    }
+
+    public function get_codigo_bien()
+    {
+        return $this->codigo_bien;
+    }
+
+    public function get_id_dependencia()
+    {
+        return $this->id_dependencia;
     }
 
     private function Validar()
     {
-        $query = "SELECT id_equipo FROM equipo WHERE serial = :serial";
-        $stmt = $this->conex->prepare($query);
-        $stmt->bindParam(':serial', $this->data['serial']);
-        $stmt->execute();
-        return $stmt->rowCount() > 0;
-    }
+        $dato = [];
 
-    private function ValidarBien()
-    {
-        $query = "SELECT id_equipo FROM equipo WHERE nro_bien = :nro_bien";
-        
-        if (!empty($this->data['excluir'])) {
-            $query .= " AND id_equipo != :excluir";
+        try {
+            $query = "SELECT * FROM equipo WHERE id_equipo = :id";
+
+            $stm = $this->conex->prepare($query);
+            $stm->bindParam(":id", $this->id_equipo);
+            $stm->execute();
+
+            if ($stm->rowCount() > 0) {
+                $dato['arreglo'] = $stm->fetch(PDO::FETCH_ASSOC);
+                $dato['bool'] = 1;
+            } else {
+                $dato['bool'] = 0;
+            }
+
+        } catch (PDOException $e) {
+            $dato['error'] = $e->getMessage();
         }
-        
-        $stmt = $this->conex->prepare($query);
-        $stmt->bindParam(':nro_bien', $this->data['nro_bien']);
-        
-        if (!empty($this->data['excluir'])) {
-            $stmt->bindParam(':excluir', $this->data['excluir']);
-        }
-        
-        $stmt->execute();
-        return $stmt->rowCount() > 0;
+        $this->Cerrar_Conexion($none, $stm);
+        return $dato;
     }
 
     private function Registrar()
     {
-        $query = "INSERT INTO equipo (tipo, serial, marca, nro_bien, cod_dependencia) 
-                 VALUES (:tipo, :serial, :marca, :nro_bien, :dependencia)";
-        
-        $stmt = $this->conex->prepare($query);
-        $stmt->bindParam(':tipo', $this->data['tipo']);
-        $stmt->bindParam(':serial', $this->data['serial']);
-        $stmt->bindParam(':marca', $this->data['marca']);
-        $stmt->bindParam(':nro_bien', $this->data['nro_bien']);
-        $stmt->bindParam(':dependencia', $this->data['dependencia']);
-        
-        return $stmt->execute();
+        $dato = [];
+        $bool = $this->Validar();
+
+        if ($bool['bool'] == 0) {
+            try {
+                $query = "INSERT INTO equipo(id_equipo, tipo_equipo, serial, codigo_bien, id_dependencia) VALUES 
+                (NULL, :tipo_equipo, :serial, :codigo_bien, :id_dependencia)";
+
+                $stm = $this->conex->prepare($query);
+                $stm->bindParam(":tipo_equipo", $this->tipo_equipo);
+                $stm->bindParam(":serial", $this->serial);
+                $stm->bindParam(":codigo_bien", $this->codigo_bien);
+                $stm->bindParam(":id_dependencia", $this->id_dependencia);
+                $stm->execute();
+                $dato['resultado'] = "registrar";
+                $dato['estado'] = 1;
+                $dato['mensaje'] = "Se registró el equipo exitosamente";
+            } catch (PDOException $e) {
+                $dato['resultado'] = "error";
+                $dato['estado'] = -1;
+                $dato['mensaje'] = $e->getMessage();
+            }
+        } else {
+            $dato['resultado'] = "error";
+            $dato['estado'] = -1;
+            $dato['mensaje'] = "Registro duplicado";
+        }
+        $this->Cerrar_Conexion($this->conex, $stm);
+        return $dato;
     }
 
-    private function Consultar()
+    private function Actualizar()
     {
-        $query = "SELECT e.id_equipo, e.tipo, e.serial, e.marca AS id_marca, 
-                 m.nombre AS marca, e.nro_bien, e.cod_dependencia AS id_dependencia, 
-                 d.nombre AS dependencia, b.tipo_bien
-                 FROM equipo AS e 
-                 INNER JOIN marca AS m ON e.marca = m.codigo 
-                 INNER JOIN dependencia AS d ON e.cod_dependencia = d.codigo
-                 LEFT JOIN bien AS b ON e.nro_bien = b.codigo_bien";
-        
-        $stmt = $this->conex->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+        $dato = [];
 
-    private function Modificar()
-    {
-        $query = "UPDATE equipo SET 
-                 tipo = :tipo, 
-                 serial = :serial, 
-                 marca = :marca, 
-                 nro_bien = :nro_bien, 
-                 cod_dependencia = :dependencia 
-                 WHERE id_equipo = :id";
-        
-        $stmt = $this->conex->prepare($query);
-        $stmt->bindParam(':tipo', $this->data['tipo']);
-        $stmt->bindParam(':serial', $this->data['serial']);
-        $stmt->bindParam(':marca', $this->data['marca']);
-        $stmt->bindParam(':nro_bien', $this->data['nro_bien']);
-        $stmt->bindParam(':dependencia', $this->data['dependencia']);
-        $stmt->bindParam(':id', $this->data['id']);
-        
-        return $stmt->execute();
+        try {
+            $query = "UPDATE equipo SET tipo_equipo= :tipo_equipo, serial= :serial, codigo_bien= :codigo_bien, 
+                     id_dependencia= :id_dependencia WHERE id_equipo = :id";
+
+            $stm = $this->conex->prepare($query);
+            $stm->bindParam(":id", $this->id_equipo);
+            $stm->bindParam(":tipo_equipo", $this->tipo_equipo);
+            $stm->bindParam(":serial", $this->serial);
+            $stm->bindParam(":codigo_bien", $this->codigo_bien);
+            $stm->bindParam(":id_dependencia", $this->id_dependencia);
+            $stm->execute();
+            $dato['resultado'] = "modificar";
+            $dato['estado'] = 1;
+            $dato['mensaje'] = "Se modificaron los datos del equipo con éxito";
+        } catch (PDOException $e) {
+            $dato['estado'] = -1;
+            $dato['resultado'] = "error";
+            $dato['mensaje'] = $e->getMessage();
+        }
+        $this->Cerrar_Conexion($this->conex, $stm);
+        return $dato;
     }
 
     private function Eliminar()
     {
-        $query = "DELETE FROM equipo WHERE id_equipo = :id";
-        $stmt = $this->conex->prepare($query);
-        $stmt->bindParam(':id', $this->data['id']);
-        return $stmt->execute();
+        $dato = [];
+        $bool = $this->Validar();
+
+        if ($bool['bool'] != 0) {
+            try {
+                $query = "UPDATE equipo SET estatus = 0 WHERE id_equipo = :id";
+
+                $stm = $this->conex->prepare($query);
+                $stm->bindParam(":id", $this->id_equipo);
+                $stm->execute();
+                $dato['resultado'] = "eliminar";
+                $dato['estado'] = 1;
+                $dato['mensaje'] = "Se eliminó el equipo exitosamente";
+            } catch (PDOException $e) {
+                $dato['resultado'] = "error";
+                $dato['estado'] = -1;
+                $dato['mensaje'] = $e->getMessage();
+            }
+        } else {
+            $dato['resultado'] = "error";
+            $dato['estado'] = -1;
+            $dato['mensaje'] = "Error al eliminar el registro";
+        }
+        $this->Cerrar_Conexion($this->conex, $stm);
+        return $dato;
     }
 
-    private function ConsultarMarcas()
+    private function Consultar()
     {
-        $query = "SELECT * FROM marca ORDER BY nombre ASC";
-        $stmt = $this->conex->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $dato = [];
+
+        try {
+            $query = "SELECT e.*, d.nombre_dependencia
+                     FROM equipo e 
+                     JOIN dependencia d ON e.id_dependencia = d.id_dependencia 
+                     WHERE d.estatus = 1 AND e.estatus = 1";
+
+            $stm = $this->conex->prepare($query);
+            $stm->execute();
+            $dato['resultado'] = "consultar";
+            $dato['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $dato['resultado'] = "error";
+            $dato['mensaje'] = $e->getMessage();
+        }
+        $this->Cerrar_Conexion($this->conex, $stm);
+        return $dato;
     }
 
-    private function cargarBienesDisponibles($excluirBien = null)
+    public function ConsultarDependencias()
     {
-        require_once('model/bien.php');
-        $bien = new Bien();
-        return $bien->Transaccion([
-            'peticion' => 'listar_disponibles',
-            'excluir_bien' => $excluirBien
-        ]);
+        $dato = [];
+
+        try {
+            $query = "SELECT * FROM dependencia WHERE estatus = 1";
+
+            $stm = $this->conex->prepare($query);
+            $stm->execute();
+            return $stm->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return [];
+        }
+    }
+
+    public function ConsultarBienes()
+    {
+        $dato = [];
+
+        try {
+            $query = "SELECT codigo_bien FROM bien WHERE estatus = 1";
+
+            $stm = $this->conex->prepare($query);
+            $stm->execute();
+            return $stm->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return [];
+        }
+    }
+
+    private function ConsultarEliminadas()
+    {
+        $dato = [];
+
+        try {
+            $query = "SELECT e.*, d.nombre_dependencia 
+                     FROM equipo e 
+                     JOIN dependencia d ON e.id_dependencia = d.id_dependencia 
+                     WHERE d.estatus = 0 AND e.estatus = 0";
+
+            $stm = $this->conex->prepare($query);
+            $stm->execute();
+            $dato['resultado'] = "consultar_eliminadas";
+            $dato['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $dato['resultado'] = "error";
+            $dato['mensaje'] = $e->getMessage();
+        }
+        $this->Cerrar_Conexion($this->conex, $stm);
+        return $dato;
+    }
+
+    private function Restaurar()
+    {
+        $dato = [];
+        try {
+            $query = "UPDATE equipo SET estatus = 1 WHERE id_equipo = :id";
+
+            $stm = $this->conex->prepare($query);
+            $stm->bindParam(":id", $this->id_equipo);
+            $stm->execute();
+            $dato['resultado'] = "restaurar";
+            $dato['estado'] = 1;
+            $dato['mensaje'] = "Equipo restaurado exitosamente";
+            
+            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se restauró el equipo ID: " . $this->id_equipo;
+            Bitacora($msg, "Equipo");
+        } catch (PDOException $e) {
+            $dato['resultado'] = "error";
+            $dato['estado'] = -1;
+            $dato['mensaje'] = $e->getMessage();
+        }
+        $this->Cerrar_Conexion($this->conex, $stm);
+        return $dato;
     }
 
     public function Transaccion($peticion)
     {
-        switch ($peticion["peticion"]) {
-            case "registrar":
+        switch ($peticion['peticion']) {
+            case 'registrar':
                 return $this->Registrar();
-                
-            case "validar":
-                return $this->Validar();
-                
-            case "validar_bien":
-                return $this->ValidarBien();
-                
-            case "consultar":
+
+            case 'consultar':
                 return $this->Consultar();
-                
-            case "modificar":
-                return $this->Modificar();
-                
-            case "eliminar":
+
+            case 'consultar_eliminadas':
+                return $this->ConsultarEliminadas();   
+
+            case 'consultar_dependencias':
+                return $this->ConsultarDependencias();
+
+            case 'consultar_bienes':
+                return $this->ConsultarBienes();
+
+            case 'actualizar':
+                return $this->Actualizar();
+
+            case 'eliminar':
                 return $this->Eliminar();
                 
-            case "consulta_marcas":
-                return $this->ConsultarMarcas();
+            case 'restaurar':
+                return $this->Restaurar();
 
-            case "cargar_bienes":
-                return $this->cargarBienesDisponibles($peticion['excluir_bien'] ?? null);
-                
             default:
-                return false;
+                return "Operacion: " . $peticion['peticion'] . " no valida";
         }
     }
 }
