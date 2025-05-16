@@ -252,6 +252,12 @@
               <span class="menu-text">Cargo</span>
             </a>
           </li>
+          <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "tipo_bien") ? "active" : "" ?>">
+            <a href="?page=tipo_bien">
+              <i class="fa-solid fa-screwdriver-wrench"></i>
+              <span class="menu-text">Tipo bien</span>
+            </a>
+          </li>
         </ul>
       <?php } ?>
 
