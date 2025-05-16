@@ -234,10 +234,6 @@ function crearDataTable(arreglo) {
 function limpia() {
 	$("#idPiso").remove();
 
-	$("#id_edificio").removeClass("is-valid is-invalid");
-	$("#id_edificio option:first-child").prop('selected', true);
-	$("#sid_edificio").val("");
-
 	$("#tipo_piso").removeClass("is-valid is-invalid");
 	$("#tipo_piso option:first-child").prop('selected', true);
 	$("#stipo_piso").val("");
@@ -263,23 +259,17 @@ function rellenar(pos, accion) {
               <label for="id_piso" class="form-label">ID del Piso</label>
             </div>`);
 
-	var edificio = $(linea).find("td:eq(0)").text();
-	if ($("#id_edificio option[value='" + edificio + "']").length > 0) {
-		$("#id_edificio").val(edificio).change();
-	} else {
-		console.error("El valor '" + edificio + "' no se encuentra en el campo select.");
-	}
 
-	$("#id_piso").val($(linea).find("td:eq(2)").text());
+	$("#id_piso").val($(linea).find("td:eq(0)").text());
 
-	var tipo_piso = $(linea).find("td:eq(3)").text();
+	var tipo_piso = $(linea).find("td:eq(1)").text();
 	if ($("#tipo_piso option[value='" + tipo_piso + "']").length > 0) {
 		$("#tipo_piso").val(tipo_piso).change();
 	} else {
 		console.error("El valor '" + tipo_piso + "' no se encuentra en el campo select.");
 	}
 
-	var nro_piso = $(linea).find("td:eq(4)").text();
+	var nro_piso = $(linea).find("td:eq(2)").text();
 	if ($("#nro_piso option[value='" + nro_piso + "']").length > 0) {
 		$("#nro_piso").val(nro_piso).change();
 	} else {

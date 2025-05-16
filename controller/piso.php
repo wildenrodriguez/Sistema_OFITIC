@@ -50,7 +50,6 @@ if (is_file("view/" . $page . ".php")) {
 
 	if (isset($_POST["modificar"])) {
 		$piso->set_id($_POST["id_piso"]);
-		$piso->set_id_edificio($_POST["id_edificio"]);
 		$piso->set_tipo($_POST["tipo_piso"]);
 		$piso->set_nro_piso($_POST["nro_piso"]);
 		$peticion["peticion"] = "actualizar";

@@ -123,7 +123,6 @@ class Piso extends Conexion
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":id_piso", $this->id);
-                $stm->bindParam(":id_edificio", $this->id_edificio);
                 $stm->bindParam(":tipo_piso", $this->tipo);
                 $stm->bindParam(":nro_piso", $this->nro_piso);
                 $stm->execute();

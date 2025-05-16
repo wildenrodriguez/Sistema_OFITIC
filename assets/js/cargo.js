@@ -103,8 +103,8 @@ function iniciarTablaCargos(datos) {
             {
                 data: null,
                 render: function () {
-                    return `<button class="btn btn-update">Modificar</button>
-                            <button class="btn btn-danger">Eliminar</button>`;
+                    return `<button onclick="rellenar(this, 0)" class="btn btn-update"><i class="fa-solid fa-pen-to-square"></i></button>
+					<button onclick="rellenar(this, 1)" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>`;
                 }
             }
         ],
@@ -114,7 +114,36 @@ function iniciarTablaCargos(datos) {
     });
 }
 
+function rellenar(pos, accion) {
+
+    linea = $(pos).closest('tr');
+
+    $("#idCargo").remove();
+    $("#Fila1").prepend(`<div class="col-4" id="idCargo">
+            <div class="form-floating mb-3 mt-4">
+              <input placeholder="" class="form-control" name="id_cargo" type="text" id="id_cargo" readOnly>
+              <span id="sid_cargo"></span>
+              <label for="id_cargo" class="form-label">ID del Cargo</label>
+            </div>`);
+
+    $("#id_cargo").val($(linea).find("td:eq(0)").text());
+    $("#nombre_cargo").val($(linea).find("td:eq(1)").text());
+
+
+    if (accion == 0) {
+        $("#modalCargoTitle").text("Modificar Edificio")
+        $("#enviarCargo").text("Modificar");
+    }
+    else {
+        $("#modalCargoTitle").text("Eliminar Edificio")
+        $("#enviarCargo").text("Eliminar");
+    }
+    $('#enviarCargo').prop('disabled', false);
+    $("#modalCargo").modal("show");
+}
+
 function limpiarCargo() {
+    $("#idCargo").remove();
     $("#id_cargo").val("");
     $("#nombre_cargo").val("");
 }

@@ -18,6 +18,7 @@ function enviaAjax(datos) {
 			////console.log(respuesta);
 			try {
 				var lee = JSON.parse(respuesta);
+				console.log(lee);
 				if (lee.resultado == "consultar") {
 					iniciarTabla(lee.datos);
 
@@ -63,10 +64,10 @@ function crearDataTable(arreglo) {
 		data: arreglo,
 		order: [[0, "desc"]],
 		columns: [
-			{ data: 'id'},
+			{ data: 'id_bitacora'},
 			{ data: 'usuario' },
 			{ data: 'modulo' },
-			{ data: 'accion' },
+			{ data: 'accion_bitacora' },
 			{ data: 'fecha' },
 			{ data: 'hora' }
 			
