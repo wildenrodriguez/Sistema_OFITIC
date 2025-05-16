@@ -210,7 +210,7 @@
   <div class="sidebar-footer">
     <ul>
 
-      <?php if ($datos["rol"] == "ADMINISTRADOR" || $datos["rol"] == "Super usuario") { ?>
+      <?php if ($datos["rol"] == "ADMINISTRADOR" || $datos["rol"] == "SUPERUSUARIO") { ?>
 
         <li class="menu-item <?php echo ($page == "Configuracion") ? "active" : "" ?>">
           <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
