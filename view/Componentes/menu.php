@@ -62,7 +62,7 @@
                 </a>
               </li>
               <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "Bien") ? "active" : "" ?>">
-                <a href="?page=gestion_bienes">
+                <a href="?page=bien">
                   <i class="fas fa-cog"></i>
                   <span class="menu-text">Bienes</span>
                 </a>
