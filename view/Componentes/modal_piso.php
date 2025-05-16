@@ -8,15 +8,7 @@
       </div>
       <div class="modal-body">
         <div class="row justify-content-center" id="Fila1">
-          <div class="col-8">
-            <div class="form-floating mb-3">
-              <select class="form-select" name="id_edificio" id="id_edificio">
-                <option value="default">Seleccione el Edificio</option>
-              </select>
-              <span id="sid_edificio"></span>
-              <label for="id_edificio">Edificio</label>
-            </div>
-          </div>
+
         </div>
         <div class="row justify-content-center">
           <div class="col-8">

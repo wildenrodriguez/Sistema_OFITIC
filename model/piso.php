@@ -89,11 +89,10 @@ class Piso extends Conexion
 
         if ($bool['bool'] == 0) {
             try {
-                $query = "INSERT INTO piso(id_edificio, tipo_piso, nro_piso) 
-                VALUES (:id_edificio, :tipo_piso, :nro_piso)";
+                $query = "INSERT INTO piso(tipo_piso, nro_piso) 
+                VALUES (:tipo_piso, :nro_piso)";
 
                 $stm = $this->conex->prepare($query);
-                $stm->bindParam(":id_edificio", $this->id_edificio);
                 $stm->bindParam(":tipo_piso", $this->tipo);
                 $stm->bindParam(":nro_piso", $this->nro_piso);
                 $stm->execute();
@@ -119,7 +118,7 @@ class Piso extends Conexion
         $dato = [];
 
             try {
-                $query = "UPDATE piso SET id_edificio= :id_edificio, tipo_piso= :tipo_piso,
+                $query = "UPDATE piso SET tipo_piso= :tipo_piso,
                 nro_piso= :nro_piso WHERE id_piso= :id_piso";
 
                 $stm = $this->conex->prepare($query);
@@ -175,9 +174,8 @@ class Piso extends Conexion
         $dato = [];
 
         try {
-            $query = "SELECT piso.id_piso, piso.id_edificio, edificio.nombre, piso.tipo_piso, piso.nro_piso
+            $query = "SELECT piso.id_piso, piso.tipo_piso, piso.nro_piso
             FROM piso
-            INNER JOIN edificio ON piso.id_edificio = edificio.id_edificio
             WHERE piso.estatus = 1";
 
             $stm = $this->conex->prepare($query);

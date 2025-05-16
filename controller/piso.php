@@ -11,7 +11,7 @@ if (is_file("view/" . $page . ".php")) {
 	require_once "model/piso.php";
 
 	$titulo = "Gestionar Pisos";
-	$cabecera = array("ID Edificio","Edificio", "ID Piso", "Piso", "Nro de Piso", "Modificar/Eliminar");
+	$cabecera = array("ID Piso", "Piso", "Nro de Piso", "Modificar/Eliminar");
 
 	$edificio = new Edificio();
 	$piso = new Piso();
@@ -25,16 +25,7 @@ if (is_file("view/" . $page . ".php")) {
 		exit;
 	}
 
-	if (isset($_POST["listar_edificio"])){
-		$peticion['peticion'] = "consultar";
-		$datos = $edificio->Transaccion($peticion);
-		$datos['resultado'] = "lista_edificio";
-		echo json_encode($datos);
-		exit;
-	}
-
 	if (isset($_POST["registrar"])) {
-		$piso->set_id_edificio($_POST["id_edificio"]);
 		$piso->set_tipo($_POST["tipo_piso"]);
 		$piso->set_nro_piso($_POST["nro_piso"]);
 		$peticion["peticion"] = "registrar";

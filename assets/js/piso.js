@@ -1,6 +1,5 @@
 $(document).ready(function () {
 	consultar();
-	datosEdificio();
 	registrarEntrada();
 	capaValidar();
 
@@ -11,7 +10,6 @@ $(document).ready(function () {
 				if (validarenvio()) {
 					var datos = new FormData();
 					datos.append('registrar', 'registrar');
-					datos.append('id_edificio', $("#id_edificio").val());
 					datos.append('tipo_piso', $("#tipo_piso").val());
 					datos.append('nro_piso', $("#nro_piso").val());
 					enviaAjax(datos);
@@ -21,7 +19,7 @@ $(document).ready(function () {
 				if (validarenvio()) {
 					var datos = new FormData();
 					datos.append('modificar', 'modificar');
-					datos.append('id_edificio', $("#id_edificio").val());
+					datos.append('id_piso', $("#id_piso").val());
 					datos.append('tipo_piso', $("#tipo_piso").val());
 					datos.append('nro_piso', $("#nro_piso").val());
 					enviaAjax(datos);
@@ -48,7 +46,6 @@ $(document).ready(function () {
 
 	$("#btn-registrar").on("click", function () { //<---- Evento del Boton Registrar
 		limpia();
-		$("#idEdificio").remove();
 		$("#modalTitleId").text("Registrar Piso");
 		$("#enviar").text("Registrar");
 		$("#modal1").modal("show");
@@ -96,9 +93,6 @@ function enviaAjax(datos) {
 
 				} else if (lee.resultado == "entrada") {
 
-				} else if (lee.resultado == "lista_edificio") {
-					selectEdificio(lee.datos);
-
 				} else if (lee.resultado == "error") {
 					mensajes("error", null, lee.mensaje, null);
 				}
@@ -121,24 +115,8 @@ function enviaAjax(datos) {
 
 
 function capaValidar() {
-	$('#id_edificio').on('change blur', function () {
-		if ($(this).val() === 'null') {
-			$(this).removeClass("is-valid");
-			$(this).addClass("is-invalid");
-			$('#sid_edificio').removeClass("valid-feedback");
-			$('#sid_edificio').addClass("invalid-feedback");
-			$('#sid_edificio').text("Debe seleccionar un edificio");
-		} else {
-			$(this).removeClass("is-invalid");
-			$(this).addClass("is-valid")
-			$('#sid_edificio').removeClass("invalid-feedback");
-			$('#sid_edificio').addClass("valid-feedback");
-			$('#sid_edificio').text("");
-		}
-	});
 
 	$('#tipo_piso').on('change blur input focusout mouseleave', function () {
-		;
 
 		const obj = validarSelect();
 
@@ -146,7 +124,6 @@ function capaValidar() {
 	})
 
 	$('#nro_piso').on('change blur input focusout mouseleave', function () {
-		;
 
 		const obj = validarSelect();
 
@@ -208,11 +185,7 @@ function validarenvio() {
 
 	const obj = validarSelect();
 
-	if ($("#id_edificio").val() === 'null') {
-		mensajes("error", 10000, "Verifica", "Debe seleccionar un edificio");
-		return false;
-
-	} else if (obj.bool == 0) {
+	if (obj.bool == 0) {
 		mensajes("error", 10000, "Verifica", obj.mensaje);
 		return false;
 	}
@@ -236,8 +209,6 @@ function crearDataTable(arreglo) {
 	tabla = $('#tabla1').DataTable({
 		data: arreglo,
 		columns: [
-			{ data: 'id_edificio' },
-			{ data: 'nombre' },
 			{ data: 'id_piso' },
 			{ data: 'tipo_piso' },
 			{ data: 'nro_piso' },
@@ -249,8 +220,8 @@ function crearDataTable(arreglo) {
 				}
 			}],
 		order: [
-			[1, 'asc'], 
-			[4, 'asc']   
+			[1, 'asc'],
+			[2, 'asc']
 		],
 		language: {
 			url: idiomaTabla,
@@ -258,25 +229,23 @@ function crearDataTable(arreglo) {
 	});
 }
 
-function selectEdificio(arreglo) {
-	$("#id_edificio").empty();
 
-	$("#id_edificio").append(
-		new Option('Seleccione un Edificio', null)
-	);
-	arreglo.forEach(item => {
-		$("#id_edificio").append(
-			new Option(item.nombre, item.id_edificio)
-		);
-	});
-}
 
 function limpia() {
-	$("#nombre").removeClass("is-valid is-invalid");
-	$("#nombre").val("");
+	$("#idPiso").remove();
 
-	$("#direccion").removeClass("is-valid is-invalid");
-	$("#direccion").val("");
+	$("#id_edificio").removeClass("is-valid is-invalid");
+	$("#id_edificio option:first-child").prop('selected', true);
+	$("#sid_edificio").val("");
+
+	$("#tipo_piso").removeClass("is-valid is-invalid");
+	$("#tipo_piso option:first-child").prop('selected', true);
+	$("#stipo_piso").val("");
+
+	$("#nro_piso").removeClass("is-valid is-invalid");
+	$("#nro_piso option:first-child").prop('selected', true);
+	$("#snro_piso").val("");
+
 
 	$('#enviar').prop('disabled', false);
 }
@@ -286,19 +255,36 @@ function rellenar(pos, accion) {
 
 	linea = $(pos).closest('tr');
 
-	$("#idEdificio").remove();
-	$("#Fila1").prepend(`<div class="col-4" id="idEdificio">
-            <div class="form-floating mb-3 mt-4">
-              <input placeholder="" class="form-control" name="id_edificio" type="text" id="id_edificio" readOnly>
-              <span id="sid_edificio"></span>
-              <label for="id_edificio" class="form-label">ID del Edificio</label>
+	$("#idPiso").remove();
+	$("#Fila1").prepend(`<div class="col-4" id="idPiso">
+            <div class="form-floating mb-3">
+              <input placeholder="" class="form-control" name="id_piso" type="text" id="id_piso" readOnly>
+              <span id="sid_piso"></span>
+              <label for="id_piso" class="form-label">ID del Piso</label>
             </div>`);
 
+	var edificio = $(linea).find("td:eq(0)").text();
+	if ($("#id_edificio option[value='" + edificio + "']").length > 0) {
+		$("#id_edificio").val(edificio).change();
+	} else {
+		console.error("El valor '" + edificio + "' no se encuentra en el campo select.");
+	}
 
-	$("#id_edificio").val($(linea).find("td:eq(0)").text());
-	$("#nombre").val($(linea).find("td:eq(1)").text());
-	$("#direccion").val($(linea).find("td:eq(2)").text());
+	$("#id_piso").val($(linea).find("td:eq(2)").text());
 
+	var tipo_piso = $(linea).find("td:eq(3)").text();
+	if ($("#tipo_piso option[value='" + tipo_piso + "']").length > 0) {
+		$("#tipo_piso").val(tipo_piso).change();
+	} else {
+		console.error("El valor '" + tipo_piso + "' no se encuentra en el campo select.");
+	}
+
+	var nro_piso = $(linea).find("td:eq(4)").text();
+	if ($("#nro_piso option[value='" + nro_piso + "']").length > 0) {
+		$("#nro_piso").val(nro_piso).change();
+	} else {
+		console.error("El valor '" + nro_piso + "' no se encuentra en el campo select.");
+	}
 
 	if (accion == 0) {
 		$("#modalTitleId").text("Modificar Piso")
