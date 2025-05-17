@@ -23,7 +23,7 @@
 
               <img src="img/profile-img.jpg" alt="Profile" class="rounded-circle">
               <h2><?php echo $datos["nombres"]; ?></h2>
-              <h3><?php echo $datos["unidad"]; ?></h3>
+              <h3><?php // echo $datos["unidad"]; ?></h3>
             </div>
           </div>
 
@@ -58,11 +58,11 @@
                   </div>
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Unidad</div>
-                    <div class="col-lg-9 col-md-8"><?php echo $datos["unidad"]; ?></div>
+                    <div class="col-lg-9 col-md-8"><?php // echo $datos["unidad"]; ?></div>
                   </div>
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Dependencia</div>
-                    <div class="col-lg-9 col-md-8"><?php echo $datos["dependencia"]; ?></div>
+                    <div class="col-lg-9 col-md-8"><?php //echo $datos["dependencia"]; ?></div>
                   </div>
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label ">Correo electronico</div>

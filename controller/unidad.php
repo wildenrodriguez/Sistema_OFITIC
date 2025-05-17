@@ -32,9 +32,9 @@ if (is_file("view/" . $page . ".php")) {
 		echo json_encode($datos);
 
 		if($datos['estado'] == 1){
-			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se registró un nuevo Unidad";
+			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se registró un nuevo unidad";
 		} else {
-			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al registrar un nuevo Unidad";
+			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al registrar un nuevo unidad";
 		}
 		Bitacora($msg, "Unidad");
 		exit;
@@ -57,24 +57,24 @@ if (is_file("view/" . $page . ".php")) {
 		echo json_encode($datos);
 
 		if($datos['estado'] == 1){
-			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se modificó el registro del Unidad";
+			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se modificó el registro del unidad";
 		} else {
-			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al modificar Unidad";
+			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al modificar unidad";
 		}
 		Bitacora($msg, "Unidad");
 		exit;
 	}
 
 	if (isset($_POST["eliminar"])) {
-		$unidad->set_id($_POST["id_Unidad"]);
+		$unidad->set_id($_POST["id_unidad"]);
 		$peticion["peticion"] = "eliminar";
 		$datos = $unidad->Transaccion($peticion);
 		echo json_encode($datos);
 
 		if($datos['estado'] == 1){
-			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se eliminó un Unidad";
+			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se eliminó un unidad";
 		} else {
-			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al eliminar un Unidad";
+			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al eliminar un unidad";
 		}
 		Bitacora($msg, "Unidad");
 		exit;

@@ -83,12 +83,12 @@
                 <span class="menu-text">Gestión de Materiales</span>
               </a>
             </li>
-            <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
+            <!--  <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
               <a href="?page=edificio">
                 <i class="fa-solid fa-building"></i>
                 <span class="menu-text">Gestión de Edificios</span>
               </a>
-            </li>
+            </li>-->
             <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
               <a href="?page=piso">
                 <i class="fa-solid fa-stairs"></i>
@@ -107,7 +107,7 @@
                 <li class="menu-item <?php echo ($page == "Mantenimiento") ? "active" : "" ?>">
                   <a class="nav-link collapsed" data-bs-target="#icons-nave" data-bs-toggle="collapse" href="#">
                     <i class="fas fa-cog"></i>
-                    <span class="menu-text">Mantenimiento</span>
+                    <span class="menu-text">Mòdulo de Seguridad</span>
                     <i class="fa-solid fa-angle-right"></i>
                   </a>
                 </li>
@@ -132,7 +132,12 @@
                       <span class="menu-text">Gestión de Usuarios</span>
                     </a>
                   </li>
-
+                  <li class="menu-item <?php echo ($page == "usuario") ? "active" : "" ?>">
+                    <a href="?page=rol">
+                      <i class="fa-solid fa-users-rectangle"></i>
+                      <span class="menu-text">Roles y Permisos</span>
+                    </a>
+                  </li>
                 </ul>
 
               <?php } ?>

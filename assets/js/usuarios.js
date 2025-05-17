@@ -118,15 +118,18 @@ function crearDataTable(arreglo) {
 	tabla = $('#tabla1').DataTable({
 		data: arreglo,
 		columns: [
+			{ data: 'nombre_usuario' },
 			{ data: 'cedula' },
 			{ data: 'nombres' },
 			{ data: 'apellidos' },
 			{ data: 'rol' },
-			{ data: 'tipo_c' },
-      { data: 'Tipo' },
-      { data: null, render: function(){
-        return '<button onclick=rellenar(this, 0) class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>';
-      }  }
+			{
+				data: null, render: function () {
+					const botones = `<button onclick="rellenar(this, 0)" class="btn btn-update"><i class="fa-solid fa-pen-to-square"></i></button>
+					<button onclick="rellenar(this, 1)" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>`;
+					return botones;
+				}
+			}
 		]
 	});
 

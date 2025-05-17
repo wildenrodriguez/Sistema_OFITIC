@@ -135,7 +135,7 @@ class Usuario extends Conexion
     }
 
     private function PerfilUsuario()
-    {   
+    {
         $query = "SELECT
                 usuario.nombre_usuario,
                 usuario.cedula,
@@ -191,28 +191,30 @@ class Usuario extends Conexion
         $datos = [];
         try {
             $query = "SELECT
+            usuario.nombre_usuario,
                 usuario.cedula,
                 usuario.nombres,
                 usuario.apellidos,
-                rol.nombre as rol
+                usuario.telefono,
+                usuario.correo,
+                rol.nombre_rol as rol
             FROM usuario
             INNER JOIN rol ON usuario.id_rol = rol.id_rol
-            ORDER BY usuario.cedula = :cedula";  
+            ORDER BY usuario.cedula = :cedula";
 
-        $stm = $this->conex->prepare($query);
-        $stm->bindValue(':cedula', $this->cedula);
-        $stm->execute();
+            $stm = $this->conex->prepare($query);
+            $stm->bindValue(':cedula', $this->cedula);
+            $stm->execute();
 
-        $datos['resultado'] = "consultar";
-        $datos['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC); 
+            $datos['resultado'] = "consultar";
+            $datos['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
 
-        $this->Cerrar_Conexion($this->conex, $records);
-
+            $this->Cerrar_Conexion($this->conex, $records);
         } catch (PDOException $e) {
             $datos['resultado'] = "error";
             $datos['mensaje'] = $e->getMessage();
         }
-        
+
 
         return $datos;
     }

@@ -12,9 +12,9 @@ if (is_file("view/" . $page . ".php")) {
 
 
 	$titulo = "Gestionar Roles y Permisos";
-	$cabecera = array('#', "Nombre", "Modificar/Eliminar");
+	$cabecera = array('#', "Nombre", "Permisos");
 
-	$marca = new Marca();
+	$rol = new Rol();
 
 	if (isset($_POST["entrada"])) {
 		$json['resultado'] = "entrada";
@@ -27,17 +27,17 @@ if (is_file("view/" . $page . ".php")) {
 
 	if (isset($_POST['consultar'])) {
 		$peticion["peticion"] = "consultar";
-		$datos = $marca->Transaccion($peticion);
+		$datos = $rol->Transaccion($peticion);
 		echo json_encode($datos);
 		exit;
 	}
 
 
 	if (isset($_POST["modificar"])) {
-		$marca->set_codigo($_POST["id_marca"]);
-		$marca->set_nombre($_POST["nombre"]);
+		$rol->set_codigo($_POST["id_marca"]);
+		$rol->set_nombre($_POST["nombre"]);
 		$peticion["peticion"] = "actualizar";
-		$datos = $marca->Transaccion($peticion);
+		$datos = $rol->Transaccion($peticion);
 		echo json_encode($datos);
 
 		if($datos['estado'] == 1){
@@ -50,9 +50,9 @@ if (is_file("view/" . $page . ".php")) {
 	}
 
 	if (isset($_POST["eliminar"])) {
-		$marca->set_codigo($_POST["id_marca"]);
+		$rol->set_codigo($_POST["id_marca"]);
 		$peticion["peticion"] = "eliminar";
-		$datos = $marca->Transaccion($peticion);
+		$datos = $rol->Transaccion($peticion);
 		echo json_encode($datos);
 
 		if($datos['estado'] == 1){

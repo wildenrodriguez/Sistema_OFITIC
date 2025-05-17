@@ -33,6 +33,8 @@
     </script>
     <script src="vendor/components/jquery/jquery.min.js"></script>
     <script defer src="assets/js/main.js"></script>
+    <script src="assets/js/all.js"></script>
+    <script src="assets/js/Chart.min.js"></script>
     <script defer src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/utils.js"></script>
     <script src="assets/js/sweetalert2.js"></script>

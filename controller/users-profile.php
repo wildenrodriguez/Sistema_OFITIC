@@ -7,7 +7,6 @@ ob_start();
 
 require_once "model/usuario.php";
 $usuario = new Usuario();
-var_dump($_SESSION['user']);
 $usuario->set_cedula($_SESSION['user']['cedula']);
 $peticion = ['peticion' => "perfil"];
 $datos = $usuario->Transaccion($peticion);

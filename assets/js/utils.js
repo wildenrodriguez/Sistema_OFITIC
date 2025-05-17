@@ -71,3 +71,16 @@ function registrarEntrada() {
   peticion.append('entrada', 'entrada');
   enviaAjax(peticion);
 }
+
+function selectEdificio(arreglo) {
+	$("#id_edificio").empty();
+
+	$("#id_edificio").append(
+		new Option('Seleccione un Edificio', null)
+	);
+	arreglo.forEach(item => {
+		$("#id_edificio").append(
+			new Option(item.nombre, item.id_edificio)
+		);
+	});
+}
