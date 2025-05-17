@@ -9,9 +9,11 @@ class Usuario extends Conexion
     private $nombres;
     private $apellidos;
     private $correo;
+    private $telefono;
     private $clave;
     private $tipo;
     private $rol;
+    private $foto;
 
     public function __construct()
     {
@@ -59,6 +61,32 @@ class Usuario extends Conexion
         return $this->apellidos;
     }
 
+    public function set_foto($foto)
+    {
+        $this->foto = $foto;
+    }
+
+    public function get_foto()
+    {
+        return $this->foto;
+    }
+    public function set_correo($correo)
+    {
+        $this->correo = $correo;
+    }
+    public function get_correo()
+    {
+        return $this->correo;
+    }
+    public function set_telefono($telefono)
+    {
+        $this->telefono = $telefono;
+    }
+    public function get_telefono()
+    {
+        return $this->telefono;
+    }
+
     private function ValidarPermiso($usuario, $permitidos)
     {
 
@@ -84,18 +112,28 @@ class Usuario extends Conexion
     }
 
     private function ModificarUsuario()
-    {
-        $query = "UPDATE `usuario` SET `nombre_usuario`=':nombre_usuario',`cedula`=':cedula',
-            `nombres`=':nombres',`apellidos`=':apellidos',
-            `correo`=':correo',`clave`=':clave', WHERE nombre_usuario = `:id_usuario` OR `cedula` = 'id_cedula'";
+{
+    $query = "UPDATE `usuario` SET 
+                `nombre_usuario` = :nombre_usuario,
+                `cedula` = :cedula,
+                `nombres` = :nombres,
+                `apellidos` = :apellidos,
+                `correo` = :correo,
+                `telefono` = :telefono 
+              WHERE `nombre_usuario` = :id_usuario OR `cedula` = :id_cedula";
 
-        $con = $this->conex->prepare($query);
-        $con->bindParam(':cedula', $this->cedula);
-        $con->bindParam(':clave', $this->clave);
-        $con->bindParam(':rol', $this->rol);
+    $con = $this->conex->prepare($query);
+    $con->bindParam(':cedula', $this->cedula);
+    $con->bindParam(':nombre_usuario', $this->nombre_usuario);
+    $con->bindParam(':id_usuario', $this->nombre_usuario);
+    $con->bindParam(':id_cedula', $this->cedula);
+    $con->bindParam(':nombres', $this->nombres);
+    $con->bindParam(':apellidos', $this->apellidos);
+    $con->bindParam(':correo', $this->correo);
+    $con->bindParam(':telefono', $this->telefono);
 
-        return $con->execute();
-    }
+    return $con->execute();
+}
 
     private function crear_tecnico()
     {
@@ -145,7 +183,8 @@ class Usuario extends Conexion
                 rol.nombre_rol as rol,
                 usuario.telefono,
                 usuario.correo,
-                usuario.clave
+                usuario.clave,
+                usuario.foto
                 FROM usuario
                 INNER JOIN rol ON usuario.id_rol = rol.id_rol
                 WHERE usuario.cedula = :cedula";
@@ -197,6 +236,7 @@ class Usuario extends Conexion
                 usuario.apellidos,
                 usuario.telefono,
                 usuario.correo,
+                usuario.foto,
                 rol.nombre_rol as rol
             FROM usuario
             INNER JOIN rol ON usuario.id_rol = rol.id_rol
@@ -217,6 +257,22 @@ class Usuario extends Conexion
 
 
         return $datos;
+    }
+
+    private function ActualizarFoto()
+    {
+        $query = "UPDATE usuario SET foto=? WHERE cedula = ?";
+
+        $registro = $this->conex->prepare($query);
+
+        if ($registro->execute([$this->foto, $this->cedula])) {
+            $dato = true;
+        } else {
+            $dato = false;
+        }
+        $this->Cerrar_Conexion($this->conex, $registro);
+
+        return $dato;
     }
 
     public function Transaccion($peticion)
@@ -254,6 +310,10 @@ class Usuario extends Conexion
             case 'ActualizarClave':
 
                 return $this->ActualizarClave();
+
+                case 'actualizarFoto':
+
+                    return $this->ActualizarFoto();
 
             case 'permiso':
                 return $this->ValidarPermiso($peticion['user'], $peticion['rol']);

@@ -363,7 +363,7 @@
               <button class="user-dropdown-toggle">
                 <div class="avatar">
                   <img
-                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/38184074.jpg-M4vCjTSSWVw5RwWvvmrxXBcNVU8MBU.jpeg"
+                    src="<?php echo $foto; ?>"
                     alt="User Avatar" />
                 </div>
               </button>

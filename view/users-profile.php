@@ -21,9 +21,10 @@
           <div class="card">
             <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
-              <img src="img/profile-img.jpg" alt="Profile" class="rounded-circle">
+              <img src="<?php echo $foto; ?>" alt="Profile" class="rounded-circle" style="width: 200px; height: 200px; object-fit: cover;">
               <h2><?php echo $datos["nombres"]; ?></h2>
-              <h3><?php // echo $datos["unidad"]; ?></h3>
+              <h3><?php // echo $datos["unidad"]; 
+                  ?></h3>
             </div>
           </div>
 
@@ -58,11 +59,13 @@
                   </div>
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Unidad</div>
-                    <div class="col-lg-9 col-md-8"><?php // echo $datos["unidad"]; ?></div>
+                    <div class="col-lg-9 col-md-8"><?php // echo $datos["unidad"]; 
+                                                    ?></div>
                   </div>
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Dependencia</div>
-                    <div class="col-lg-9 col-md-8"><?php //echo $datos["dependencia"]; ?></div>
+                    <div class="col-lg-9 col-md-8"><?php //echo $datos["dependencia"]; 
+                                                    ?></div>
                   </div>
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label ">Correo electronico</div>
@@ -81,55 +84,60 @@
                 </div>
                 <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
                   <!-- Profile Edit Form -->
-                  <form method="POST" action="?page=users-profile" autocomplete="off">
+                  <form method="POST" action="?page=users-profile" autocomplete="off" enctype="multipart/form-data">
                     <div class="row mb-3">
                       <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Foto de Perfil</label>
                       <div class="col-md-8 col-lg-9">
-                        <img src="img/profile-img.jpg" alt="Profile">
+                        <img src="<?php echo $foto; ?>" alt="Profile" style="width: 100px; height: 100px; object-fit: cover;">
                         <div class="pt-2">
-                          <a href="#" class="btn btn-primary btn-sm" title="Upload new profile image"><i class="bi bi-upload"></i></a>
-                          <a href="#" class="btn btn-danger btn-sm" title="Remove my profile image"><i class="bi bi-trash"></i></a>
+                          <input type="file" name="foto_perfil" id="foto_perfil" class="d-none" accept="image/*">
+                          <button type="button" class="btn btn-primary btn-sm" title="Subir imagen" onclick="document.getElementById('foto_perfil').click()">
+                            <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                          </button>
+                          <button type="submit" name="eliminarF"  class="btn btn-danger btn-sm" title="Remover mi imagen de perfil" onclick="removeProfileImage()">
+                            <i class="fa-solid fa-trash-arrow-up"></i>
+                          </button>
+                          <div class="mt-2" id="nombre-archivo"></div>
                         </div>
                       </div>
                     </div>
+
+                    <!-- Resto de los campos del formulario -->
                     <div class="row mb-3">
-                      <label for="Name" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
+                      <label for="Nombre" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
                       <div class="col-md-8 col-lg-9">
                         <input name="Nombre" type="text" class="form-control" id="Nombre" value="<?php echo $datos["nombres"]; ?>" required maxlength="50">
                         <span id="snombre"></span>
                       </div>
                     </div>
-
                     <div class="row mb-3">
                       <label for="apellido" class="col-md-4 col-lg-3 col-form-label">Apellido</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="apellido" type="text" class="form-control" id="apellido" value="<?php echo $datos["apellidos"]; ?>" required maxlength="50">
+                        <input name="Apellido" type="text" class="form-control" id="Apellido" value="<?php echo $datos["apellidos"]; ?>" required maxlength="50">
                         <span id="sapellido"></span>
                       </div>
                     </div>
-
+                    <div class="row mb-3">
+                      <label for="correo" class="col-md-4 col-lg-3 col-form-label">Correo</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="Correo" type="text" class="form-control" id="Correo" value="<?php echo $datos["correo"]; ?>" required maxlength="50">
+                        <span id="scorreo"></span>
+                      </div>
+                    </div>
                     <div class="row mb-3">
                       <label for="telefono" class="col-md-4 col-lg-3 col-form-label">Telefono</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="telefono" type="text" class="form-control" id="telefono" value="<?php echo $datos["telefono"]; ?>" maxlength="15">
+                        <input name="Telefono" type="text" class="form-control" id="Telefono" value="<?php echo $datos["telefono"]; ?>" required maxlength="50">
                         <span id="stelefono"></span>
                       </div>
                     </div>
 
-                    <div class="row mb-3">
-                      <label for="correo" class="col-md-4 col-lg-3 col-form-label">Correo</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="correo" type="correo" class="form-control" id="correo" value="<?php echo $datos["correo"]; ?>" maxlength="100">
-                        <span id="scorreo"></span>
-                      </div>
-                    </div>
-
+                    <!-- ... resto de tus campos existentes ... -->
 
                     <div class="text-center">
                       <button type="submit" class="btn btn-primary cambio" name="cambiar">Guardar cambios</button>
                     </div>
                   </form><!-- End Profile Edit Form -->
-
                 </div>
 
                 <div class="tab-pane fade pt-3" id="profile-settingss">
@@ -177,6 +185,9 @@
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
   <script src="js/perfil.js"></script>
+  <script>
+    // Mostrar nombre del archivo seleccionado
+  </script>
 
 </body>
 
