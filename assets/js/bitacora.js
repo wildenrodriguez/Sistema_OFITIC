@@ -1,6 +1,6 @@
 $(document).ready(function () {
-	consultar();
 	registrarEntrada();
+	consultar();
 });
 
 function enviaAjax(datos) {
@@ -23,7 +23,6 @@ function enviaAjax(datos) {
 					iniciarTabla(lee.datos);
 
 				} else if (lee.resultado == "entrada") {
-					consultar();
 
 				} else if (lee.resultado == "error") {
 					mensajes("error", null, lee.mensaje, null);

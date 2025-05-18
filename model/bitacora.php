@@ -68,20 +68,22 @@ class Bitacora extends Conexion
         $dato = [];
 
         try {
+            $this->conex->beginTransaction();
             $query = "SELECT * FROM bitacora WHERE id_bitacora = :id";
             
             $stm = $this->conex->prepare($query);
             $stm->bindParam(":id", $this->id);
             $stm->execute();
-
             if($stm->rowCount() > 0){
                 $dato['arreglo'] = $stm->fetch(PDO::FETCH_ASSOC);
                 $dato['bool'] = 1;
             } else {
                 $dato['bool'] = 0;
             }
+            $this->conex->commit();
             
         } catch (PDOException $e) {
+            $this->conex->rollBack();
             $dato['error'] = $e->getMessage();
         }
         $this->Cerrar_Conexion($none, $stm);
@@ -94,6 +96,7 @@ class Bitacora extends Conexion
 
         if($bool['bool'] == 0){
         try {
+            $this->conex->beginTransaction();
             $query = "INSERT INTO bitacora (id_bitacora, usuario, modulo, accion_bitacora, fecha, hora)
             VALUES (NULL, :usuario, :modulo, :accion, :fecha, :hora)";
             
@@ -106,11 +109,15 @@ class Bitacora extends Conexion
             $stm->execute();
             $dato['resultado'] = "registrar";
             $dato['mensaje'] = "Se registro con éxito";
+
+            $this->conex->commit();
         } catch (PDOException $e) {
+            $this->rollBack();
             $dato['resultado'] = "error";
             $dato['mensaje'] = $e->getMessage();
         }
     } else {
+        $this->rollBack();
         $dato['resultado'] = "error";
         $dato['mensaje'] = "Registro duplicado";
     }
@@ -123,13 +130,16 @@ class Bitacora extends Conexion
         $dato = [];
 
         try {
+            $this->conex->beginTransaction();
             $query = "SELECT * FROM bitacora ORDER BY bitacora.id_bitacora DESC";
             
             $stm = $this->conex->prepare($query);
             $stm->execute();
             $dato['resultado'] = "consultar";
             $dato['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
+            $this->conex->commit();
         } catch (PDOException $e) {
+            $this->conex->rollBack();
             $dato['resultado'] = "error";
             $dato['mensaje'] = $e->getMessage();
         }

@@ -16,13 +16,13 @@
         <li class="menu-item <?php echo ($page == "home") ? "active" : "" ?>">
           <a href="?page=home">
             <i class="fas fa-home"></i>
-            <span class="menu-text">Dashboard</span>
+            <span class="ms-2 me-2 menu-text">Dashboard</span>
           </a>
         </li>
         <li class="menu-item <?php echo ($page == "mis_servicios") ? "active" : "" ?>">
           <a href="?page=mis_servicios">
             <i class="fa-solid fa-list-check"></i>
-            <span class="menu-text">Mis Solicitudes</span>
+            <span class="ms-2 me-2 menu-text">Mis Solicitudes</span>
           </a>
         </li>
 
@@ -30,7 +30,7 @@
           <li class="menu-item <?php echo ($page == "servicios") ? "active" : "" ?>">
             <a href="?page=servicios">
               <i class="fa-solid fa-clipboard-check"></i>
-              <span class="menu-text">Servicios</span>
+              <span class="ms-2 me-2 menu-text">Servicios</span>
             </a>
           </li>
         <?php } ?>
@@ -40,7 +40,7 @@
           <li class="menu-item <?php echo ($page == "solicitudes") ? "active" : "" ?>">
             <a href="?page=solicitudes">
               <i class="fa-solid fa-clipboard-list"></i>
-              <span class="menu-text">Solicitudes</span>
+              <span class="ms-2 me-2 menu-text">Solicitudes</span>
             </a>
           </li>
 
@@ -48,7 +48,7 @@
             <li class="menu-item <?php echo ($page == "gestion_equipos" || $page == "Configuracion") ? "active" : "" ?>">
               <a class="nav-link collapsed" data-bs-target="#icons-nava" data-bs-toggle="collapse" href="#">
                 <i class="fas fa-cog"></i>
-                <span class="menu-text">Gestion de equipos</span>
+                <span class="ms-2 me-2 menu-text">Gestion de equipos</span>
                 <i class="fa-solid fa-angle-right"></i>
               </a>
             </li>
@@ -58,13 +58,13 @@
               <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "unidad") ? "active" : "" ?>">
                 <a href="?page=gestion_equipos">
                   <i class="fa-solid fa-computer"></i>
-                  <span class="menu-text">Equipos</span>
+                  <span class="ms-2 me-2 menu-text">Equipos</span>
                 </a>
               </li>
               <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "Bien") ? "active" : "" ?>">
                 <a href="?page=bien">
                   <i class="fas fa-cog"></i>
-                  <span class="menu-text">Bienes</span>
+                  <span class="ms-2 me-2 menu-text">Bienes</span>
                 </a>
               </li>
 
@@ -73,14 +73,14 @@
             <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
               <a href="?page=solicitantes">
                 <i class="fa-solid fa-address-book"></i>
-                <span class="menu-text">Gestión de Solicitantes</span>
+                <span class="ms-2 me-2 menu-text">Gestión de Solicitantes</span>
               </a>
             </li>
 
             <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
               <a href="?page=material">
                 <i class="fa-solid fa-toolbox"></i>
-                <span class="menu-text">Gestión de Materiales</span>
+                <span class="ms-2 me-2 menu-text">Gestión de Materiales</span>
               </a>
             </li>
             <!--  <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
@@ -92,13 +92,13 @@
             <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
               <a href="?page=piso">
                 <i class="fa-solid fa-stairs"></i>
-                <span class="menu-text">Gestión de Pisos</span>
+                <span class="ms-2 me-2 menu-text">Gestión de Pisos</span>
               </a>
             </li>
             <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
               <a href="?page=oficina">
                 <i class="fa-solid fa-building-user"></i>
-                <span class="menu-text">Gestión de Oficinas</span>
+                <span class="ms-2 me-2 menu-text">Gestión de Oficinas</span>
               </a>
             </li>
 
@@ -107,7 +107,7 @@
                 <li class="menu-item <?php echo ($page == "Mantenimiento") ? "active" : "" ?>">
                   <a class="nav-link collapsed" data-bs-target="#icons-nave" data-bs-toggle="collapse" href="#">
                     <i class="fas fa-cog"></i>
-                    <span class="menu-text">Mòdulo de Seguridad</span>
+                    <span class="ms-2 me-2 menu-text">Mòdulo de Seguridad</span>
                     <i class="fa-solid fa-angle-right"></i>
                   </a>
                 </li>
@@ -117,25 +117,25 @@
                   <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "backup") ? "active" : "" ?>">
                     <a href="?page=backup">
                       <i class="fas fa-cog"></i>
-                      <span class="menu-text">Backup</span>
+                      <span class="ms-2 me-2 menu-text">Backup</span>
                     </a>
                   </li>
                   <li class="menu-item <?php echo ($page == "usuario") ? "active" : "" ?>">
                     <a href="?page=bitacora">
                       <i class="fa-solid fa-user-clock"></i>
-                      <span class="menu-text">Bitácora</span>
+                      <span class="ms-2 me-2 menu-text">Bitácora</span>
                     </a>
                   </li>
                   <li class="menu-item <?php echo ($page == "usuario") ? "active" : "" ?>">
                     <a href="?page=usuario">
                       <i class="fa-solid fa-users-rectangle"></i>
-                      <span class="menu-text">Gestión de Usuarios</span>
+                      <span class="ms-2 me-2 menu-text">Gestión de Usuarios</span>
                     </a>
                   </li>
                   <li class="menu-item <?php echo ($page == "usuario") ? "active" : "" ?>">
                     <a href="?page=rol">
                       <i class="fa-solid fa-users-rectangle"></i>
-                      <span class="menu-text">Roles y Permisos</span>
+                      <span class="ms-2 me-2 menu-text">Roles y Permisos</span>
                     </a>
                   </li>
                 </ul>
@@ -220,7 +220,7 @@
         <li class="menu-item <?php echo ($page == "Configuracion") ? "active" : "" ?>">
           <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
             <i class="fas fa-cog"></i>
-            <span class="menu-text">Configuración</span>
+            <span class="ms-2 me-2 menu-text">Configuración</span>
             <i class="fa-solid fa-angle-right"></i>
           </a>
         </li>
@@ -230,37 +230,37 @@
           <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "unidad") ? "active" : "" ?>">
             <a href="?page=unidad">
               <i class="fa-solid fa-users-gear"></i>
-              <span class="menu-text">Unidad</span>
+              <span class="ms-2 me-2 menu-text">Unidad</span>
             </a>
           </li>
           <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "dependencia") ? "active" : "" ?>">
             <a href="?page=Configuracion&dato=dependencia">
               <i class="fa-solid fa-users-gear"></i>
-              <span class="menu-text">Dependencia</span>
+              <span class="ms-2 me-2 menu-text">Dependencia</span>
             </a>
           </li>
           <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "marca") ? "active" : "" ?>">
             <a href="?page=marca">
               <i class="fa-solid fa-trademark"></i>
-              <span class="menu-text">Marca</span>
+              <span class="ms-2 me-2 menu-text">Marca</span>
             </a>
           </li>
           <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "tipo_servicio") ? "active" : "" ?>">
             <a href="?page=tipo_servicio">
               <i class="fa-solid fa-screwdriver-wrench"></i>
-              <span class="menu-text">Tipo de Servicio</span>
+              <span class="ms-2 me-2 menu-text">Tipo de Servicio</span>
             </a>
           </li>
           <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "cargo") ? "active" : "" ?>">
             <a href="?page=cargo">
               <i class="fa-solid fa-screwdriver-wrench"></i>
-              <span class="menu-text">Cargo</span>
+              <span class="ms-2 me-2 menu-text">Cargo</span>
             </a>
           </li>
           <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "tipo_bien") ? "active" : "" ?>">
             <a href="?page=tipo_bien">
               <i class="fa-solid fa-screwdriver-wrench"></i>
-              <span class="menu-text">Tipo bien</span>
+              <span class="ms-2 me-2 menu-text">Tipo bien</span>
             </a>
           </li>
         </ul>
@@ -269,7 +269,7 @@
       <li class="menu-item <?php echo ($page == "ayuda") ? "active" : "" ?>">
         <a href="?page=ayuda">
           <i class="fas fa-question-circle"></i>
-          <span class="menu-text">Ayuda</span>
+          <span class="ms-2 me-2 menu-text">Ayuda</span>
         </a>
       </li>
 

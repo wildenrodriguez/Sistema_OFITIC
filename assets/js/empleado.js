@@ -10,7 +10,14 @@ $(document).ready(function () {
 				if (validarenvio()) {
 					var datos = new FormData();
 					datos.append('registrar', 'registrar');
+					datos.append('cedula', $("#cedula").val());
 					datos.append('nombre', $("#nombre").val());
+					datos.append('apellido', $("#apellido").val());
+					datos.append('telefono', $("#telefono").val());
+					datos.append('correo', $("#correo").val());
+					datos.append('dependencia', $("#dependencia").val());
+					datos.append('unidad', $("#unidad").val());
+					datos.append('cargo', $("#cargo").val());
 					enviaAjax(datos);
 				}
 				break;
@@ -18,8 +25,15 @@ $(document).ready(function () {
 				if (validarenvio()) {
 					var datos = new FormData();
 					datos.append('modificar', 'modificar');
-					datos.append('id_marca', $("#id_marca").val());
+					datos.append('registrar', 'registrar');
+					datos.append('cedula', $("#cedula").val());
 					datos.append('nombre', $("#nombre").val());
+					datos.append('apellido', $("#apellido").val());
+					datos.append('telefono', $("#telefono").val());
+					datos.append('correo', $("#correo").val());
+					datos.append('dependencia', $("#dependencia").val());
+					datos.append('unidad', $("#unidad").val());
+					datos.append('cargo', $("#cargo").val());
 					enviaAjax(datos);
 				}
 				break;
@@ -27,7 +41,7 @@ $(document).ready(function () {
 				if (validarenvio()) {
 					var datos = new FormData();
 					datos.append('eliminar', 'eliminar');
-					datos.append('id_marca', $("#id_marca").val());
+					datos.append('cedula', $("#cedula").val());
 					enviaAjax(datos);
 				}
 				break;
@@ -179,26 +193,41 @@ function limpia() {
 
 function rellenar(pos, accion) {
 
-	linea = $(pos).closest('tr');
+	linea = $(pos).closest('tr'); s
 
-	$("#idMarca").remove();
-	$("#Fila1").prepend(`<div class="col-4" id="idMarca">
-            <div class="form-floating mb-3 mt-4">
-              <input placeholder="" class="form-control" name="id_marca" type="text" id="id_marca" readOnly>
-              <span id="sid_marca"></span>
-              <label for="id_marca" class="form-label">ID de la Marca</label>
-            </div>`);
-
-
-	$("#id_marca").val($(linea).find("td:eq(0)").text());
+	$("#cedula").val($(linea).find("td:eq(0)").text());
 	$("#nombre").val($(linea).find("td:eq(1)").text());
+	$("#apellido").val($(linea).find("td:eq(2)").text());
+	$("#telefono").val($(linea).find("td:eq(3)").text());
+	$("#correo").val($(linea).find("td:eq(4)").text());
+
+	var dependencia = $(linea).find("td:eq(5)").text();
+	if ($("#dependencia option[value='" + dependencia + "']").length > 0) {
+		$("#dependencia").val(dependencia).change();
+	} else {
+		console.error("El valor '" + dependencia + "' no se encuentra en el campo select.");
+	}
+
+	var unidad = $(linea).find("td:eq(6)").text();
+	if ($("#unidad option[value='" + unidad + "']").length > 0) {
+		$("#unidad").val(unidad).change();
+	} else {
+		console.error("El valor '" + unidad + "' no se encuentra en el campo select.");
+	}
+
+	var cargo = $(linea).find("td:eq(7)").text();
+	if ($("#cargo option[value='" + cargo + "']").length > 0) {
+		$("#cargo").val(cargo).change();
+	} else {
+		console.error("El valor '" + unidad + "' no se encuentra en el campo select.");
+	}
 
 	if (accion == 0) {
-		$("#modalTitleId").text("Modificar Marca")
+		$("#modalTitleId").text("Modificar Empleado")
 		$("#enviar").text("Modificar");
 	}
 	else {
-		$("#modalTitleId").text("Eliminar Marca")
+		$("#modalTitleId").text("Eliminar Empleado")
 		$("#enviar").text("Eliminar");
 	}
 	$('#enviar').prop('disabled', false);

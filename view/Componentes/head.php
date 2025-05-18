@@ -14,7 +14,7 @@
     <!-- Font Awesome for icons -->
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      href="assets/css/all.min.css"
     />
     <link
       rel="stylesheet"
@@ -33,7 +33,7 @@
     </script>
     <script src="vendor/components/jquery/jquery.min.js"></script>
     <script defer src="assets/js/main.js"></script>
-    <script src="assets/js/all.js"></script>
+    <script src="assets/js/all.min.js"></script>
     <script src="assets/js/Chart.min.js"></script>
     <script defer src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/utils.js"></script>

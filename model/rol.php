@@ -40,6 +40,7 @@ class Rol extends Conexion
         $dato = [];
 
         try {
+            $this->conex->beginTransaction();
             $query = "SELECT * FROM rol WHERE id = :id";
 
             $stm = $this->conex->prepare($query);
@@ -49,11 +50,14 @@ class Rol extends Conexion
             if ($stm->rowCount() > 0) {
                 $dato['arreglo'] = $stm->fetch(PDO::FETCH_ASSOC);
                 $dato['bool'] = 1;
+
             } else {
                 $dato['bool'] = 0;
             }
+            $this->conex->commit();
 
         } catch (PDOException $e) {
+            $this->conex->rollBack();
             $dato['error'] = $e->getMessage();
         }
         $this->Cerrar_Conexion($none, $stm);
@@ -67,8 +71,8 @@ class Rol extends Conexion
 
         if ($bool['bool'] == 0) {
             try {
-                $query = "INSERT INTO rol (id, nombre) VALUES 
-            (NULL, :nombre)";
+                $this->conex->beginTransaction();
+                $query = "INSERT INTO rol (id, nombre) VALUES (NULL, :nombre)";
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":nombre", $this->nombre);
@@ -76,12 +80,15 @@ class Rol extends Conexion
                 $dato['resultado'] = "registrar";
                 $dato['estado'] = 1;
                 $dato['mensaje'] = "Se registró la servicio exitosamente";
+                $this->conex->commit();
             } catch (PDOException $e) {
+                $this->rollBack();
                 $dato['resultado'] = "error";
                 $dato['estado'] = -1;
                 $dato['mensaje'] = $e->getMessage();
             }
         } else {
+            $this->rollBack();
             $dato['resultado'] = "error";
             $dato['estado'] = -1;
             $dato['mensaje'] = "Registro duplicado";
@@ -94,21 +101,24 @@ class Rol extends Conexion
     {
         $dato = [];
 
-            try {
-                $query = "UPDATE rol SET nombre= :nombre WHERE id = :id";
+        try {
+            $this->conex->beginTransaction();
+            $query = "UPDATE rol SET nombre= :nombre WHERE id = :id";
 
-                $stm = $this->conex->prepare($query);
-                $stm->bindParam(":id", $this->id);
-                $stm->bindParam(":nombre", $this->nombre);
-                $stm->execute();
-                $dato['resultado'] = "modificar";
-                $dato['estado'] = 1;
-                $dato['mensaje'] = "Se modificaron los datos del servicio con éxito";
-            } catch (PDOException $e) {
-                $dato['estado'] = -1;
-                $dato['resultado'] = "error";
-                $dato['mensaje'] = $e->getMessage();
-            }
+            $stm = $this->conex->prepare($query);
+            $stm->bindParam(":id", $this->id);
+            $stm->bindParam(":nombre", $this->nombre);
+            $stm->execute();
+            $this->commit();
+            $dato['resultado'] = "modificar";
+            $dato['estado'] = 1;
+            $dato['mensaje'] = "Se modificaron los datos del servicio con éxito";
+        } catch (PDOException $e) {
+            $this->rollBack();
+            $dato['estado'] = -1;
+            $dato['resultado'] = "error";
+            $dato['mensaje'] = $e->getMessage();
+        }
         $this->Cerrar_Conexion($this->conex, $stm);
         return $dato;
     }
@@ -120,15 +130,18 @@ class Rol extends Conexion
 
         if ($bool['bool'] != 0) {
             try {
+                $this->conex->beginTransaction();
                 $query = "UPDATE rol SET estatus = 0 WHERE id = :id";
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":id", $this->id);
                 $stm->execute();
+                $this->conex->commit();
                 $dato['resultado'] = "eliminar";
                 $dato['estado'] = 1;
                 $dato['mensaje'] = "Se eliminó el servicio exitosamente";
             } catch (PDOException $e) {
+                $this->conex->rollBack();
                 $dato['resultado'] = "error";
                 $dato['estado'] = -1;
                 $dato['mensaje'] = $e->getMessage();
@@ -147,13 +160,16 @@ class Rol extends Conexion
         $dato = [];
 
         try {
+            $this->beginTransaction();
             $query = "SELECT * FROM rol";
 
             $stm = $this->conex->prepare($query);
             $stm->execute();
+            $this->conex->commit()
             $dato['resultado'] = "consultar";
             $dato['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            $this->conex->rollBack();
             $dato['resultado'] = "error";
             $dato['mensaje'] = $e->getMessage();
         }

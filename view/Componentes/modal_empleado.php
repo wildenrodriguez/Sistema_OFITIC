@@ -33,55 +33,54 @@
               <span id="sapellido"></span>
             </div>
           </div>
-          <div class="row justify-content-center" id="Fila3">
-            <div class="col-md-6">
-              <div class="form-floating mb-3">
-                <input placeholder="Teléfono" class="form-control" name="telefono" type="text" id="telefono"
-                  maxlength="45">
-                <label for="telefono" class="form-label">Teléfono</label>
-                <span id="stelefono"></span>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-floating mb-3">
-                <input placeholder="Correo" class="form-control" name="correo" type="email" id="correo" maxlength="45">
-                <label for="correo" class="form-label">Correo Electrónico</label>
-                <span id="scorreo"></span>
-              </div>
+        </div>
+        <div class="row justify-content-center" id="Fila3">
+          <div class="col-md-6">
+            <div class="form-floating mb-3">
+              <input placeholder="Teléfono" class="form-control" name="telefono" type="text" id="telefono"
+                maxlength="45">
+              <label for="telefono" class="form-label">Teléfono</label>
+              <span id="stelefono"></span>
             </div>
           </div>
-          <div class="row justify-content-center" id="Fila4">
-            <div class="col-md-6">
-              <div class="form-floating mb-3">
-                <select class="form-select" name="dependencia" id="dependencia">
-                  <option selected value="default">Seleccione una Dependencia</option>
-                </select>
-                <span id="sdependencia"></span>
-                <label for="dependencia">Dependencia</label>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-floating mb-3">
-                <select class="form-select" name="unidad" id="unidad">
-                  <option selected value="default">Seleccione una Unidad </option>
-                </select>
-                <span id="sunidad"></span>
-                <label for="unidad">Unidad</label>
-              </div>
+          <div class="col-md-6">
+            <div class="form-floating mb-3">
+              <input placeholder="Correo" class="form-control" name="correo" type="email" id="correo" maxlength="45">
+              <label for="correo" class="form-label">Correo Electrónico</label>
+              <span id="scorreo"></span>
             </div>
           </div>
-          <div class="row justify-content-center" id="Fila5">
-            <div class="col-md-8">
-              <div class="form-floating mb-3">
-                <select class="form-select" name="cargo" id="cargo">
-                  <option selected value="default">Seleccione un Cargo</option>
-                </select>
-                <span id="scargo"></span>
-                <label for="cargo">Cargo</label>
-              </div>
+        </div>
+        <div class="row justify-content-center" id="Fila4">
+          <div class="col-md-6">
+            <div class="form-floating mb-3">
+              <select class="form-select" name="dependencia" id="dependencia">
+                <option selected value="default">Seleccione una Dependencia</option>
+              </select>
+              <span id="sdependencia"></span>
+              <label for="dependencia">Dependencia</label>
             </div>
           </div>
-
+          <div class="col-md-6">
+            <div class="form-floating mb-3">
+              <select class="form-select" name="unidad" id="unidad">
+                <option selected value="default">Seleccione una Unidad </option>
+              </select>
+              <span id="sunidad"></span>
+              <label for="unidad">Unidad</label>
+            </div>
+          </div>
+        </div>
+        <div class="row justify-content-center" id="Fila5">
+          <div class="col-md-8">
+            <div class="form-floating mb-3">
+              <select class="form-select" name="cargo" id="cargo">
+                <option selected value="default">Seleccione un Cargo</option>
+              </select>
+              <span id="scargo"></span>
+              <label for="cargo">Cargo</label>
+            </div>
+          </div>
         </div>
       </div>
 
