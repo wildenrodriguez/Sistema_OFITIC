@@ -167,7 +167,7 @@ class Oficina extends Conexion
         $dato = [];
 
         try {
-            $query = "SELECT o.id_oficina, nombre_oficina, p.nro_piso
+            $query = "SELECT o.id_oficina, nombre_oficina, p.tipo_piso, p.nro_piso
                     FROM oficina o 
                     JOIN piso p ON o.id_piso = p.id_piso 
                     WHERE o.estatus = 1";

@@ -43,16 +43,16 @@ $(document).ready(function () {
 	$("#btn-registrar").on("click", function () {
 		limpia();
 		$("#id_oficina").parent().parent().remove();
-        $("#nombre").parent().parent().show();
-        $("#id_piso").parent().parent().show();
+		$("#nombre").parent().parent().show();
+		$("#id_piso").parent().parent().show();
 		$("#modalTitleId").text("Registrar Oficina");
 		$("#enviar").text("Registrar");
 		$("#modal1").modal("show");
 	});
-    $("#btn-consultar-eliminados").on("click", function() {
-        consultarEliminadas();
-        $("#modalEliminadas").modal("show");
-    });
+	$("#btn-consultar-eliminados").on("click", function () {
+		consultarEliminadas();
+		$("#modalEliminadas").modal("show");
+	});
 });
 
 function enviaAjax(datos) {
@@ -65,7 +65,7 @@ function enviaAjax(datos) {
 		processData: false,
 		cache: false,
 		beforeSend: function () { },
-		timeout: 10000, 
+		timeout: 10000,
 		success: function (respuesta) {
 			try {
 				var lee = JSON.parse(respuesta);
@@ -75,10 +75,7 @@ function enviaAjax(datos) {
 					consultar();
 
 				} else if (lee.resultado == "consultar") {
-					iniciarTabla(lee.datos);
-
-				} else if (lee.resultado == "consultar") {
-					iniciarTabla(lee.datos);
+					crearDataTable(lee.datos);
 
 				} else if (lee.resultado == "modificar") {
 					$("#modal1").modal("hide");
@@ -153,24 +150,22 @@ function validarenvio() {
 	return true;
 }
 
-var tabla;
-
-function iniciarTabla(arreglo) {
-	if (tabla == null) {
-		crearDataTable(arreglo);
-	} else {
-		tabla.destroy();
-		crearDataTable(arreglo);
-	}
-};
-
 function crearDataTable(arreglo) {
-	tabla = $('#tabla1').DataTable({
+	if ($.fn.DataTable.isDataTable('#tabla1')) {
+		$('#tabla1').DataTable().destroy();
+	}
+	$('#tabla1').DataTable({
 		data: arreglo,
 		columns: [
 			{ data: 'id_oficina' },
 			{ data: 'nombre_oficina' },
-			{ data: 'nro_piso' },
+			{
+				// Columna combinada que mostrará nombre_oficina y nro_piso
+				data: null,
+				render: function (row) {
+					return `${row.tipo_piso} ${row.nro_piso}`;
+				}
+			},
 			{
 				data: null, render: function () {
 					const botones = `<button onclick="rellenar(this, 0)" class="btn btn-update"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -208,15 +203,8 @@ function rellenar(pos, accion) {
 
 	$("#id_oficina").val($(linea).find("td:eq(0)").text());
 	$("#nombre").val($(linea).find("td:eq(1)").text());
-	
-	var pisoTexto = $(linea).find("td:eq(2)").text() + " - " + $(linea).find("td:eq(3)").text();
-	$("#id_piso option").each(function() {
-		if ($(this).text().includes(pisoTexto)) {
-			$(this).prop("selected", true);
-			$("#id_piso").trigger("change");
-			return false;
-		}
-	});
+
+	buscarSelectTexto("#id_piso", $(linea).find("td:eq(2)").text())
 
 	if (accion == 0) {
 		$("#modalTitleId").text("Modificar Oficina")
@@ -231,101 +219,101 @@ function rellenar(pos, accion) {
 }
 
 function consultarEliminadas() {
-    var datos = new FormData();
-    datos.append('consultar_eliminadas', 'consultar_eliminadas');
-    
-    $.ajax({
-        async: true,
-        url: "",
-        type: "POST",
-        contentType: false,
-        data: datos,
-        processData: false,
-        cache: false,
-        beforeSend: function() {},
-        timeout: 10000,
-        success: function(respuesta) {
-            try {
-                var lee = JSON.parse(respuesta);
-                if (lee.resultado == "consultar_eliminadas") {
-                    if ($.fn.DataTable.isDataTable('#tablaEliminadas')) {
-                        $('#tablaEliminadas').DataTable().destroy();
-                    }
-                    
-                    $('#tablaEliminadas').DataTable({
-                        data: lee.datos,
-                        columns: [
-                            { data: 'id_oficina' },
-                            { data: 'nombre_oficina' },
-                            { data: 'nro_piso' },
-                            {
-                                data: null, 
-                                render: function() {
-                                    return `<button onclick="restaurarOficina(this)" class="btn btn-success">
+	var datos = new FormData();
+	datos.append('consultar_eliminadas', 'consultar_eliminadas');
+
+	$.ajax({
+		async: true,
+		url: "",
+		type: "POST",
+		contentType: false,
+		data: datos,
+		processData: false,
+		cache: false,
+		beforeSend: function () { },
+		timeout: 10000,
+		success: function (respuesta) {
+			try {
+				var lee = JSON.parse(respuesta);
+				if (lee.resultado == "consultar_eliminadas") {
+					if ($.fn.DataTable.isDataTable('#tablaEliminadas')) {
+						$('#tablaEliminadas').DataTable().destroy();
+					}
+
+					$('#tablaEliminadas').DataTable({
+						data: lee.datos,
+						columns: [
+							{ data: 'id_oficina' },
+							{ data: 'nombre_oficina' },
+							{ data: 'nro_piso' },
+							{
+								data: null,
+								render: function () {
+									return `<button onclick="restaurarOficina(this)" class="btn btn-success">
                                             <i class="fa-solid fa-recycle"></i>
                                             </button>`;
-                                }
-                            }
-                        ],
-                        language: {
-                            url: idiomaTabla,
-                        }
-                    });
-                }
-            } catch (e) {
-                console.error("Error procesando datos:", e);
-            }
-        },
-        error: function(request, status, err) {
-            mensajes("error", null, "Error al cargar oficinas eliminadas", "Intente nuevamente");
-        }
-    });
+								}
+							}
+						],
+						language: {
+							url: idiomaTabla,
+						}
+					});
+				}
+			} catch (e) {
+				console.error("Error procesando datos:", e);
+			}
+		},
+		error: function (request, status, err) {
+			mensajes("error", null, "Error al cargar oficinas eliminadas", "Intente nuevamente");
+		}
+	});
 }
 
 
 function restaurarOficina(boton) {
-    var linea = $(boton).closest('tr');
-    var id = $(linea).find('td:eq(0)').text();
-    
-    Swal.fire({
-        title: '¿Restaurar Oficina?',
-        text: "¿Está seguro que desea restaurar esta oficina?",
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Sí, restaurar',
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            var datos = new FormData();
-            datos.append('restaurar', 'restaurar');
-            datos.append('id_oficina', id);
-            
-            $.ajax({
-                url: "",
-                type: "POST",
-                data: datos,
-                processData: false,
-                contentType: false,
-                success: function(respuesta) {
-                    try {
-                        var lee = JSON.parse(respuesta);
-                        if (lee.estado == 1) {
-                            mensajes("success", null, "Oficina restaurada", lee.mensaje);
-                            consultarEliminadas();
-                            consultar();
-                        } else {
-                            mensajes("error", null, "Error", lee.mensaje);
-                        }
-                    } catch (e) {
-                        mensajes("error", null, "Error", "Error procesando la respuesta");
-                    }
-                },
-                error: function() {
-                    mensajes("error", null, "Error", "No se pudo restaurar la oficina");
-                }
-            });
-        }
-    });
+	var linea = $(boton).closest('tr');
+	var id = $(linea).find('td:eq(0)').text();
+
+	Swal.fire({
+		title: '¿Restaurar Oficina?',
+		text: "¿Está seguro que desea restaurar esta oficina?",
+		icon: 'question',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Sí, restaurar',
+		cancelButtonText: 'Cancelar'
+	}).then((result) => {
+		if (result.isConfirmed) {
+			var datos = new FormData();
+			datos.append('restaurar', 'restaurar');
+			datos.append('id_oficina', id);
+
+			$.ajax({
+				url: "",
+				type: "POST",
+				data: datos,
+				processData: false,
+				contentType: false,
+				success: function (respuesta) {
+					try {
+						var lee = JSON.parse(respuesta);
+						if (lee.estado == 1) {
+							mensajes("success", null, "Oficina restaurada", lee.mensaje);
+							consultarEliminadas();
+							consultar();
+						} else {
+							mensajes("error", null, "Error", lee.mensaje);
+						}
+					} catch (e) {
+						mensajes("error", null, "Error", "Error procesando la respuesta");
+					}
+				},
+				error: function () {
+					mensajes("error", null, "Error", "No se pudo restaurar la oficina");
+				}
+			});
+		}
+	});
 }

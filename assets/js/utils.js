@@ -60,6 +60,31 @@ function mensajes(icono, tiempo, titulo, mensaje) {
   });
 }
 
+async function confirmarAccion(titulo, mensaje, icono) {
+
+  await Swal.fire({
+    title: titulo,
+    text: mensaje,
+    icon: icono,
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Sí',
+    cancelButtonText: 'Cancelar'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      console.log("Confirmado");
+      resultado = true;
+    } else {
+      console.log("Negado");
+      resultado = false;
+    }
+  })
+  
+  return resultado;
+  ;
+}
+
 function consultar() {
   var peticion = new FormData();
   peticion.append('consultar', 'consultar');
@@ -72,15 +97,43 @@ function registrarEntrada() {
   enviaAjax(peticion);
 }
 
-function selectEdificio(arreglo) {
-	$("#id_edificio").empty();
+function buscarSelectValor(id_select, valor) {
 
-	$("#id_edificio").append(
-		new Option('Seleccione un Edificio', null)
-	);
-	arreglo.forEach(item => {
-		$("#id_edificio").append(
-			new Option(item.nombre, item.id_edificio)
-		);
-	});
+  if ($(`${id_select} option[value="${valor}"]`).length > 0) {
+    $(`${id_select}`).val(`${valor}`).change();
+  } else {
+    console.error("El valor " + valor + " no se encuentra en el campo select.");
+  }
+}
+
+function buscarSelectTexto(id_select, valor) {
+
+  let bool;
+
+  $(`${id_select} option`).each(function () {
+    if ($(this).text().trim() === valor.trim()) {
+      $(this).prop('selected', true);
+      $("#id_piso").change();
+      bool = true;
+    }
+  })
+
+  if (bool) {
+    return true;
+  } else {
+    console.error("El valor '" + valor + "' no se encuentra en el campo select.")
+  }
+}
+
+function selectEdificio(arreglo) {
+  $("#id_edificio").empty();
+
+  $("#id_edificio").append(
+    new Option('Seleccione un Edificio', null)
+  );
+  arreglo.forEach(item => {
+    $("#id_edificio").append(
+      new Option(item.nombre, item.id_edificio)
+    );
+  });
 }

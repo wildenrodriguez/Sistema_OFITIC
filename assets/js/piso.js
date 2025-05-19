@@ -3,34 +3,48 @@ $(document).ready(function () {
 	registrarEntrada();
 	capaValidar();
 
-	$("#enviar").on("click", function () {
-		switch ($(this).text()) {
+	$("#enviar").on("click", async function () {
 
+		$('#enviar').prop('disabled', false);
+		let confirmacion = false;
+
+		switch ($(this).text()) {
 			case "Registrar":
 				if (validarenvio()) {
-					var datos = new FormData();
-					datos.append('registrar', 'registrar');
-					datos.append('tipo_piso', $("#tipo_piso").val());
-					datos.append('nro_piso', $("#nro_piso").val());
-					enviaAjax(datos);
+
+					confirmacion = await confirmarAccion("Se registrará un Piso", "¿Está seguro?", "question");
+
+					if (confirmacion) {
+						var datos = new FormData();
+						datos.append('registrar', 'registrar');
+						datos.append('tipo_piso', $("#tipo_piso").val());
+						datos.append('nro_piso', $("#nro_piso").val());
+						enviaAjax(datos);
+					}
 				}
 				break;
 			case "Modificar":
 				if (validarenvio()) {
-					var datos = new FormData();
-					datos.append('modificar', 'modificar');
-					datos.append('id_piso', $("#id_piso").val());
-					datos.append('tipo_piso', $("#tipo_piso").val());
-					datos.append('nro_piso', $("#nro_piso").val());
-					enviaAjax(datos);
+					confirmacion = await confirmarAccion("Se modificará un Piso", "¿Está seguro?", "question");
+					if (confirmacion) {
+						var datos = new FormData();
+						datos.append('modificar', 'modificar');
+						datos.append('id_piso', $("#id_piso").val());
+						datos.append('tipo_piso', $("#tipo_piso").val());
+						datos.append('nro_piso', $("#nro_piso").val());
+						enviaAjax(datos);
+					}
 				}
 				break;
 			case "Eliminar":
 				if (validarenvio()) {
-					var datos = new FormData();
-					datos.append('eliminar', 'eliminar');
-					datos.append('id_piso', $("#id_piso").val());
-					enviaAjax(datos);
+					confirmacion = await confirmarAccion("Se eliminará un Piso", "¿Está seguro?", "warning");
+					if (confirmacion) {
+						var datos = new FormData();
+						datos.append('eliminar', 'eliminar');
+						datos.append('id_piso', $("#id_piso").val());
+						enviaAjax(datos);
+					}
 				}
 				break;
 
@@ -42,6 +56,10 @@ $(document).ready(function () {
 		} else {
 			$('#enviar').prop('disabled', true)
 		};
+
+		if (!confirmacion) {
+			$('#enviar').prop('disabled', false);
+		}
 	});
 
 	$("#btn-registrar").on("click", function () { //<---- Evento del Boton Registrar
@@ -52,11 +70,6 @@ $(document).ready(function () {
 	}); //<----Fin Evento del Boton Registrar
 });
 
-function datosEdificio() {
-	var datos = new FormData();
-	datos.append('listar_edificio', 'listar_edificio');
-	enviaAjax(datos);
-};
 
 function enviaAjax(datos) {
 	$.ajax({
@@ -79,7 +92,7 @@ function enviaAjax(datos) {
 					consultar();
 
 				} else if (lee.resultado == "consultar") {
-					iniciarTabla(lee.datos);
+					crearDataTable(lee.datos);
 
 				} else if (lee.resultado == "modificar") {
 					$("#modal1").modal("hide");
@@ -192,21 +205,13 @@ function validarenvio() {
 	return true;
 }
 
-var tabla;
-
-function iniciarTabla(arreglo) {
-	if (tabla == null) {
-		crearDataTable(arreglo);
-	} else {
-		tabla.destroy();
-		crearDataTable(arreglo);
-	}
-};
-
 function crearDataTable(arreglo) {
 
 	console.log(arreglo);
-	tabla = $('#tabla1').DataTable({
+	if ($.fn.DataTable.isDataTable('#tabla1')) {
+		$('#tabla1').DataTable().destroy();
+	}
+	$('#tabla1').DataTable({
 		data: arreglo,
 		columns: [
 			{ data: 'id_piso' },
@@ -230,7 +235,6 @@ function crearDataTable(arreglo) {
 }
 
 
-
 function limpia() {
 	$("#idPiso").remove();
 
@@ -243,6 +247,8 @@ function limpia() {
 	$("#snro_piso").val("");
 
 
+	$('#tipo_piso').prop('disabled', false);
+	$('#nro_piso').prop('disabled', false);
 	$('#enviar').prop('disabled', false);
 }
 
@@ -262,25 +268,20 @@ function rellenar(pos, accion) {
 
 	$("#id_piso").val($(linea).find("td:eq(0)").text());
 
-	var tipo_piso = $(linea).find("td:eq(1)").text();
-	if ($("#tipo_piso option[value='" + tipo_piso + "']").length > 0) {
-		$("#tipo_piso").val(tipo_piso).change();
-	} else {
-		console.error("El valor '" + tipo_piso + "' no se encuentra en el campo select.");
-	}
+	buscarSelectValor('#tipo_piso', $(linea).find("td:eq(1)").text());
+	buscarSelectValor('#nro_piso', $(linea).find("td:eq(2)").text());
 
-	var nro_piso = $(linea).find("td:eq(2)").text();
-	if ($("#nro_piso option[value='" + nro_piso + "']").length > 0) {
-		$("#nro_piso").val(nro_piso).change();
-	} else {
-		console.error("El valor '" + nro_piso + "' no se encuentra en el campo select.");
-	}
 
 	if (accion == 0) {
+		$('#tipo_piso').prop('disabled', false);
+		$('#nro_piso').prop('disabled', false);
 		$("#modalTitleId").text("Modificar Piso")
 		$("#enviar").text("Modificar");
 	}
 	else {
+
+		$('#tipo_piso').prop('disabled', true);
+		$('#nro_piso').prop('disabled', true);
 		$("#modalTitleId").text("Eliminar Piso")
 		$("#enviar").text("Eliminar");
 	}

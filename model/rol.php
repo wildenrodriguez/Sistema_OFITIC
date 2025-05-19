@@ -160,12 +160,12 @@ class Rol extends Conexion
         $dato = [];
 
         try {
-            $this->beginTransaction();
+            $this->conex->beginTransaction();
             $query = "SELECT * FROM rol";
 
             $stm = $this->conex->prepare($query);
             $stm->execute();
-            $this->conex->commit()
+            $this->conex->commit();
             $dato['resultado'] = "consultar";
             $dato['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
