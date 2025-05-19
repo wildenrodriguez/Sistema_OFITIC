@@ -25,7 +25,7 @@
             <div class="card-body">
               <h5 class="card-title">Gestionar Unidades</h5>
               <button type="button" class="btn btn-primary mx-auto my-4" id="btn-registrar">
-                Registrar Unidades
+                Registrar Unidad
               </button>
               <div class="table-responsive">
                 <table class="table" id="tabla1">

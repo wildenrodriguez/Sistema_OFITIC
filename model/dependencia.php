@@ -1,17 +1,19 @@
 <?php
 require_once "model/conexion.php";
-class Edificio extends Conexion
+class Dependencia extends Conexion
 {
 
     private $id;
     private $nombre;
-    private $ubicacion;
+    private $telefono;
+    private $responsable;
+    private $direccion;
     private $estatus;
 
     public function __construct()
     {
 
-        $this->conex = new Conexion();
+        $this->conex = new Conexion("sistema");
         $this->conex = $this->conex->Conex();
     }
 
@@ -25,11 +27,18 @@ class Edificio extends Conexion
         $this->nombre = $nombre;
     }
 
-    public function set_ubicacion($ubicacion)
+    public function set_direccion($direccion)
     {
-        $this->ubicacion = $ubicacion;
+        $this->direccion = $direccion;
     }
 
+    public function set_telefono($telefono){
+        $this->telefono = $telefono;
+    }
+
+    public function set_responsable($responsable){
+        $this->responsable = $responsable;
+    }
 
     public function set_estatus($estatus)
     {
@@ -46,9 +55,18 @@ class Edificio extends Conexion
         return $this->nombre;
     }
 
-    public function get_ubicacion()
+    public function get_direccion()
     {
-        return $this->ubicacion;
+        return $this->direccion;
+    }
+
+
+    public function get_telefono(){
+        return $this->telefono;
+    }
+
+    public function get_responsable(){
+        return $this->responsable;
     }
 
     public function get_estatus()
@@ -61,20 +79,22 @@ class Edificio extends Conexion
         $dato = [];
 
         try {
-            $query = "SELECT * FROM edificio WHERE id_edificio = :id";
+            $this->conex->beginTransaction();
+            $query = "SELECT * FROM dependencia WHERE id_dependencia = :id";
 
             $stm = $this->conex->prepare($query);
             $stm->bindParam(":id", $this->id);
             $stm->execute();
-
             if ($stm->rowCount() > 0) {
                 $dato['arreglo'] = $stm->fetch(PDO::FETCH_ASSOC);
                 $dato['bool'] = 1;
             } else {
                 $dato['bool'] = 0;
             }
+            $this->conex->commit();
 
         } catch (PDOException $e) {
+            $this->conex->rollBack();
             $dato['error'] = $e->getMessage();
         }
         $this->Cerrar_Conexion($none, $stm);
@@ -88,22 +108,28 @@ class Edificio extends Conexion
 
         if ($bool['bool'] == 0) {
             try {
-                $query = "INSERT INTO edificio(id_edificio, nombre, ubicacion) VALUES 
-            (NULL, :nombre, :ubicacion)";
+                $this->conex->beginTransaction();
+                $query = "INSERT INTO dependencia(id_dependencia, nombre_dependencia, direccion_dependencia, telefono_dependencia, nombre_responsable)
+                VALUES (NULL, :nombre , :direccion , :telefono, :cedula)";
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":nombre", $this->nombre);
-                $stm->bindParam(":ubicacion", $this->ubicacion);
+                $stm->bindParam(":direccion", $this->direccion);
+                $stm->bindParam(":telefono", $this->telefono);
+                $stm->bindParam(":cedula", $this->responsable);
                 $stm->execute();
                 $dato['resultado'] = "registrar";
                 $dato['estado'] = 1;
-                $dato['mensaje'] = "Se registró el edificio exitosamente";
+                $dato['mensaje'] = "Se registró el dependencia exitosamente";
+                $this->conex->commit();
             } catch (PDOException $e) {
+                $this->conex->rollBack();
                 $dato['resultado'] = "error";
                 $dato['estado'] = -1;
                 $dato['mensaje'] = $e->getMessage();
             }
         } else {
+            $this->conex->rollBack();
             $dato['resultado'] = "error";
             $dato['estado'] = -1;
             $dato['mensaje'] = "Registro duplicado";
@@ -117,17 +143,23 @@ class Edificio extends Conexion
         $dato = [];
 
             try {
-                $query = "UPDATE edificio SET nombre= :nombre, ubicacion= :ubicacion WHERE id_edificio = :id";
+                $this->conex->beginTransaction();
+                $query = "UPDATE dependencia SET nombre_dependencia = :nombre, direccion_dependencia = :direccion,
+                telefono_dependencia = :telefono, nombre_responsable = :cedula WHERE id_dependencia = :id";
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":id", $this->id);
                 $stm->bindParam(":nombre", $this->nombre);
-                $stm->bindParam(":ubicacion", $this->ubicacion);
+                $stm->bindParam(":direccion", $this->direccion);
+                $stm->bindParam(":telefono", $this->telefono);
+                $stm->bindParam(":cedula", $this->responsable);
                 $stm->execute();
                 $dato['resultado'] = "modificar";
                 $dato['estado'] = 1;
-                $dato['mensaje'] = "Se modificaron los datos del edificio con éxito";
+                $dato['mensaje'] = "Se modificaron los datos del dependencia con éxito";
+                $this->conex->commit();
             } catch (PDOException $e) {
+                $this->conex->rollBack();
                 $dato['estado'] = -1;
                 $dato['resultado'] = "error";
                 $dato['mensaje'] = $e->getMessage();
@@ -143,14 +175,14 @@ class Edificio extends Conexion
 
         if ($bool['bool'] != 0) {
             try {
-                $query = "UPDATE edificio SET estatus = 0 WHERE id_edificio = :id";
+                $query = "UPDATE dependencia SET estatus = 0 WHERE id_dependencia = :id";
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":id", $this->id);
                 $stm->execute();
                 $dato['resultado'] = "eliminar";
                 $dato['estado'] = 1;
-                $dato['mensaje'] = "Se eliminó el edificio exitosamente";
+                $dato['mensaje'] = "Se eliminó el dependencia exitosamente";
             } catch (PDOException $e) {
                 $dato['resultado'] = "error";
                 $dato['estado'] = -1;
@@ -170,7 +202,7 @@ class Edificio extends Conexion
         $dato = [];
 
         try {
-            $query = "SELECT * FROM edificio WHERE estatus = 1";
+            $query = "SELECT * FROM dependencia WHERE estatus = 1";
 
             $stm = $this->conex->prepare($query);
             $stm->execute();

@@ -38,20 +38,23 @@ class Unidad extends Conexion
         $dato = [];
 
         try {
+            $this->conex->beginTransaction();
             $query = "SELECT * FROM unidad WHERE id_unidad = :id";
 
             $stm = $this->conex->prepare($query);
             $stm->bindParam(":id", $this->id);
             $stm->execute();
-
+            
             if ($stm->rowCount() > 0) {
                 $dato['arreglo'] = $stm->fetch(PDO::FETCH_ASSOC);
                 $dato['bool'] = 1;
             } else {
                 $dato['bool'] = 0;
             }
+            $this->conex->commit();
 
         } catch (PDOException $e) {
+            $this->rollBack();
             $dato['error'] = $e->getMessage();
         }
         $this->Cerrar_Conexion($none, $stm);
@@ -65,8 +68,9 @@ class Unidad extends Conexion
 
         if ($bool['bool'] == 0) {
             try {
-                $query = "INSERT INTO unidad(id_unidad, nombre, ubicacion) VALUES 
-            (NULL, :nombre, :ubicacion)";
+                $this->conex->beginTransaction();
+                $query = "INSERT INTO unidad(id_unidad, nombre_unidad) VALUES 
+            (NULL, :nombre)";
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":nombre", $this->nombre);
@@ -74,12 +78,15 @@ class Unidad extends Conexion
                 $dato['resultado'] = "registrar";
                 $dato['estado'] = 1;
                 $dato['mensaje'] = "Se registró el unidad exitosamente";
+                $this->conex->commit();
             } catch (PDOException $e) {
+                $this->conex->rollBack();
                 $dato['resultado'] = "error";
                 $dato['estado'] = -1;
                 $dato['mensaje'] = $e->getMessage();
             }
         } else {
+            $this->conex->rollBack();
             $dato['resultado'] = "error";
             $dato['estado'] = -1;
             $dato['mensaje'] = "Registro duplicado";
@@ -93,6 +100,7 @@ class Unidad extends Conexion
         $dato = [];
 
             try {
+                $this->conex->beginTransaction();
                 $query = "UPDATE unidad SET nombre_unidad = :nombre WHERE id_unidad = :id";
 
                 $stm = $this->conex->prepare($query);
@@ -101,8 +109,10 @@ class Unidad extends Conexion
                 $stm->execute();
                 $dato['resultado'] = "modificar";
                 $dato['estado'] = 1;
-                $dato['mensaje'] = "Se modificaron los datos del unidad con éxito";
+                $dato['mensaje'] = "Se modificaron los datos de la unidad con éxito";
+                $this->conex->commit();
             } catch (PDOException $e) {
+                $this->conex->rollBack();
                 $dato['estado'] = -1;
                 $dato['resultado'] = "error";
                 $dato['mensaje'] = $e->getMessage();
@@ -118,6 +128,7 @@ class Unidad extends Conexion
 
         if ($bool['bool'] != 0) {
             try {
+                $this->conex->beginTransaction();
                 $query = "UPDATE unidad SET estatus = 0 WHERE id_unidad = :id";
 
                 $stm = $this->conex->prepare($query);
@@ -126,12 +137,15 @@ class Unidad extends Conexion
                 $dato['resultado'] = "eliminar";
                 $dato['estado'] = 1;
                 $dato['mensaje'] = "Se eliminó el unidad exitosamente";
+                $this->conex->commit();
             } catch (PDOException $e) {
+                $this->conex->rollBack();
                 $dato['resultado'] = "error";
                 $dato['estado'] = -1;
                 $dato['mensaje'] = $e->getMessage();
             }
         } else {
+            $this->conex->rollBack();
             $dato['resultado'] = "error";
             $dato['estado'] = -1;
             $dato['mensaje'] = "Error al eliminar el registro";
@@ -145,13 +159,16 @@ class Unidad extends Conexion
         $dato = [];
 
         try {
+            $this->conex->beginTransaction();
             $query = "SELECT * FROM unidad WHERE estatus = 1";
 
             $stm = $this->conex->prepare($query);
             $stm->execute();
             $dato['resultado'] = "consultar";
             $dato['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
+            $this->conex->commit();
         } catch (PDOException $e) {
+            $this->conex->rollBack();
             $dato['resultado'] = "error";
             $dato['mensaje'] = $e->getMessage();
         }

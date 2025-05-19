@@ -184,7 +184,7 @@
   <?php require_once "Componentes/footer.php"; ?>
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-  <script src="js/perfil.js"></script>
+  <script src="assets/js/perfil.js"></script>
   <script>
     // Mostrar nombre del archivo seleccionado
   </script>

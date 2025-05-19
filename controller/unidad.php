@@ -26,7 +26,6 @@ if (is_file("view/" . $page . ".php")) {
 
 	if (isset($_POST["registrar"])) {
 		$unidad->set_nombre($_POST["nombre"]);
-		$unidad->set_ubicacion($_POST["direccion"]);
 		$peticion["peticion"] = "registrar";
 		$datos = $unidad->Transaccion($peticion);
 		echo json_encode($datos);
@@ -49,9 +48,8 @@ if (is_file("view/" . $page . ".php")) {
 
 
 	if (isset($_POST["modificar"])) {
-		$unidad->set_id($_POST["id_Unidad"]);
+		$unidad->set_id($_POST["id_unidad"]);
 		$unidad->set_nombre($_POST["nombre"]);
-		$unidad->set_ubicacion($_POST["direccion"]);
 		$peticion["peticion"] = "actualizar";
 		$datos = $unidad->Transaccion($peticion);
 		echo json_encode($datos);

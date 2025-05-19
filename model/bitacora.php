@@ -112,12 +112,12 @@ class Bitacora extends Conexion
 
             $this->conex->commit();
         } catch (PDOException $e) {
-            $this->rollBack();
+            $this->conex->rollBack();
             $dato['resultado'] = "error";
             $dato['mensaje'] = $e->getMessage();
         }
     } else {
-        $this->rollBack();
+        $this->conex->rollBack();
         $dato['resultado'] = "error";
         $dato['mensaje'] = "Registro duplicado";
     }

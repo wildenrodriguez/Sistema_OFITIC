@@ -146,8 +146,10 @@ function crearDataTable(arreglo) {
 			{ data: 'nombre_unidad' },
 			{
 				data: null, render: function () {
-					const botones = `<button onclick="rellenar(this, 0)" class="btn btn-update"><i class="fa-solid fa-pen-to-square"></i></button>
-					<button onclick="rellenar(this, 1)" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>`;
+					const botones = `<button onclick="rellenar(this, 0)" class="btn btn-update" title="Modificar">
+					<i class="fa-solid fa-pen-to-square"></i></button>
+					<button onclick="rellenar(this, 1)" class="btn btn-danger" title="Eliminar">
+					<i class="fa-solid fa-trash"></i></button>`;
 					return botones;
 				}
 			}],

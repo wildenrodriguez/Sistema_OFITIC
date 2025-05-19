@@ -15,9 +15,16 @@ $usuario->set_cedula($_SESSION['user']['cedula']);
 $datos = $_SESSION['user'];
 $datos = $datos + $usuario->Transaccion(['peticion' => 'perfil']);
 
-function Bitacora($msg, $modulo){
+if (is_file($foto = $datos['foto'])) {
+	$foto = $datos['foto'];
+} else {
+	$foto = "assets/img/foto-perfil/default.jpg";
+}
 
-    global $bitacora;
+function Bitacora($msg, $modulo)
+{
+
+	global $bitacora;
 	$peticion["peticion"] = "registrar";
 	$hora = date('H:i:s');
 	$fecha = date('Y-m-d');

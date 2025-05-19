@@ -14,6 +14,7 @@
     "require": {
         "dompdf/dompdf": "^3.1",
         "components/jquery": "^3.7",
-        "datatables.net/datatables.net": "^2.2"
+        "datatables.net/datatables.net": "^2.2",
+        "fortawesome/font-awesome": "^6.7"
     }
 }

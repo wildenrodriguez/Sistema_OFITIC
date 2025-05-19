@@ -5,20 +5,13 @@ if (!$_SESSION['user']) {
 }
 ob_start();
 
-require_once "model/usuario.php";
-$usuario = new Usuario();
-$usuario->set_cedula($_SESSION['user']['cedula']);
-$peticion = ['peticion' => "perfil"];
-$datos = $usuario->Transaccion($peticion);
+
 
 if (is_file("view/" . $page . ".php")) {
+
+	require_once "controller/utileria.php";
 	$titulo = "Mi Perfil";
-	$css = ["alert"];
-	if (is_file($foto = $datos['foto'])) {
-		$foto = $datos['foto'];
-	} else {
-		$foto = "assets/img/foto-perfil/default.jpg";
-	}
+
 
 	if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] == 0) {
 
@@ -34,6 +27,7 @@ if (is_file("view/" . $page . ".php")) {
 			$usuario->Transaccion(['peticion' => 'actualizarFoto']);
 			header("Location: ?page=users-profile");
 		}
+		print_r($_FILES["foto_perfil"]["tmp_name"]);
 	}
 
 	if (isset($_POST['eliminarF'])) {

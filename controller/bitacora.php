@@ -6,29 +6,11 @@ if (!$_SESSION) {
 
 ob_start();
 if (is_file("view/".$page.".php")) {
-	require_once "model/usuario.php";
-	require_once "model/bitacora.php";
-
-	$peticion = [];
-	$json = [];
+	require_once "controller/utileria.php";
 	
 	$titulo = "Bitacora";
 	$css = ["alert", "style"];
 	$cabecera = array('#', "Usuario", "Módulo", "Acción", "Fecha", "Hora");
-
-	$btn_color = "warning";
-	$btn_icon = "filetype-pdf";
-	$btn_name = "reporte";
-	$btn_value = "0";
-	$origen = "";
-
-	$usuario = new Usuario();
-	$bitacora = new Bitacora();
-
-	$usuario->set_cedula($_SESSION['user']['cedula']);
-	$datos = $_SESSION['user'];
-	$datos = $datos + $usuario->Transaccion(['peticion' => 'perfil']);
-
 
 	if(isset($_POST['entrada'])){
 		$json['resultado'] = "entrada";
