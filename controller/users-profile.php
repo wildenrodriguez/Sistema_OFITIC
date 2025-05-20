@@ -11,24 +11,26 @@ if (is_file("view/" . $page . ".php")) {
 
 	require_once "controller/utileria.php";
 	$titulo = "Mi Perfil";
-
-
-	if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] == 0) {
-
-		$targetDir = "assets/img/foto-perfil/";
-		$targetFile = $targetDir . basename($_FILES["foto_perfil"]["name"]);
-		$extension = pathinfo($_FILES["foto_perfil"]["name"], PATHINFO_EXTENSION);
-		$nuevoNombre = $datos['cedula'] . '.' . $extension;
-		$targetFile = $targetDir . $nuevoNombre;
-
-
-		if (move_uploaded_file($_FILES["foto_perfil"]["tmp_name"], $targetFile)) {
-			$usuario->set_foto($targetFile);
-			$usuario->Transaccion(['peticion' => 'actualizarFoto']);
-			header("Location: ?page=users-profile");
-		}
-		print_r($_FILES["foto_perfil"]["tmp_name"]);
+	if (is_file($datos['foto'])) {
+		$foto = $datos['foto'];
 	}
+
+	// if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] == 0) {
+
+	// 	$targetDir = "assets/img/foto-perfil/";
+	// 	$targetFile = $targetDir . basename($_FILES["foto_perfil"]["name"]);
+	// 	$extension = pathinfo($_FILES["foto_perfil"]["name"], PATHINFO_EXTENSION);
+	// 	$nuevoNombre = $datos['cedula'] . '.' . $extension;
+	// 	$targetFile = $targetDir . $nuevoNombre;
+
+
+	// 	if (move_uploaded_file($_FILES["foto_perfil"]["tmp_name"], $targetFile)) {
+	// 		$usuario->set_foto($targetFile);
+	// 		$usuario->Transaccion(['peticion' => 'actualizarFoto']);
+	// 		header("Location: ?page=users-profile");
+	// 	}
+	// 	print_r($_FILES["foto_perfil"]["tmp_name"]);
+	// }
 
 	if (isset($_POST['eliminarF'])) {
 		$ruta_archivo = $datos['foto'];
@@ -51,6 +53,22 @@ if (is_file("view/" . $page . ".php")) {
 	}
 
 	if (isset($_POST['cambiar'])) {
+		if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] == 0) {
+
+			$targetDir = "assets/img/foto-perfil/";
+			$targetFile = $targetDir . basename($_FILES["foto_perfil"]["name"]);
+			$extension = pathinfo($_FILES["foto_perfil"]["name"], PATHINFO_EXTENSION);
+			$nuevoNombre = $datos['cedula'] . '.' . $extension;
+			$targetFile = $targetDir . $nuevoNombre;
+	
+	
+			if (move_uploaded_file($_FILES["foto_perfil"]["tmp_name"], $targetFile)) {
+				$usuario->set_foto($targetFile);
+				$usuario->Transaccion(['peticion' => 'actualizarFoto']);
+				header("Location: ?page=users-profile");
+			}
+			print_r($_FILES["foto_perfil"]["tmp_name"]);
+		}
 
 		$nombre = $_POST['Nombre'];
 		$apellido = $_POST['Apellido'];

@@ -114,8 +114,6 @@ class Usuario extends Conexion
     private function ModificarUsuario()
 {
     $query = "UPDATE `usuario` SET 
-                `nombre_usuario` = :nombre_usuario,
-                `cedula` = :cedula,
                 `nombres` = :nombres,
                 `apellidos` = :apellidos,
                 `correo` = :correo,
@@ -124,7 +122,6 @@ class Usuario extends Conexion
 
     $con = $this->conex->prepare($query);
     $con->bindParam(':cedula', $this->cedula);
-    $con->bindParam(':nombre_usuario', $this->nombre_usuario);
     $con->bindParam(':id_usuario', $this->nombre_usuario);
     $con->bindParam(':id_cedula', $this->cedula);
     $con->bindParam(':nombres', $this->nombres);
