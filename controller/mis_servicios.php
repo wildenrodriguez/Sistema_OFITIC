@@ -6,16 +6,11 @@ if (!$_SESSION) {
 
 ob_start();
 if (is_file("view/".$page.".php")) {
-	require_once "model/usuario.php";
-	require_once "model/bitacora.php";
+	require_once "controller/utileria.php";
 	require_once "model/solicitud.php";
 	require_once "model/hoja_servicio.php";
 
-	$peticion = [];
-	$json = [];
-
 	$titulo = "Mis Solicitudes";
-	$css = ["alert", "style"];
 	$cabecera = array('#', "Motivo", "Fecha Reporte", "Estado", "Resultado");
 
 	$btn_color = "warning";
@@ -24,9 +19,7 @@ if (is_file("view/".$page.".php")) {
 	$btn_value = "0";
 	$origen = "";
 
-	$usuario = new Usuario();
 	$solicitud = new Solicitud();
-	$bitacora = new Bitacora();
 
 	$usuario->set_cedula($_SESSION['user']['cedula']);
 	$datos = $_SESSION['user'];
@@ -65,10 +58,7 @@ if (is_file("view/".$page.".php")) {
 		$peticion["peticion"] = "registrar";
 		$json = $solicitud->Transaccion($peticion);
 		echo json_encode($json);
-
-		$hora = date('H:i:s');
-		$fecha = date('Y-m-d');
-
+		
 		if ($json['bool'] == 1){
 
 			$msg = "(".$_SESSION['user']['nombre_usuario']."), Realizó una solicitud exitosamente";
@@ -78,13 +68,8 @@ if (is_file("view/".$page.".php")) {
 			$msg = "(".$_SESSION['user']['nombre_usuario']."), error al enviar la solicitud";
 
 		}
-	
-		$bitacora->set_usuario($_SESSION['user']['nombre_usuario']);
-		$bitacora->set_modulo("Solicitudes");
-		$bitacora->set_accion($msg);
-		$bitacora->set_fecha($fecha);
-		$bitacora->set_hora($hora);
-		$bitacora->Transaccion($peticion);
+
+		Bitacora($msg, "Solicitud");
 		exit;
 	}
 

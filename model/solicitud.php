@@ -5,85 +5,91 @@ require_once('model/conexion.php');
 class Solicitud extends Conexion
 {
 
-    private $data;
+    private $nro_solicitud;
+    private $cedula_solicitante;
+    private $id_equipo;
+    private $motivo;
+    private $resultado;
+    private $estado;
+    private $fecha;
 
 
     public function __construct()
     {
         $this->conex = new Conexion("sistema");
         $this->conex = $this->conex->Conex();
-        $this->data = array();
     }
 
     public function set_fecha_inicio($fecha_inicio)
     {
-        $this->data["fecha_inicio"] = $fecha_inicio;
+        $this->fecha = $fecha_inicio;
     }
 
     public function set_fecha_final($fecha_final)
     {
-        $this->data["fecha_final"] = $fecha_final;
+        $this->fecha = $fecha_final;
     }
 
     public function set_nro_solicitud($nro_solicitud)
     {
-        $this->data["nro_solicitud"] = $nro_solicitud;
+        $this->nro_solicitud = $nro_solicitud;
     }
 
     public function set_cedula_solicitante($cedula_solicitante)
     {
-        $this->data["cedula_solicitante"] = $cedula_solicitante;
+        $this->cedula_solicitante = $cedula_solicitante;
     }
 
     public function set_motivo($motivo)
     {
-        $this->data["motivo"] = $motivo;
+        $this->motivo = $motivo;
     }
 
     public function set_id_equipo($id_equipo)
     {
-        $this->data["id_equipo"] = $id_equipo;
+        $this->id_equipo = $id_equipo;
     }
 
     public function get_id_equipo()
     {
-        return $this->data["id_equipo"];
+        return $this->id_equipo;
     }
 
-    public function set_estatus($estatus)
+    public function set_estado($estado)
     {
-        $this->data["id_estatus"] = $estatus;
+        $this->estado = $estado;
     }
 
-    public function get_estatus()
+    public function get_estado()
     {
-        return $this->data["id_estatus"];
+        return $this->estado;
     }
 
     public function set_resultado($resultado)
     {
-        $this->data["resultado"] = $resultado;
+        $this->resultado = $resultado;
     }
 
-    public function set_id_especialidad($id_especialidad)
+    private function ValidarSolicitud()
     {
-        $this->data["id_especialidad"] = $id_especialidad;
-    }
+        $datos = [];
+        try {
+            $this->conex->beginTransaction();
 
-    public function get_id_especialidad()
-    {
-        return $this->data["id_especialidad"];
-    }
+            $query = "SELECT * FROM solicitud WHERE nro_solicitud= :nro_solicitud";
 
-    private function ValidarSolicitud($id)
-    {
-        $query = "SELECT * FROM orden_solicitud WHERE id=?";
-
-        $con = $this->conex->prepare($query);
-
-        $con->execute([$id]);
-        $datos = $con->fetchAll(PDO::FETCH_ASSOC);
-        $this->Cerrar_Conexion($none, $con);
+            $stm = $this->conex->prepare($query);
+            $stm->bindParam(":nro_solicitud", $this->nro_solicitud);
+            $stm->execute();
+            $datos["respuesta"] = "validar";
+            $datos["datos"] = $stm->fetchAll(PDO::FETCH_ASSOC);
+            $this->conex->commit();
+        } catch (PDOException $e) {
+            $this->conex->rollBack();
+            $datos["resultado"] = "error";
+            $datos["mensaje"] = $e->getMessage();
+        }
+        $this->Cerrar_Conexion($none, $stm);
         return $datos;
 
     }
@@ -96,7 +102,7 @@ class Solicitud extends Conexion
             $sql = "DELETE FROM solicitud WHERE nro_solicitud=?";
             $stm = $this->conex->prepare($sql);
 
-            $bool = $stm->execute([$this->data["nro_solicitud"]]);
+            $bool = $stm->execute([$this->nro_solicitud]);
             $datos['resultado'] = 'eliminar';
             if ($bool > 0) {
                 $datos['mensaje'] = 'Se eliminó exitosamente';
@@ -119,8 +125,8 @@ class Solicitud extends Conexion
         ORDER BY fecha DESC LIMIT 1";
 
         $records = $this->conex->prepare($query);
-        $records->bindParam(':cedula', $this->data["cedula_solicitante"]);
-        $records->bindParam(':motivo', $this->data["motivo"]);
+        $records->bindParam(':cedula', $this->cedula_solicitante);
+        $records->bindParam(':motivo', $this->motivo);
 
         $records->execute();
         $resultado = $records->fetch();
@@ -129,8 +135,8 @@ class Solicitud extends Conexion
         } else {
             $sql = "INSERT INTO solicitud(cedula_solicitante,motivo,fecha) VALUES (:solicitante,:motivo,current_timestamp())";
             $solicitar = $this->conex->prepare($sql);
-            $solicitar->bindValue(':solicitante', $this->data["cedula_solicitante"]);
-            $solicitar->bindParam(':motivo', $this->data["motivo"]);
+            $solicitar->bindValue(':solicitante', $this->cedula_solicitante);
+            $solicitar->bindParam(':motivo', $this->motivo);
 
             $solicitar->execute();
             $this->Cerrar_Conexion($none, $solicitar);
@@ -149,13 +155,13 @@ class Solicitud extends Conexion
         $datos = [];
 
         try {
-            $sql = "INSERT INTO `solicitud`(`cedula_solicitante`,`motivo`,`id_equipo`,estatus,fecha)
+            $sql = "INSERT INTO solicitud(cedula_solicitante, motivo, id_equipo, fecha_solicitud, estado_solicitud, )
             VALUES (:solicitante,:motivo,:equipo,'En Proceso',current_timestamp())";
 
             $solicitar = $this->conex->prepare($sql);
-            $solicitar->bindValue(':solicitante', $this->data["cedula_solicitante"]);
-            $solicitar->bindParam(':equipo', $this->data["id_equipo"]);
-            $solicitar->bindParam(':motivo', $this->data["motivo"]);
+            $solicitar->bindValue(':solicitante', $this->cedula_solicitante);
+            $solicitar->bindParam(':equipo', $this->id_equipo);
+            $solicitar->bindParam(':motivo', $this->motivo);
 
             $solicitar->execute();
             $this->Cerrar_Conexion($none, $solicitar);
@@ -178,12 +184,13 @@ class Solicitud extends Conexion
 
     private function ActualizarSolicitud()
     {
-        $sql = "UPDATE `solicitud` SET `motivo`=:motivo,`id_equipo`=:equipo,`estatus`='En Proceso' WHERE nro_solicitud=:nro";
+        $sql = "UPDATE solicitud SET motivo = :motivo, id_equipo = :equipo, estado_solicitud = 'En Proceso'
+        WHERE nro_solicitud = :nro";
 
         $solicitar = $this->conex->prepare($sql);
-        $solicitar->bindValue(':nro', $this->data["nro_solicitud"]);
-        $solicitar->bindParam(':equipo', $this->data["id_equipo"]);
-        $solicitar->bindParam(':motivo', $this->data["motivo"]);
+        $solicitar->bindValue(':nro', $this->nro_solicitud);
+        $solicitar->bindParam(':equipo', $this->id_equipo);
+        $solicitar->bindParam(':motivo', $this->motivo);
 
         $bool = $solicitar->execute();
         $this->Cerrar_Conexion($this->conex, $solicitar);
@@ -192,10 +199,10 @@ class Solicitud extends Conexion
 
     private function Finalizar()
     {
-        $sql = "UPDATE `solicitud` SET `resultado`=:resultado,`estatus`='Finalizado' WHERE nro_solicitud=:nro";
+        $sql = "UPDATE solicitud SET resultado_solicitud = :resultado, estado_solicitud ='Finalizado' WHERE nro_solicitud=:nro";
         $solicitar = $this->conex->prepare($sql);
-        $solicitar->bindValue(':nro', $this->data["nro_solicitud"]);
-        $solicitar->bindParam(':resultado', $this->data["resultado"]);
+        $solicitar->bindValue(':nro', $this->nro_solicitud);
+        $solicitar->bindParam(':resultado', $this->resultado);
 
         $bool = $solicitar->execute();
         $this->Cerrar_Conexion($this->conex, $solicitar);
@@ -221,27 +228,36 @@ class Solicitud extends Conexion
     {
         $datos = [];
         try {
-            $query = "SELECT o.nro_solicitud AS ID, s.nombre AS Tecnico, o.motivo AS Motivo, e.tipo AS Equipo, o.fecha AS Inicio, o.estatus AS Estatus, o.resultado AS Resultado
+            $this->conex->beginTransaction();
+            $query = "SELECT o.nro_solicitud AS ID,
+            s.nombre_empleado AS Tecnico,
+            o.motivo AS Motivo,
+            e.tipo_equipo AS Equipo,
+            o.fecha_solicitud AS Inicio,
+            o.estato_solicitud AS Estatus, 
+            o.resultado_solicitud AS Resultado
             FROM solicitud AS o
                LEFT JOIN
                empleado AS s
-               ON o.cedula_solicitante = s.cedula
+               ON o.cedula_solicitante = s.cedula_empleado
                LEFT JOIN
                equipo AS e
                ON o.id_equipo = e.id_equipo
                WHERE o.cedula_solicitante = :cedula";
 
             $stm = $this->conex->prepare($query);
-            $stm->bindParam(':cedula', $this->data["cedula_solicitante"]);
+            $stm->bindParam(':cedula', $this->cedula_solicitante);
             $stm->execute();
             $datos['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
             $datos['resultado'] = 'consultar';
-            
+            $this->conex->commit();
+
         } catch (PDOException $e) {
+            $this->conex->rollBack();
             $datos['resultado'] = 'error';
             $datos['mensaje'] = $e->getMessage();
         }
-        
+
         $this->Cerrar_Conexion($this->conex, $stm);
         return $datos;
     }
@@ -259,7 +275,7 @@ class Solicitud extends Conexion
 
         $records = $this->conex->prepare($query);
 
-        $records->bindParam(':cedula', $this->data["cedula_solicitante"]);
+        $records->bindParam(':cedula', $this->cedula_solicitante);
 
         $records->execute();
 
@@ -307,8 +323,8 @@ class Solicitud extends Conexion
 
         $records = $this->conex->prepare($query);
 
-        $records->bindParam(':inicio', $this->data["fecha_inicio"]);
-        $records->bindParam(':final', $this->data["fecha_final"]);
+        $records->bindParam(':inicio', $this->fecha);
+        $records->bindParam(':final', $this->$this->fecha);
 
         $records->execute();
 
