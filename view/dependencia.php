@@ -2,16 +2,16 @@
 
 <body>
   <?php require_once("Componentes/menu.php");
-  require_once("Componentes/modal_edificio.php"); ?>
+  require_once("Componentes/modal_depedencia.php"); ?>
 
 
   
     <div class="pagetitle">
-      <h1>Gestionar Dependencias</h1>
+      <h1>Dependencias</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="">Home</a></li>
-          <li class="breadcrumb-item active"><a href="">Gestionar Dependencias</a>
+          <li class="breadcrumb-item active"><a href="">Dependencias</a>
           </li>
         </ol>
       </nav>
@@ -23,9 +23,9 @@
 
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Gestionar Dependencias</h5>
+              <h5 class="card-title">Dependencias</h5>
               <button type="button" class="btn btn-primary mx-auto my-4" id="btn-registrar">
-                Registrar Edificio
+                Registrar Depedencia
               </button>
               <div class="table-responsive">
                 <table class="table" id="tabla1">
