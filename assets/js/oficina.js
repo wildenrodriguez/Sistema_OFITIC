@@ -96,6 +96,7 @@ function enviaAjax(datos) {
 				mensajes("error", null, "Error en JSON Tipo: " + e.name + "\n" +
 					"Mensaje: " + e.message + "\n" +
 					"Posición: " + e.lineNumber);
+					console.log(respuesta);
 			}
 		},
 		error: function (request, status, err) {

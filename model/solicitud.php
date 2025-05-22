@@ -4,7 +4,7 @@ require_once('model/conexion.php');
 
 class Solicitud extends Conexion
 {
-
+// Atributos
     private $nro_solicitud;
     private $cedula_solicitante;
     private $id_equipo;

@@ -57,16 +57,16 @@
         },
         {
             "name": "datatables.net/datatables.net",
-            "version": "2.2.2",
+            "version": "2.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DataTables/Dist-DataTables.git",
-                "reference": "4833d613799e351975d072fd86b155d2c779b18d"
+                "reference": "f21820b8821a495efb6682d4b42bac25ce6fd662"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DataTables/Dist-DataTables/zipball/4833d613799e351975d072fd86b155d2c779b18d",
-                "reference": "4833d613799e351975d072fd86b155d2c779b18d",
+                "url": "https://api.github.com/repos/DataTables/Dist-DataTables/zipball/f21820b8821a495efb6682d4b42bac25ce6fd662",
+                "reference": "f21820b8821a495efb6682d4b42bac25ce6fd662",
                 "shasum": ""
             },
             "require": {
@@ -94,7 +94,7 @@
                 "forum": "https://datatables.net/forums",
                 "source": "https://github.com/DataTables/Dist-DataTables"
             },
-            "time": "2025-02-04T15:55:23+00:00"
+            "time": "2025-05-16T10:50:51+00:00"
         },
         {
             "name": "dompdf/dompdf",
