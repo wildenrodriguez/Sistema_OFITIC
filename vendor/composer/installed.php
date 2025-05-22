@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
-        'name' => 'jorge/sistema_ofitic',
+        'name' => 'leizer/sistema_ofitic',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '4e220e05c453fbc7f00b61908f64dde0ab378bb9',
+        'reference' => 'f092dd2ae12f49e5aa0e8199cd8a032a8cd610ad',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -19,12 +19,12 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'datatables/datatables' => array(
-            'pretty_version' => '1.10.21',
-            'version' => '1.10.21.0',
-            'reference' => '83e59694a105225ff889ddfa0d723a3ab24fda78',
+        'datatables.net/datatables.net' => array(
+            'pretty_version' => '2.3.1',
+            'version' => '2.3.1.0',
+            'reference' => 'f21820b8821a495efb6682d4b42bac25ce6fd662',
             'type' => 'library',
-            'install_path' => __DIR__ . '/../datatables/datatables',
+            'install_path' => __DIR__ . '/../datatables.net/datatables.net',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
@@ -55,10 +55,19 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'jorge/sistema_ofitic' => array(
+        'fortawesome/font-awesome' => array(
+            'pretty_version' => '6.7.2',
+            'version' => '6.7.2.0',
+            'reference' => 'af620534bfc3c2d4cbefcfeec29603bbe7809e64',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../fortawesome/font-awesome',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'leizer/sistema_ofitic' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '4e220e05c453fbc7f00b61908f64dde0ab378bb9',
+            'reference' => 'f092dd2ae12f49e5aa0e8199cd8a032a8cd610ad',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
