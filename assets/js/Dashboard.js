@@ -1,68 +1,90 @@
+let chartInstances = {};
+let datosGraficos = {};
+let tiposGraficos = {
+  GraUsuario: 'bar',
+  Graftecnicos: 'bar',
+  miGrafico: 'bar'
+};
+
 $(document).ready(function () {
+  registrarEntrada();
+  cargarGraficos();
 
-	registrarEntrada();
+  // Listeners individuales para cada <select>
+  $('#tipoGraficoUsuario').on('change', function () {
+    tiposGraficos['GraUsuario'] = $(this).val();
+    renderGrafico('GraUsuario', tiposGraficos['GraUsuario'], datosGraficos['GraUsuario']);
+  });
 
+  $('#tipoGraficoTecnicos').on('change', function () {
+    tiposGraficos['Graftecnicos'] = $(this).val();
+    renderGrafico('Graftecnicos', tiposGraficos['Graftecnicos'], datosGraficos['Graftecnicos']);
+  });
 
-	$("#enviar").on("click", function () {
-		switch ($(this).text()) {
-			default:
-				mensajes("question", 10000, "Error", "Acción desconocida: " + $(this).text());;
-		}
-		$('#enviar').prop('disabled', true);
-	});
-
+  $('#tipoGraficoRed').on('change', function () {
+    tiposGraficos['miGrafico'] = $(this).val();
+    renderGrafico('miGrafico', tiposGraficos['miGrafico'], datosGraficos['miGrafico']);
+  });
 });
 
+function cargarGraficos() {
+  const peticion = new FormData();
+  peticion.append('grafico', 'grafico');
+  enviaAjax(peticion);
+}
+
+function renderGrafico(canvasId, tipo, datos) {
+  if (chartInstances[canvasId]) {
+    chartInstances[canvasId].destroy();
+  }
+
+  const ctx = document.getElementById(canvasId);
+  if (!ctx) return;
+
+  chartInstances[canvasId] = new Chart(ctx, {
+    type: tipo,
+    data: {
+      labels: datos.labels,
+      datasets: [{
+        label: datos.label,
+        data: datos.data,
+        backgroundColor: datos.backgroundColor || [
+          'rgba(75, 192, 192, 0.6)',
+          'rgba(255, 159, 64, 0.6)',
+          'rgba(153, 102, 255, 0.6)'
+        ]
+      }]
+    }
+  });
+}
+
 function enviaAjax(datos) {
-	$.ajax({
-		async: true,
-		url: "",
-		type: "POST",
-		contentType: false,
-		data: datos,
-		processData: false,
-		cache: false,
-		beforeSend: function () { },
-		timeout: 10000,
-		success: function (respuesta) {
-			try {
-				var lee = JSON.parse(respuesta);
-				if (lee.resultado == "registrar") {
-					$("#modal1").modal("hide");
-					mensajes("success", 10000, lee.mensaje, null);
-					consultar();
+  $.ajax({
+    url: "",
+    type: "POST",
+    contentType: false,
+    data: datos,
+    processData: false,
+    cache: false,
+    timeout: 10000,
+    success: function (respuesta) {
+      try {
+        const lee = JSON.parse(respuesta);
+        if (lee.resultado === "grafico") {
+          datosGraficos = lee.datos;
 
-				} else if (lee.resultado == "consultar") {
-					crearDataTable(lee.datos);
-
-				} else if (lee.resultado == "modificar") {
-					$("#modal1").modal("hide");
-					mensajes("success", 10000, lee.mensaje, null);
-					consultar();
-
-				} else if (lee.resultado == "eliminar") {
-					$("#modal1").modal("hide");
-					mensajes("success", 10000, lee.mensaje, null);
-					consultar();
-
-				} else if (lee.resultado == "entrada") {
-
-				} else if (lee.resultado == "error") {
-					mensajes("error", null, lee.mensaje, null);
-				}
-			} catch (e) {
-				mensajes("error", null, "Error en JSON Tipo: " + e.name + "\n" +
-					"Mensaje: " + e.message + "\n" +
-					"Posición: " + e.lineNumber);
-			}
-		},
-		error: function (request, status, err) {
-			if (status == "timeout") {
-				mensajes("error", null, "Servidor ocupado", "Intente de nuevo");
-			} else {
-				mensajes("error", null, "Ocurrió un error", "ERROR: <br/>" + request + status + err);
-			}
-		},
-		complete: function () { },
-	});
+          // Renderiza todos los gráficos
+          renderGrafico('GraUsuario', tiposGraficos['GraUsuario'], datosGraficos['GraUsuario']);
+          renderGrafico('Graftecnicos', tiposGraficos['Graftecnicos'], datosGraficos['Graftecnicos']);
+          renderGrafico('miGrafico', tiposGraficos['miGrafico'], datosGraficos['miGrafico']);
+        }
+      } catch (e) {
+        mensajes("error", null, "Error en JSON: " + e.message);
+        console.log(respuesta);
+      }
+    },
+    error: function (request, status, err) {
+      mensajes("error", null, "Error: " + err);
+    }
+  });
 }
