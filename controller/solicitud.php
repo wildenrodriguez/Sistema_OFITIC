@@ -3,38 +3,23 @@ if (!$_SESSION) {
 	echo '<script>window.location="?page=login"</script>';
 }
 
-ob_start();
-require_once "model/usuario.php";
-$usuario = new Usuario();
-
-$peticion = [];
-
-if(!$usuario->Transaccion([
-	'peticion' => 'permiso',
-	'user' => $_SESSION['user']['rol'],
-	'rol' => ["Super usuario", "Administrador"]
-])) {
-	//echo '<script>window.location="?page=404"</script>';
-}
-
 if (is_file("view/" . $page . ".php")) {
-	$css = ["alert"];
-
-	require_once "model/configuracion.php";
-	$config = new Configuracion();
-	$config->set_tabla("dependencia");
-	$dependencias = $config->Transaccion("consultar");
-
+	require_once "controller/utileria.php";
+	require_once "model/solicitud.php";
 	require_once "model/empleado.php";
-	$emp = new Empleado();
-	$cedulas = $emp->obtener_cedulas();
-
+	require_once "model/hoja_servicio.php";
 	require_once "model/equipo.php";
-	$equipo = new Equipo();
-	$peticion["peticion"] = "consultar";
-	$datos = $equipo->Transaccion($peticion);
 
-	// Check for AJAX request
+	$titulo = "Solicitudes";
+	$cabecera = array('#', "Solicitante", "Cedula","Equipo", "Motivo", "Estado", "Fecha Reporte", "Resultado", "Modificar/Eliminar");
+
+	$solicitud = new Solicitud();
+	$empleado = new Empleado();
+	$equipo = new Equipo();
+	$hoja = new Hoja();
+
+
+
 	if (isset($_POST["action"])) {
 		switch ($_POST["action"]) {
 			case "load_equipos":
@@ -45,43 +30,32 @@ if (is_file("view/" . $page . ".php")) {
 				break;
 			case "load_solicitantes":
 				$dependenciaId = $_POST["dependencia_id"];
-				$soli = $emp->Empleados_dependencia($dependenciaId);
+				$soli = $empleado->Empleados_dependencia($dependenciaId);
 				echo json_encode($soli);
 				break;
 		}
 		exit;
 	}
 
-	$usuario->set_cedula($_SESSION['user']['cedula']);
+		if (isset($_POST["entrada"])) {
+		$json['resultado'] = "entrada";
+		echo json_encode($json);
+		$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Ingresó al Módulo de Solicitud";
+		
+		Bitacora($msg, "Solicitud");
+		exit;
+	}
 
-	$datos = $_SESSION['user'];
-	$datos = $datos + $usuario->Transaccion(['peticion' => 'perfil']);
+	if (isset($_POST['consultar'])) {
+		$peticion['peticion'] = "consultar_servicio";
+		$json = $solicitud->Transaccion($peticion);
+		echo json_encode($json);
+		exit;
+	}
 
-	require_once "model/hoja_servicio.php";
-	$hoja = new Hoja();
-
-	require_once "model/configuracion.php";
-	$config = new Configuracion();
-	$config->set_tabla("dependencia");
-	$dependencias = $config->Transaccion("consultar");
-
-
-	$titulo = "Solicitudes";
-
-
-	$cabecera = array('#', "Solicitante", "Equipo", "Cedula", "Motivo", "Estado", "Fecha Reporte");
-	$btn_color = "warning";
-	$btn_icon = "info-circle";
-	$btn_name = "informacion";
-	$modal = "solicitud";
-	$origen = "";
-	require_once "model/solicitud.php";
-	$solicitud = new Solicitud;
-	$peticion['peticion'] = "consultar_servicio";
-	$servicios = $solicitud->Transaccion($peticion);
-	$registros = [];
-	foreach ($servicios as $i => $servicio) {
-		$registros[$i] = [$servicio["ID"], $servicio["Solicitante"], $servicio["Equipo"], $servicio["Cedula"], $servicio["Motivo"], $servicio["Estatus"], $servicio["Inicio"]];
+	if (isset($_POST['consultar_equipo'])) {
+		$peticion["peticion"] = "consultar";
+		$datos = $equipo->Transaccion($peticion);
 	}
 
 	if (isset($_POST["solicitar"]) and $_POST["motivo"] != NULL) {
@@ -137,7 +111,6 @@ if (is_file("view/" . $page . ".php")) {
 		$reporte = new reporte();
 		$solicitud->set_fecha_inicio($_POST["inicio"]);
 		$solicitud->set_fecha_final($_POST["final"]);
-		ob_end_clean();
 		$reporte->solicitudes($solicitud->consulta_reporte());
 	}
 

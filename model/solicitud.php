@@ -70,6 +70,79 @@ class Solicitud extends Conexion
         $this->resultado = $resultado;
     }
 
+    private function CrearSolicitud()
+    {
+        $datos = [];
+
+        try {
+            $this->conex->beginTransaction();
+
+            $sql = "INSERT INTO solicitud(cedula_solicitante, motivo, id_equipo, fecha_solicitud, estado_solicitud)
+            VALUES (:solicitante, :motivo, :equipo, current_timestamp(), 'En Proceso')";
+
+            $solicitar = $this->conex->prepare($sql);
+            $solicitar->bindParam(':solicitante', $this->cedula_solicitante);
+            $solicitar->bindParam(':equipo', $this->id_equipo);
+            $solicitar->bindParam(':motivo', $this->motivo);
+
+            $solicitar->execute();
+            $this->Cerrar_Conexion($none, $solicitar);
+
+            $nro = $this->conex->prepare("SELECT * FROM solicitud ORDER BY nro_solicitud DESC LIMIT 1;");
+            $nro->execute();
+
+            $datos['resultado'] = 'registrar';
+            $datos['datos'] = $nro->fetchAll(PDO::FETCH_ASSOC)[0]["nro_solicitud"];
+            $datos['bool'] = 1;
+            $this->conex->commit();
+        } catch (PDOException $e) {
+            $datos['resultado'] = 'error';
+            $datos['mensaje'] = $e->getMessage();
+            $datos['bool'] = -1;
+            $this->conex->rollBack();
+        }
+
+        $this->Cerrar_Conexion($this->conex, $nro);
+        return $datos;
+    }
+
+    private function SolicitudUsuario()
+    {
+        $datos = [];
+        try {
+            $this->conex->beginTransaction();
+            $query = "SELECT o.nro_solicitud AS ID,
+            s.nombre_empleado AS Tecnico,
+            o.motivo AS Motivo,
+            e.tipo_equipo AS Equipo,
+            o.fecha_solicitud AS Inicio,
+            o.estado_solicitud AS Estatus, 
+            o.resultado_solicitud AS Resultado
+            FROM solicitud AS o
+               LEFT JOIN
+               empleado AS s
+               ON o.cedula_solicitante = s.cedula_empleado
+               LEFT JOIN
+               equipo AS e
+               ON o.id_equipo = e.id_equipo
+               WHERE o.cedula_solicitante = :cedula";
+
+            $stm = $this->conex->prepare($query);
+            $stm->bindParam(':cedula', $this->cedula_solicitante);
+            $stm->execute();
+            $datos['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
+            $datos['resultado'] = 'consultar';
+            $this->conex->commit();
+
+        } catch (PDOException $e) {
+            $this->conex->rollBack();
+            $datos['resultado'] = 'error';
+            $datos['mensaje'] = $e->getMessage();
+        }
+
+        $this->Cerrar_Conexion($this->conex, $stm);
+        return $datos;
+    }
     private function ValidarSolicitud()
     {
         $datos = [];
@@ -94,6 +167,20 @@ class Solicitud extends Conexion
 
     }
 
+    private function ActualizarSolicitud()
+    {
+        $sql = "UPDATE solicitud SET motivo = :motivo, id_equipo = :equipo, estado_solicitud = 'En Proceso'
+        WHERE nro_solicitud = :nro";
+
+        $solicitar = $this->conex->prepare($sql);
+        $solicitar->bindValue(':nro', $this->nro_solicitud);
+        $solicitar->bindParam(':equipo', $this->id_equipo);
+        $solicitar->bindParam(':motivo', $this->motivo);
+
+        $bool = $solicitar->execute();
+        $this->Cerrar_Conexion($this->conex, $solicitar);
+        return $bool;
+    }
     private function EliminarSolicitud()
     {
         $datos = [];
@@ -124,12 +211,12 @@ class Solicitud extends Conexion
         $query = "SELECT COUNT(*) AS total FROM solicitud WHERE cedula_solicitante = :cedula AND motivo = :motivo
         ORDER BY fecha DESC LIMIT 1";
 
-        $records = $this->conex->prepare($query);
-        $records->bindParam(':cedula', $this->cedula_solicitante);
-        $records->bindParam(':motivo', $this->motivo);
+        $stm = $this->conex->prepare($query);
+        $stm->bindParam(':cedula', $this->cedula_solicitante);
+        $stm->bindParam(':motivo', $this->motivo);
 
-        $records->execute();
-        $resultado = $records->fetch();
+        $stm->execute();
+        $resultado = $stm->fetch();
 
         if ($resultado["total"] > 0) {
         } else {
@@ -146,55 +233,8 @@ class Solicitud extends Conexion
 
         $html["lo0la"] = "lola";
         $html["html"] = "<tr class='odd'><td class='sorting_1'>" . $datos["ID"] . "</td><td>" . $datos["Motivo"] . "</td><td>" . $datos["Inicio"] . "</td><td>" . $datos["Estatus"] . "</td><td>" . $datos["Resultado"] . "</td><td></td></tr>";
-        $this->Cerrar_Conexion($this->conex, $records);
+        $this->Cerrar_Conexion($this->conex, $stm);
         return $html;
-    }
-
-    private function CrearSolicitud()
-    {
-        $datos = [];
-
-        try {
-            $sql = "INSERT INTO solicitud(cedula_solicitante, motivo, id_equipo, fecha_solicitud, estado_solicitud, )
-            VALUES (:solicitante,:motivo,:equipo,'En Proceso',current_timestamp())";
-
-            $solicitar = $this->conex->prepare($sql);
-            $solicitar->bindValue(':solicitante', $this->cedula_solicitante);
-            $solicitar->bindParam(':equipo', $this->id_equipo);
-            $solicitar->bindParam(':motivo', $this->motivo);
-
-            $solicitar->execute();
-            $this->Cerrar_Conexion($none, $solicitar);
-
-            $nro = $this->conex->prepare("SELECT * FROM solicitud ORDER BY nro_solicitud DESC LIMIT 1;");
-            $nro->execute();
-
-            $datos['resultado'] = 'registrar';
-            $datos['datos'] = $nro->fetchAll(PDO::FETCH_ASSOC)[0]["nro_solicitud"];
-            $datos['bool'] = 1;
-        } catch (PDOException $e) {
-            $datos['resultado'] = 'error';
-            $datos['mensaje'] = $e->getMessage();
-            $datos['bool'] = -1;
-        }
-
-        $this->Cerrar_Conexion($this->conex, $nro);
-        return $datos;
-    }
-
-    private function ActualizarSolicitud()
-    {
-        $sql = "UPDATE solicitud SET motivo = :motivo, id_equipo = :equipo, estado_solicitud = 'En Proceso'
-        WHERE nro_solicitud = :nro";
-
-        $solicitar = $this->conex->prepare($sql);
-        $solicitar->bindValue(':nro', $this->nro_solicitud);
-        $solicitar->bindParam(':equipo', $this->id_equipo);
-        $solicitar->bindParam(':motivo', $this->motivo);
-
-        $bool = $solicitar->execute();
-        $this->Cerrar_Conexion($this->conex, $solicitar);
-        return $bool;
     }
 
     private function Finalizar()
@@ -215,51 +255,13 @@ class Solicitud extends Conexion
 
         $query = "SELECT * FROM servicio";
 
-        $records = $this->conex->prepare($query);
+        $stm = $this->conex->prepare($query);
 
-        $records->execute();
-        $datos = $records->fetchAll(PDO::FETCH_ASSOC);
-        $this->Cerrar_Conexion($this->conex, $records);
-        return $datos;
-
-    }
-
-    private function SolicitudUsuario()
-    {
-        $datos = [];
-        try {
-            $this->conex->beginTransaction();
-            $query = "SELECT o.nro_solicitud AS ID,
-            s.nombre_empleado AS Tecnico,
-            o.motivo AS Motivo,
-            e.tipo_equipo AS Equipo,
-            o.fecha_solicitud AS Inicio,
-            o.estato_solicitud AS Estatus, 
-            o.resultado_solicitud AS Resultado
-            FROM solicitud AS o
-               LEFT JOIN
-               empleado AS s
-               ON o.cedula_solicitante = s.cedula_empleado
-               LEFT JOIN
-               equipo AS e
-               ON o.id_equipo = e.id_equipo
-               WHERE o.cedula_solicitante = :cedula";
-
-            $stm = $this->conex->prepare($query);
-            $stm->bindParam(':cedula', $this->cedula_solicitante);
-            $stm->execute();
-            $datos['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
-            $datos['resultado'] = 'consultar';
-            $this->conex->commit();
-
-        } catch (PDOException $e) {
-            $this->conex->rollBack();
-            $datos['resultado'] = 'error';
-            $datos['mensaje'] = $e->getMessage();
-        }
-
+        $stm->execute();
+        $datos = $stm->fetchAll(PDO::FETCH_ASSOC);
         $this->Cerrar_Conexion($this->conex, $stm);
         return $datos;
+
     }
 
     private function UltimaSolicitud()
@@ -273,36 +275,49 @@ class Solicitud extends Conexion
             WHERE o.cedula_solicitante = :cedula
             ORDER BY o.fecha DESC LIMIT 1";
 
-        $records = $this->conex->prepare($query);
+        $stm = $this->conex->prepare($query);
 
-        $records->bindParam(':cedula', $this->cedula_solicitante);
+        $stm->bindParam(':cedula', $this->cedula_solicitante);
 
-        $records->execute();
+        $stm->execute();
 
-        return $records->fetch();
+        return $stm->fetch();
     }
 
     private function Servicios()
     {
-        $query = "SELECT o.nro_solicitud AS ID,
-        s1.nombre AS Solicitante,
+        $datos = [];
+
+        try {
+            $this->conex->beginTransaction();
+
+            $query = "SELECT o.nro_solicitud AS ID,
+        s1.nombre_empleado AS Solicitante,
         o.cedula_solicitante AS Cedula,
         o.motivo AS Motivo,
-        e.tipo AS Equipo,
-        o.fecha AS Inicio,
-        o.estatus AS Estatus,
-        o.resultado AS Resultado
+        e.tipo_equipo AS Equipo,
+        o.fecha_solicitud AS Inicio,
+        o.estado_solicitud AS Estado,
+        o.resultado_solicitud AS Resultado
         FROM solicitud AS o
-        LEFT JOIN empleado AS s1 ON o.cedula_solicitante = s1.cedula
+        LEFT JOIN empleado AS s1 ON o.cedula_solicitante = s1.cedula_empleado
         LEFT JOIN equipo AS e ON o.id_equipo = e.id_equipo
         ORDER BY Inicio DESC;";
 
-        $records = $this->conex->prepare($query);
+            $stm = $this->conex->prepare($query);
+            $stm->execute();
 
-        $records->execute();
+            $datos['resultado'] = 'consultar';
+            $datos['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
+            $this->conex->commit();
+        } catch (PDOException $e) {
+            $datos['resultado'] = 'error';
+            $datos['mensaje'] = $e->getMessage();;
+        }
 
-        return $records->fetchAll(PDO::FETCH_ASSOC);
+        $this->Cerrar_Conexion($this->conex, $stm);
 
+        return $datos;
     }
 
     private function ConsultaReporte()
@@ -311,7 +326,7 @@ class Solicitud extends Conexion
         s1.nombre AS Solicitante,
         o.cedula_solicitante AS Cedula,
         o.motivo AS Motivo,
-        e.tipo AS Equipo,
+        e.tipo_equipo AS Equipo,
         o.fecha AS Inicio,
         o.estatus AS Estatus,
         o.resultado AS Resultado
@@ -321,14 +336,14 @@ class Solicitud extends Conexion
         WHERE o.fecha BETWEEN :inicio AND :final
         ORDER BY Inicio DESC;";
 
-        $records = $this->conex->prepare($query);
+        $stm = $this->conex->prepare($query);
 
-        $records->bindParam(':inicio', $this->fecha);
-        $records->bindParam(':final', $this->$this->fecha);
+        $stm->bindParam(':inicio', $this->fecha);
+        $stm->bindParam(':final', $this->$this->fecha);
 
-        $records->execute();
+        $stm->execute();
 
-        return $records->fetchAll(PDO::FETCH_ASSOC);
+        return $stm->fetchAll(PDO::FETCH_ASSOC);
 
     }
 

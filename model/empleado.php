@@ -100,27 +100,20 @@ class Empleado extends Conexion
         return $this->dependencia;
     }
 
-    private function Empleados_dependencia($dependenciaId)
+        private function Registrar()
     {
-        $datos = [];
-
-        try {
-            $sql = "SELECT cedula, nombre FROM empleado WHERE cod_dependencia = ?";
-
-            $stm = $this->conex->prepare($sql);
-            $stm->bindParam(1, $dependenciaId);
-            $stm->execute();
-            $datos['resultado'] = "consulta_dependencia";
-            $datos['datos'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            $datos['resultado'] = "error";
-            $datos['mensaje'] = $e->getMessage();
-        }
-
-        return $datos;
+        $stm = $this->conex->prepare("INSERT INTO empleado() VALUES (:cedula,:nombre,:apellido,:unidad," . $this->data['id_dependencia'] . ",:telefono,:correo)");
+        $stm->bindValue(':cedula', $this->cedula);
+        $stm->bindParam(':nombre', $this->nombre);
+        $stm->bindParam(':apellido', $this->apellido);
+        $stm->bindParam(':unidad', $this->unidad);
+        $stm->bindParam(':dependencia', $this->dependencia);
+        $stm->bindParam(':telefono', $this->telefono);
+        $stm->bindParam(':correo', $this->correo);
+        return $stm->execute();
     }
 
-    private function Consultar($consulta = "default")
+ private function Consultar($consulta = "default")
     {
         $datos = [];
 
@@ -152,6 +145,27 @@ class Empleado extends Conexion
         return $datos;
     }
 
+    private function Empleados_dependencia($dependenciaId)
+    {
+        $datos = [];
+
+        try {
+            $sql = "SELECT cedula, nombre FROM empleado WHERE cod_dependencia = ?";
+
+            $stm = $this->conex->prepare($sql);
+            $stm->bindParam(1, $dependenciaId);
+            $stm->execute();
+            $datos['resultado'] = "consulta_dependencia";
+            $datos['datos'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $datos['resultado'] = "error";
+            $datos['mensaje'] = $e->getMessage();
+        }
+
+        return $datos;
+    }
+
+
     private function Validar()
     {
         $stm = $this->conex->prepare("SELECT * FROM empleado WHERE cedula=?");
@@ -171,21 +185,6 @@ class Empleado extends Conexion
         } else {
             return NULL;
         }
-
-    }
-
-
-    private function Registrar()
-    {
-        $stm = $this->conex->prepare("INSERT INTO empleado() VALUES (:cedula,:nombre,:apellido,:unidad," . $this->data['id_dependencia'] . ",:telefono,:correo)");
-        $stm->bindValue(':cedula', $this->cedula);
-        $stm->bindParam(':nombre', $this->nombre);
-        $stm->bindParam(':apellido', $this->apellido);
-        $stm->bindParam(':unidad', $this->unidad);
-        $stm->bindParam(':dependencia', $this->dependencia);
-        $stm->bindParam(':telefono', $this->telefono);
-        $stm->bindParam(':correo', $this->correo);
-        return $stm->execute();
 
     }
 

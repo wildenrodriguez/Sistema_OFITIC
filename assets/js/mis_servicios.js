@@ -1,34 +1,40 @@
 $(document).ready(function () {
 	consultar();
 	registrarEntrada();
+	capaValidar();
 
-	$("#motivo").on("keypress", function (e) {
-		validarKeyPress(/^[0-9 a-zA-ZáéíóúüñÑçÇ -.\b]*$/, e);
-	});
-	$("#motivo").on("keyup", function () {
-		validarKeyUp(
-			/^[0-9 a-zA-ZáéíóúüñÑçÇ -.]{3,30}$/,
-			$(this),
-			$("#smotivo"),
-			"El motivo debe tener entre 3 y 30 caracteres"
-		);
-	});
+	$("#solicitar").on("click", async function () {
 
-	$("#solicitar").on("click", function () {
+		$('#solicitar').prop('disabled', false);
+		let confirmacion = false;
 		switch ($(this).text()) {
 
 			case "Enviar":
 				if (validarenvio()) {
-					var datos = new FormData();
-					datos.append('solicitud', '');
-					datos.append('motivo', $("#motivo").val());
-					enviaAjax(datos);
-				}
 
+					confirmacion = await confirmarAccion("Se enviará su Solicitud", "¿Está seguro de enviar esta solicitud?", "question");
+
+					if (confirmacion) {
+						var datos = new FormData();
+						datos.append('solicitud', '');
+						datos.append('motivo', $("#motivo").val());
+						enviaAjax(datos);
+					}
+				}
 				break;
 
 			default:
 				mensajes("question", 10000, "Error", "Acción desconocida: " + $(this).text());;
+		}
+
+		if (!validarenvio()) {
+			$('#enviar').prop('disabled', false);
+		} else {
+			$('#enviar').prop('disabled', true)
+		};
+
+		if (!confirmacion) {
+			$('#enviar').prop('disabled', false);
 		}
 
 	});
@@ -65,9 +71,9 @@ function enviaAjax(datos) {
 					iniciarTabla(lee.datos);
 
 				} else if (lee.resultado == "entrada") {
-					
 
-				}else if (lee.resultado == "error") {
+
+				} else if (lee.resultado == "error") {
 					mensajes("error", null, lee.mensaje, null);
 				}
 			} catch (e) {
@@ -88,6 +94,21 @@ function enviaAjax(datos) {
 	});
 }
 
+function capaValidar() {
+
+	$("#motivo").on("keypress", function (e) {
+		validarKeyPress(/^[0-9 a-zA-ZáéíóúüñÑçÇ -.\b]*$/, e);
+	});
+	$("#motivo").on("keyup", function () {
+		validarKeyUp(
+			/^[0-9 a-zA-ZáéíóúüñÑçÇ -.]{3,30}$/,
+			$(this),
+			$("#smotivo"),
+			"El motivo debe tener entre 3 y 30 caracteres"
+		);
+	});
+
+}
 
 function validarenvio() {
 	//OJO TAREA, AGREGAR LA VALIDACION DEL nro	
@@ -124,14 +145,14 @@ function crearDataTable(arreglo) {
 		],
 		language: {
 			url: idiomaTabla,
-		}});
+		}
+	});
 
 }
 
 
 function limpia() {
-	$("#motivo").last().removeClass("is-valid");
-	$("#motivo").last().removeClass("is-invalid");
+	$("#motivo").removeClass("is-valid is-invalid");
 	$("#motivo").val("");
 }
 

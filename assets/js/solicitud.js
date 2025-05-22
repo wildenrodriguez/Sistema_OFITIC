@@ -1,16 +1,50 @@
-$(document).ready(function(){
+$(document).ready(function () {
+  consultar();
+  entrada();
 
-  //$(".registrar").prop("disabled", true);
+  // Manejador de eventos para los botones
+  $("#enviar").on("click", function () {
+    switch ($(this).text()) {
 
-  // Deshabilitar los botones al cargar la página
-  $(".registrar").prop("disabled", true);
+      case "Registrar":
+        if (validarenvio()) {
+          var datos = new FormData();
+          datos.append('registrar', 'registrar');
+          datos.append('nombre', $("#nombre").val());
+          enviaAjax(datos);
+        }
+        break;
+      case "Modificar":
+        if (validarenvio()) {
+          var datos = new FormData();
+          datos.append('modificar', 'modificar');
+          datos.append('id_unidad', $("#id_unidad").val());
+          datos.append('nombre', $("#nombre").val());
+          enviaAjax(datos);
+        }
+        break;
+      case "Eliminar":
+        if (validarenvio()) {
+          var datos = new FormData();
+          datos.append('eliminar', 'eliminar');
+          datos.append('id_unidad', $("#id_unidad").val());
+          enviaAjax(datos);
+        }
+        break;
 
-   $("#dependencia").on("change", function() {
-        habilitarBotonRegistrar();
-    });
+      default:
+        mensajes("question", 10000, "Error", "Acción desconocida: " + $(this).text());;
+    }
+    $('#enviar').prop('disabled', true);
+  });
+});
 
-  // Validaciones para el campo "falla"
-  $("#falla").on("keypress", function(e){
+function capaValidar() {
+  $("#dependencia").on("change", function () {
+    habilitarBotonRegistrar();
+  });
+
+  $("#falla").on("keypress", function (e) {
     validarKeyPress(/^[0-9 a-zA-ZáéíóúüñÑçÇ -.\b]*$/, e);
   });
 
@@ -20,12 +54,12 @@ $(document).ready(function(){
       $(this),
       $("#sfalla"),
       "El motivo debe de tener entre 3 y 200 caracteres"
-    ); 
+    );
     habilitarBotonRegistrar();
   });
 
   // Validaciones para el campo "apellido"
-  $("#apellido").on("keypress", function(e){
+  $("#apellido").on("keypress", function (e) {
     validarKeyPress(/^[a-zA-ZáéíóúüñÑçÇ -.\b]*$/, e);
   });
 
@@ -35,25 +69,25 @@ $(document).ready(function(){
       $(this),
       $("#sapellido"),
       "El apellido debe tener al menos 3 letras"
-    ); 
+    );
     habilitarBotonRegistrar();
   });
 
   // Validaciones para el campo "cedula"
-  $("#cedula").on("keypress", function(e){
-    validarKeyPress(/^[VEJ0-9-\b]*$/,e);
+  $("#cedula").on("keypress", function (e) {
+    validarKeyPress(/^[VEJ0-9-\b]*$/, e);
   });
 
   $("#cedula").on("keyup", function () {
-    validarKeyUp(/^[VEJ]{1}[-]{1}[0-9]{7,8}$/,$(this),
+    validarKeyUp(/^[VEJ]{1}[-]{1}[0-9]{7,8}$/, $(this),
       $("#scedula"),
       "El formato debe ser con V,E o J-12345678"
-    ); 
+    );
     habilitarBotonRegistrar();
   });
 
   // Validaciones para el campo "telefono"
-  $("#telefono").on("keypress", function(e){
+  $("#telefono").on("keypress", function (e) {
     validarKeyPress(/^[0-9\b]*$/, e);
   });
 
@@ -63,7 +97,7 @@ $(document).ready(function(){
       $(this),
       $("#stelefono"),
       "El teléfono debe tener entre 7 y 15 dígitos"
-    ); 
+    );
     habilitarBotonRegistrar();
   });
 
@@ -74,52 +108,38 @@ $(document).ready(function(){
       $(this),
       $("#scorreo"),
       "Correo electrónico inválido"
-    ); 
+    );
     habilitarBotonRegistrar();
   });
+}
 
-  // Manejador de eventos para los botones
-  $(".registrar1").on("click", function(){
-    if(validarenvio()){
-      var datos = new FormData();
-      datos.append('registrar1', '');
-      datos.append('falla', $("#falla").val());
-      datos.append('apellido', $("#apellido").val());
-      enviaAjax(datos);
-    }
-  });
-});
-
-function validarenvio(){
-  if(validarKeyUp(
+function validarenvio() {
+  if (validarKeyUp(
     /^[a-zA-ZáéíóúüñÑçÇ -.]{3,200}$/,
     $("#falla"),
     $("#sfalla"),
     "La falla debe tener entre 3 y 200 caracteres"
-  ) == 0)
-  {
+  ) == 0) {
     alert("Verifique el falla");
     return false;
-  } 
-  
-  if(validarKeyUp(
+  }
+
+  if (validarKeyUp(
     /^[a-zA-ZáéíóúüñÑçÇ]{3,30}$/,
     $("#apellido"),
     $("#sapellido"),
     "El apellido debe tener al menos 3 letras"
-  ) == 0)
-  {
+  ) == 0) {
     alert("Verifique el apellido");
     return false;
-  } 
+  }
 
-  if(validarKeyUp(
+  if (validarKeyUp(
     /^[VE]{1}[-]{1}[0-9]{7,8}$/,
     $("#cedula"),
     $("#scedula"),
     "El cedula debe tener al menos 3 letras"
-  ) == 0)
-  {
+  ) == 0) {
     alert("Verifique la cedula");
     return false;
   }
@@ -127,64 +147,114 @@ function validarenvio(){
   return true;
 }
 
+function enviaAjax(datos) {
+  $.ajax({
+    async: true,
+    url: "",
+    type: "POST",
+    contentType: false,
+    data: datos,
+    processData: false,
+    cache: false,
+    beforeSend: function () { },
+    timeout: 10000, //tiempo maximo de espera por la respuesta del servidor
+    success: function (respuesta) {
+      console.log(respuesta);
+      try {
+        var lee = JSON.parse(respuesta);
+        if (lee.resultado == "registrar") {
+          $("#modal1").modal("hide");
+          mensajes("success", 10000, lee.mensaje, null);
+          consultar();
+
+        } else if (lee.resultado == "consultar") {
+          crearDataTable(lee.datos);
+
+        } else if (lee.resultado == "modificar") {
+          $("#modal1").modal("hide");
+          mensajes("success", 10000, lee.mensaje, null);
+          consultar();
+
+        } else if (lee.resultado == "eliminar") {
+          $("#modal1").modal("hide");
+          mensajes("success", 10000, lee.mensaje, null);
+          consultar();
+
+        } else if (lee.resultado == "entrada") {
+
+        } else if (lee.resultado == "error") {
+          mensajes("error", null, lee.mensaje, null);
+        }
+      } catch (e) {
+        mensajes("error", null, "Error en JSON Tipo: " + e.name + "\n" +
+          "Mensaje: " + e.message + "\n" +
+          "Posición: " + e.lineNumber);
+      }
+    },
+    error: function (request, status, err) {
+      if (status == "timeout") {
+        mensajes("error", null, "Servidor ocupado", "Intente de nuevo");
+      } else {
+        mensajes("error", null, "Ocurrió un error", "ERROR: <br/>" + request + status + err);
+      }
+    },
+    complete: function () { },
+  });
+}
+
+function crearDataTable(arreglo) {
+
+	console.log(arreglo);
+	if ($.fn.DataTable.isDataTable('#tabla1')) {
+		$('#tabla1').DataTable().destroy();
+	}
+	$('#tabla1').DataTable({
+		data: arreglo,
+		columns: [
+			{ data: 'ID' },
+			{ data: 'Solicitante' },
+			{ data: 'Cedula' },
+      { data: 'Equipo' },
+      { data: 'Motivo' },
+      { data: 'Estado' },
+      { data: 'Inicio' },
+      { data: 'Resultado' },
+			{
+				data: null, render: function () {
+					const botones = `<button onclick="rellenar(this, 0)" class="btn btn-update"><i class="fa-solid fa-pen-to-square"></i></button>
+					<button onclick="rellenar(this, 1)" class="btn btn-danger" title="Eliminar Solicitud"><i class="fa-solid fa-trash"></i></button>`;
+					return botones;
+				}
+			}],
+		order: [
+			[1, 'asc'],
+			[6, 'asc']
+		],
+		language: {
+			url: idiomaTabla,
+		}
+	});
+}
+
 function validarDependencia() {
-    var valorSeleccionado = $("#dependencia").val();
-    return valorSeleccionado !== null && valorSeleccionado !== "";
+  var valorSeleccionado = $("#dependencia").val();
+  return valorSeleccionado !== null && valorSeleccionado !== "";
 }
 
-function validarKeyPress(er, e) {
-  key = e.keyCode;
-  tecla = String.fromCharCode(key);
-  a = er.test(tecla);
-  if (!a) {
-    e.preventDefault();
-  }
-}
-
-function validarInput(er, etiqueta) {
-  a = er.test(etiqueta.val());
-  if (a) {
-    return 1;
-  } else {
-    return 0;
-  }
-}
-
-function validarKeyUp(er, etiqueta, etiquetamensaje, mensaje) {
-  a = er.test(etiqueta.val());
-  if (a) {
-    etiquetamensaje.text("");
-    return 1;
-  } else {
-    etiquetamensaje.text(mensaje);
-    return 0;
-  }
-}
-
-function validarCorreo(er, etiqueta, etiquetamensaje, mensaje) {
-  a = er.test(etiqueta.val());
-  if (a) {
-    etiquetamensaje.text("");
-    return 1;
-  } else {
-    etiquetamensaje.text(mensaje);
-    return 0;
-  }
-}
 function activarBoton2(selectorBoton) {
   // Función para verificar si todos los inputs cumplen con la expresión regular
   function todosValidos() {
     let todosValidos = true;
-    
-      if (!/^[0-9a-zA-ZáéíóúüñÑçÇ -.]{3,200}$/.test($("#motivo2").val())) {
-        todosValidos = false;
-        return false;
-      }
+
+    if (!/^[0-9a-zA-ZáéíóúüñÑçÇ -.]{3,200}$/.test($("#motivo2").val())) {
+      todosValidos = false;
+      return false;
+    }
     return todosValidos;
   }
 
   // Activa o desactiva el botón dependiendo de la validez de los inputs
-  $("#motivo2").on("keyup", function() {
+  $("#motivo2").on("keyup", function () {
     if (todosValidos()) {
       $("#enviar2").prop("disabled", false);
     } else {
@@ -200,16 +270,16 @@ function activarBoton1(selectorBoton) {
   // Función para verificar si todos los inputs cumplen con la expresión regular
   function todosValidos() {
     let todosValidos = true;
-    
-      if (!/^[0-9a-zA-ZáéíóúüñÑçÇ -.]{3,200}$/.test($("#falla").val())) {
-        todosValidos = false;
-        return false;
-      }
+
+    if (!/^[0-9a-zA-ZáéíóúüñÑçÇ -.]{3,200}$/.test($("#falla").val())) {
+      todosValidos = false;
+      return false;
+    }
     return todosValidos;
   }
 
   // Activa o desactiva el botón dependiendo de la validez de los inputs
-  $("#falla").on("keyup", function() {
+  $("#falla").on("keyup", function () {
     if (todosValidos()) {
       $("#enviar").prop("disabled", false);
     } else {
@@ -255,8 +325,8 @@ $dependencia.addEventListener('change', () => {
     url: '',
     type: 'POST',
     data: { action: 'load_equipos', dependencia_id: dependenciaId },
-    success: function(data) {
-      
+    success: function (data) {
+
       var solic = JSON.parse(data);
       $equipo.innerHTML = '';
       const todosOption = document.createElement('option');
@@ -267,7 +337,7 @@ $dependencia.addEventListener('change', () => {
       for (const equipo of solic) {
         const option = document.createElement('option');
         option.value = equipo.id;
-        option.textContent = equipo.serial +"-"+ equipo.tipo;
+        option.textContent = equipo.serial + "-" + equipo.tipo;
         $equipo.appendChild(option);
       }
     }
@@ -278,7 +348,7 @@ $dependencia.addEventListener('change', () => {
     url: '',
     type: 'POST',
     data: { action: 'load_solicitantes', dependencia_id: dependenciaId },
-    success: function(data) {
+    success: function (data) {
       var solic = JSON.parse(data);
       $solicitante.innerHTML = '';
       const todosOption = document.createElement('option');
@@ -290,7 +360,7 @@ $dependencia.addEventListener('change', () => {
         const option = document.createElement('option');
         console.log(solicitante);
         option.value = solicitante.cedula;
-        option.textContent = solicitante.nombre +"-"+ solicitante.cedula;
+        option.textContent = solicitante.nombre + "-" + solicitante.cedula;
         $solicitante.appendChild(option);
       }
     }
@@ -307,8 +377,8 @@ $dependencia2.addEventListener('change', () => {
     url: '',
     type: 'POST',
     data: { action: 'load_equipos', dependencia_id: dependenciaId },
-    success: function(data) {
-      
+    success: function (data) {
+
       var solic = JSON.parse(data);
       $equipo2.innerHTML = '';
       const todosOption = document.createElement('option');
@@ -319,7 +389,7 @@ $dependencia2.addEventListener('change', () => {
       for (const equipo of solic) {
         const option = document.createElement('option');
         option.value = equipo.id;
-        option.textContent = equipo.serial +"-"+ equipo.tipo;
+        option.textContent = equipo.serial + "-" + equipo.tipo;
         $equipo2.appendChild(option);
       }
     }
