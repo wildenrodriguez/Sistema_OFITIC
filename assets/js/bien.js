@@ -55,11 +55,33 @@ $(document).ready(function () {
         $("#modal1").modal("show");
     });
 
-    $("#btn-consultar-eliminados").on("click", function() {
+    $("#btn-consultar-eliminados").on("click", function () {
         consultarEliminadas();
         $("#modalEliminadas").modal("show");
     });
 });
+
+function consultarEliminadas() {
+    var datos = new FormData();
+    datos.append('consultar_eliminadas', 'consultar_eliminadas');
+
+    enviaAjax(datos);
+}
+
+async function restaurarBien(boton) {
+    var confirmacion = false;
+    var linea = $(boton).closest('tr');
+    var codigo = $(linea).find('td:eq(1)').text();
+
+    confirmacion = await confirmarAccion("¿Restaurar Bien?", "¿Está seguro que desea restaurar este bien?", "question");
+
+    if (confirmacion) {
+        var datos = new FormData();
+        datos.append('restaurar', 'restaurar');
+        datos.append('codigo_bien', codigo);
+        enviaAjax(datos);
+    }
+}
 
 function enviaAjax(datos) {
     $.ajax({
@@ -71,7 +93,7 @@ function enviaAjax(datos) {
         processData: false,
         cache: false,
         beforeSend: function () { },
-        timeout: 10000, 
+        timeout: 10000,
         success: function (respuesta) {
             try {
                 var lee = JSON.parse(respuesta);
@@ -91,6 +113,14 @@ function enviaAjax(datos) {
                 } else if (lee.resultado == "eliminar") {
                     $("#modal1").modal("hide");
                     mensajes("success", 10000, lee.mensaje, null);
+                    consultar();
+
+                } else if (lee.resultado == "consultar_eliminadas") {
+                    TablaEliminados(lee.datos);
+
+                } else if (lee.resultado == "restaurar") {
+                    mensajes("success", null, "Bien restaurado", lee.mensaje);
+                    consultarEliminadas();
                     consultar();
 
                 } else if (lee.resultado == "entrada") {
@@ -185,12 +215,17 @@ function iniciarTabla(arreglo) {
 };
 
 function crearDataTable(arreglo) {
-    tabla = $('#tabla1').DataTable({
+    if ($.fn.DataTable.isDataTable('#tabla1')) {
+        $('#tabla1').DataTable().destroy();
+    }
+    $('#tabla1').DataTable({
         data: arreglo,
         columns: [
-            { data: null, render: function(data, type, row, meta) {
-                return meta.row + 1;
-            }},
+            {
+                data: null, render: function (data, type, row, meta) {
+                    return meta.row + 1;
+                }
+            },
             { data: 'codigo_bien' },
             { data: 'nombre_tipo_bien' },
             { data: 'nombre_marca' },
@@ -211,25 +246,58 @@ function crearDataTable(arreglo) {
     });
 }
 
+function TablaEliminados(arreglo) {
+    if ($.fn.DataTable.isDataTable('#tablaEliminadas')) {
+        $('#tablaEliminadas').DataTable().destroy();
+    }
+
+    $('#tablaEliminadas').DataTable({
+        data: arreglo,
+        columns: [
+            {
+                data: null, render: function (data, type, row, meta) {
+                    return meta.row + 1;
+                }
+            },
+            { data: 'codigo_bien' },
+            { data: 'nombre_tipo_bien' },
+            { data: 'nombre_marca' },
+            { data: 'descripcion' },
+            { data: 'estado' },
+            {
+                data: null,
+                render: function () {
+                    return `<button onclick="restaurarBien(this)" class="btn btn-success">
+                                            <i class="fa-solid fa-recycle"></i>
+                                            </button>`;
+                }
+            }
+        ],
+        language: {
+            url: idiomaTabla,
+        }
+    });
+}
+
 function limpia() {
     $("#codigo_bien").removeClass("is-valid is-invalid");
     $("#codigo_bien").val("");
-    
+
     $("#descripcion").removeClass("is-valid is-invalid");
     $("#descripcion").val("");
-    
+
     $("#id_tipo_bien").removeClass("is-valid is-invalid");
     $("#id_tipo_bien").val("");
-    
+
     $("#id_marca").removeClass("is-valid is-invalid");
     $("#id_marca").val("");
-    
+
     $("#estado").removeClass("is-valid is-invalid");
     $("#estado").val("");
-    
+
     $("#id_oficina").removeClass("is-valid is-invalid");
     $("#id_oficina").val("");
-    
+
     $("#cedula_empleado").removeClass("is-valid is-invalid");
     $("#cedula_empleado").val("");
 
@@ -240,59 +308,14 @@ function rellenar(pos, accion) {
     linea = $(pos).closest('tr');
 
     limpia();
-    
+
     $("#codigo_bien").val($(linea).find("td:eq(1)").text());
+    buscarSelect("#id_tipo_bien", $(linea).find("td:eq(2)").text(), "text");
+    buscarSelect("#id_marca", $(linea).find("td:eq(3)").text(), "text");
     $("#descripcion").val($(linea).find("td:eq(4)").text());
-    
-    // Seleccionar tipo de bien
-    var tipoBien = $(linea).find("td:eq(2)").text();
-    $("#id_tipo_bien option").each(function() {
-        if ($(this).text() == tipoBien) {
-            $(this).prop("selected", true);
-            $("#id_tipo_bien").trigger("change");
-            return false;
-        }
-    });
-    
-    // Seleccionar marca
-    var marca = $(linea).find("td:eq(3)").text();
-    $("#id_marca option").each(function() {
-        if ($(this).text() == marca) {
-            $(this).prop("selected", true);
-            $("#id_marca").trigger("change");
-            return false;
-        }
-    });
-    
-    // Seleccionar estado
-    var estado = $(linea).find("td:eq(5)").text();
-    $("#estado option").each(function() {
-        if ($(this).text() == estado) {
-            $(this).prop("selected", true);
-            $("#estado").trigger("change");
-            return false;
-        }
-    });
-    
-    // Seleccionar oficina
-    var oficina = $(linea).find("td:eq(6)").text();
-    $("#id_oficina option").each(function() {
-        if ($(this).text() == oficina) {
-            $(this).prop("selected", true);
-            $("#id_oficina").trigger("change");
-            return false;
-        }
-    });
-    
-    // Seleccionar empleado
-    var empleado = $(linea).find("td:eq(7)").text();
-    $("#cedula_empleado option").each(function() {
-        if ($(this).text() == empleado) {
-            $(this).prop("selected", true);
-            $("#cedula_empleado").trigger("change");
-            return false;
-        }
-    });
+    buscarSelect("#estado", $(linea).find("td:eq(5)").text(), "text");
+    buscarSelect("#id_oficina", $(linea).find("td:eq(6)").text(), "text");
+    buscarSelect("#cedula_empleado", $(linea).find("td:eq(7)").text(), "text");
 
     if (accion == 0) {
         $("#modalTitleId").text("Modificar Bien")
@@ -303,108 +326,4 @@ function rellenar(pos, accion) {
     }
     $('#enviar').prop('disabled', false);
     $("#modal1").modal("show");
-}
-
-function consultarEliminadas() {
-    var datos = new FormData();
-    datos.append('consultar_eliminadas', 'consultar_eliminadas');
-    
-    $.ajax({
-        async: true,
-        url: "",
-        type: "POST",
-        contentType: false,
-        data: datos,
-        processData: false,
-        cache: false,
-        beforeSend: function() {},
-        timeout: 10000,
-        success: function(respuesta) {
-            try {
-                var lee = JSON.parse(respuesta);
-                if (lee.resultado == "consultar_eliminadas") {
-                    if ($.fn.DataTable.isDataTable('#tablaEliminadas')) {
-                        $('#tablaEliminadas').DataTable().destroy();
-                    }
-                    
-                    $('#tablaEliminadas').DataTable({
-                        data: lee.datos,
-                        columns: [
-                            { data: null, render: function(data, type, row, meta) {
-                                return meta.row + 1;
-                            }},
-                            { data: 'codigo_bien' },
-                            { data: 'nombre_tipo_bien' },
-                            { data: 'nombre_marca' },
-                            { data: 'descripcion' },
-                            { data: 'estado' },
-                            {
-                                data: null, 
-                                render: function() {
-                                    return `<button onclick="restaurarBien(this)" class="btn btn-success">
-                                            <i class="fa-solid fa-recycle"></i>
-                                            </button>`;
-                                }
-                            }
-                        ],
-                        language: {
-                            url: idiomaTabla,
-                        }
-                    });
-                }
-            } catch (e) {
-                console.error("Error procesando datos:", e);
-            }
-        },
-        error: function(request, status, err) {
-            mensajes("error", null, "Error al cargar bienes eliminados", "Intente nuevamente");
-        }
-    });
-}
-
-function restaurarBien(boton) {
-    var linea = $(boton).closest('tr');
-    var codigo = $(linea).find('td:eq(1)').text();
-    
-    Swal.fire({
-        title: '¿Restaurar Bien?',
-        text: "¿Está seguro que desea restaurar este bien?",
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Sí, restaurar',
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            var datos = new FormData();
-            datos.append('restaurar', 'restaurar');
-            datos.append('codigo_bien', codigo);
-            
-            $.ajax({
-                url: "",
-                type: "POST",
-                data: datos,
-                processData: false,
-                contentType: false,
-                success: function(respuesta) {
-                    try {
-                        var lee = JSON.parse(respuesta);
-                        if (lee.estado == 1) {
-                            mensajes("success", null, "Bien restaurado", lee.mensaje);
-                            consultarEliminadas();
-                            consultar();
-                        } else {
-                            mensajes("error", null, "Error", lee.mensaje);
-                        }
-                    } catch (e) {
-                        mensajes("error", null, "Error", "Error procesando la respuesta");
-                    }
-                },
-                error: function() {
-                    mensajes("error", null, "Error", "No se pudo restaurar el bien");
-                }
-            });
-        }
-    });
 }

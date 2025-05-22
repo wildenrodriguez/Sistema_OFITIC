@@ -80,7 +80,7 @@ async function confirmarAccion(titulo, mensaje, icono) {
       resultado = false;
     }
   })
-  
+
   return resultado;
   ;
 }
@@ -97,32 +97,39 @@ function registrarEntrada() {
   enviaAjax(peticion);
 }
 
-function buscarSelectValor(id_select, valor) {
 
-  if ($(`${id_select} option[value="${valor}"]`).length > 0) {
-    $(`${id_select}`).val(`${valor}`).change();
-  } else {
-    console.error("El valor " + valor + " no se encuentra en el campo select.");
-  }
-}
+function buscarSelect(id_select, valor, opcion) {
 
-function buscarSelectTexto(id_select, valor) {
+  if (opcion === 'text') {
 
-  let bool;
+    let bool;
 
-  $(`${id_select} option`).each(function () {
-    if ($(this).text().trim() === valor.trim()) {
-      $(this).prop('selected', true);
-      $("#id_piso").change();
-      bool = true;
+    $(`${id_select} option`).each(function () {
+      if ($(this).text().trim() === valor.trim()) {
+        $(this).prop('selected', true);
+        $("#id_piso").change();
+        bool = true;
+      }
+    })
+
+    if (bool) {
+      return true;
+    } else {
+      console.error("El valor '" + valor + "' no se encuentra en el campo select.")
     }
-  })
 
-  if (bool) {
-    return true;
+  } else if (opcion === 'value') {
+    
+    if ($(`${id_select} option[value="${valor}"]`).length > 0) {
+      $(`${id_select}`).val(`${valor}`).change();
+    } else {
+      console.error("El valor " + valor + " no se encuentra en el campo select.");
+    }
+
   } else {
-    console.error("El valor '" + valor + "' no se encuentra en el campo select.")
+    console.error("Opcion no Válida: " + opcion + "")
   }
+
 }
 
 function selectEdificio(arreglo) {
