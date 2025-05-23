@@ -1,5 +1,6 @@
 $(document).ready(function () {
 	consultar();
+	consultarEnte();
 	registrarEntrada();
 	capaValidar();
 
@@ -12,16 +13,14 @@ $(document).ready(function () {
 
 			case "Registrar":
 				if (validarenvio()) {
-					confirmacion = await confirmarAccion("Se registrará un Ente", "¿Está seguro de realizar la acción?", "question");
+					confirmacion = await confirmarAccion("Se registrará una Dependencia", "¿Está seguro de realizar la acción?", "question");
 
 					if (confirmacion) {
 
 						var datos = new FormData();
 						datos.append('registrar', 'registrar');
 						datos.append('nombre', $("#nombre").val());
-						datos.append('responsable', $("#responsable").val());
-						datos.append('telefono', $("#telefono").val());
-						datos.append('direccion', $("#direccion").val());
+						datos.append('ente', $("#ente").val());
 						enviaAjax(datos);
 						envio = true;
 					}
@@ -32,31 +31,29 @@ $(document).ready(function () {
 				break;
 			case "Modificar":
 				if (validarenvio()) {
-					confirmacion = await confirmarAccion("Se modificará un Ente", "¿Está seguro de realizar la acción?", "question");
+					confirmacion = await confirmarAccion("Se modificará un Dependencia", "¿Está seguro de realizar la acción?", "question");
 
 					if (confirmacion) {
 						var datos = new FormData();
 						datos.append('modificar', 'modificar');
-						datos.append('id_ente', $("#id_ente").val());
+						datos.append('id_dependencia', $("#id_dependencia").val());
 						datos.append('nombre', $("#nombre").val());
-						datos.append('responsable', $("#responsable").val());
-						datos.append('telefono', $("#telefono").val());
-						datos.append('direccion', $("#direccion").val());
+						datos.append('ente', $("#ente").val());
 						enviaAjax(datos);
 						envio = true;
 					}
-				} else{
+				} else {
 					envio = false;
 				}
 				break;
 			case "Eliminar":
-				if (validarKeyUp(/^[0-9]{1,11}$/, $("#id_ente"), $("#sid_ente"), "") === 1) {
-					confirmacion = await confirmarAccion("Se eliminará un Ente", "¿Está seguro de realizar la acción?", "warning");
+				if (validarKeyUp(/^[0-9]{1,11}$/, $("#id_dependencia"), $("#sid_dependencia"), "") === 1) {
+					confirmacion = await confirmarAccion("Se eliminará un Dependencia", "¿Está seguro de realizar la acción?", "warning");
 
 					if (confirmacion) {
 						var datos = new FormData();
 						datos.append('eliminar', 'eliminar');
-						datos.append('id_ente', $("#id_ente").val());
+						datos.append('id_dependencia', $("#id_dependencia").val());
 						enviaAjax(datos);
 						envio = true;
 					}
@@ -77,7 +74,7 @@ $(document).ready(function () {
 
 		if (!confirmacion) {
 			$('#enviar').prop('disabled', false);
-		} else{
+		} else {
 			$('#enviar').prop('disabled', true);
 		}
 
@@ -85,12 +82,18 @@ $(document).ready(function () {
 
 	$("#btn-registrar").on("click", function () { //<---- Evento del Boton Registrar
 		limpia();
-		$("#idEnte").remove();
+		$("#idDependencia").remove();
 		$("#modalTitleId").text("Registrar Ente");
 		$("#enviar").text("Registrar");
 		$("#modal1").modal("show");
 	}); //<----Fin Evento del Boton Registrar
 });
+
+function consultarEnte() {
+	var datos = new FormData();
+	datos.append('cargar_ente', 'cargar_ente');
+	enviaAjax(datos);
+}
 
 function enviaAjax(datos) {
 	$.ajax({
@@ -125,9 +128,13 @@ function enviaAjax(datos) {
 					mensajes("success", 10000, lee.mensaje, null);
 					consultar();
 
+				} else if (lee.resultado == "cargar_ente") {
+					selectEnte(lee.datos);
+
 				} else if (lee.resultado == "entrada") {
 
 				} else if (lee.resultado == "error") {
+					$("#modal1").modal("hide");
 					mensajes("error", null, lee.mensaje, null);
 				}
 			} catch (e) {
@@ -154,61 +161,47 @@ function capaValidar() {
 	});
 	$("#nombre").on("keyup", function () {
 		validarKeyUp(
-			/^[0-9 a-zA-ZáéíóúüñÑçÇ -.]{4,90}$/, $(this), $("#snombre"),
-			"El nombre del ente debe tener de 4 a 90 carácteres"
+			/^[0-9 a-zA-ZáéíóúüñÑçÇ -.]{4,45}$/, $(this), $("#snombre"),
+			"El nombre del Dependencia debe tener de 4 a 90 carácteres"
 		);
 	});
 
-	$("#responsable").on("keypress", function (e) {
-		validarKeyPress(/^[a-zA-ZáéíóúüñÑçÇ -.\b]*$/, e);
-	});
-	$("#responsable").on("keyup", function () {
-		validarKeyUp(
-			/^[a-zA-ZáéíóúüñÑçÇ -.]{4,65}$/, $(this), $("#sresponsable"),
-			"El nombre del responsable debe tener de 4 a 65 carácteres"
-		);
-	});
+	$('#ente').on('change', function () {
 
-	$("#telefono").on("keypress", function (e) {
-		validarKeyPress(/^[0-9-]*$/, e);
-	});
-	$("#telefono").on("keyup", function () {
-		validarKeyUp(
-			/^[0-9]{4}[-]{1}[0-9]{7,8}$/, $(this), $("#stelefono"),
-			"El número debe tener el siguiente formato: ****-*******"
-		);
-	});
+		if ($(this).val() === 'default') {
 
-	$("#direccion").on("keypress", function (e) {
-		validarKeyPress(/^[0-9 a-zA-ZáéíóúüñÑçÇ -.\b]*$/, e);
-	});
-	$("#direccion").on("keyup", function () {
-		validarKeyUp(/^[0-9 a-zA-ZáéíóúüñÑçÇ -./#]{10,100}$/, $(this), $("#sdireccion"),
-			"La dirección del Ente debe tener de 10 a 100 carácteres"
-		);
+			estadoSelect(this, '#sente', "Seleccione un Ente", 0);
+		} else {
+			estadoSelect(this, '#sente', "", 1);
+		}
 	});
 }
 
 function validarenvio() {
 
 	if (validarKeyUp(/^[0-9 a-zA-ZáéíóúüñÑçÇ -.]{3,45}$/, $("#nombre"), $("#snombre"), "") == 0) {
-		mensajes("error", 10000, "Verifica", "El nombre del Ente debe tener de 4 a 45 carácteres");
+		mensajes("error", 10000, "Verifica", "El nombre de la dependencia debe tener de 4 a 45 carácteres");
 		return false;
 
-	} else if (validarKeyUp(/^[a-zA-ZáéíóúüñÑçÇ -.]{4,65}$/, $("#responsable"), $("#sresponsable"), "") == 0) {
-		mensajes("error", 10000, "Verifica", "El nombre del responsable debe tener de 4 a 65 carácteres");
-		return false;
-
-	} else if (/^[0-9]{4}[-]{1}[0-9]{7,8}$/, $("#telefono"), $("#stelefono"), "") {
-		mensajes("error", 10000, "Verifica", "El número debe tener el siguiente formato: ****-*******");
-		return false;
-
-	} else if (validarKeyUp(/^[0-9 a-zA-ZáéíóúüñÑçÇ -./#]{10,100}$/, $("#direccion"), $("#sdireccion"), "") == 0) {
-		mensajes("error", 10000, "Verifica", "La dirección del Ente debe tener de 10 a 100 carácteres");
+	} else if (($('#ente').val() === 'default')) {
+		mensajes("error", 10000, "Verifica", "Debe seleccionar un Ente");
 		return false;
 
 	}
 	return true;
+}
+
+function selectEnte(arreglo) {
+	$("#ente").empty();
+
+	$("#ente").append(
+		new Option('Seleccione un Ente', 'default')
+	);
+	arreglo.forEach(item => {
+		$("#ente").append(
+			new Option(item.nombre, item.id)
+		);
+	});
 }
 
 function crearDataTable(arreglo) {
@@ -222,9 +215,7 @@ function crearDataTable(arreglo) {
 		columns: [
 			{ data: 'id' },
 			{ data: 'nombre' },
-			{ data: 'nombre_responsable' },
-			{ data: 'telefono' },
-			{ data: 'direccion' },
+			{ data: 'ente' },
 			{
 				data: null, render: function () {
 					const botones = `<button onclick="rellenar(this, 0)" class="btn btn-update"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -244,19 +235,13 @@ function limpia() {
 	$("#nombre").removeClass("is-valid is-invalid");
 	$("#nombre").val("");
 
-	$("#responsable").removeClass("is-valid is-invalid");
-	$("#responsable").val("");
-
-	$("#telefono").removeClass("is-valid is-invalid");
-	$("#telefono").val("");
-
-	$("#direccion").removeClass("is-valid is-invalid");
-	$("#direccion").val("");
+	$("#ente").removeClass("is-valid is-invalid");
+	$("#sente").val("");
+	$("#sente").text("");
 
 	$("#nombre").prop("readOnly", false);
-	$("#responsable").prop("readOnly", false);
-	$("#telefono").prop("readOnly", false);
-	$("#direccion").prop("readOnly", false);
+	$("#ente option:first-child").prop('selected', true);
+	$('#ente').prop('disabled', false);
 
 	$('#enviar').prop('disabled', false);
 }
@@ -267,32 +252,29 @@ function rellenar(pos, accion) {
 
 	linea = $(pos).closest('tr');
 
-	$("#idEnte").remove();
-	$("#Fila1").prepend(`<div class="col-4" id="idEnte">
+	$("#idDependencia").remove();
+	$("#Fila1").prepend(`<div class="col-4" id="idDependencia">
             <div class="form-floating mb-3 mt-4">
-              <input placeholder="" class="form-control" name="id_ente" type="text" id="id_ente" readOnly>
-              <span id="sid_ente"></span>
-              <label for="id_ente" class="form-label">ID del Ente</label>
+              <input placeholder="" class="form-control" name="id_dependencia" type="text" id="id_dependencia" readOnly>
+              <span id="sid_dependencia"></span>
+              <label for="id_dependencia" class="form-label">ID de la Dependencia</label>
             </div>`);
 
 
-	$("#id_ente").val($(linea).find("td:eq(0)").text());
+	$("#id_dependencia").val($(linea).find("td:eq(0)").text());
 	$("#nombre").val($(linea).find("td:eq(1)").text());
-	$("#responsable").val($(linea).find("td:eq(2)").text());
-	$("#telefono").val($(linea).find("td:eq(3)").text());
-	$("#direccion").val($(linea).find("td:eq(4)").text());
+	buscarSelect("#ente", $(linea).find("td:eq(2)").text(), "text");
 
 
 	if (accion == 0) {
-		$("#modalTitleId").text("Modificar Ente")
+		$("#modalTitleId").text("Modificar Dependencia")
 		$("#enviar").text("Modificar");
 	}
 	else {
+		$("#id_dependencia").prop("readOnly", true);
 		$("#nombre").prop("readOnly", true);
-		$("#responsable").prop("readOnly", true);
-		$("#telefono").prop("readOnly", true);
-		$("#direccion").prop("readOnly", true);
-		$("#modalTitleId").text("Eliminar Ente")
+		$('#ente').prop('disabled', true);
+		$("#modalTitleId").text("Eliminar Dependencia")
 		$("#enviar").text("Eliminar");
 	}
 	$('#enviar').prop('disabled', false);

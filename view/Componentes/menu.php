@@ -138,12 +138,6 @@
                   <span class="ms-2 me-2 menu-text">Gestión de Materiales</span>
                 </a>
               </li>
-              <!--  <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
-              <a href="?page=edificio">
-                <i class="fa-solid fa-building"></i>
-                <span class="menu-text">Gestión de Edificios</span>
-              </a>
-            </li>-->
               <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>" title="Gestión de Pisos">
                 <a href="?page=piso">
                   <i class="fa-solid fa-stairs"></i>
@@ -228,14 +222,20 @@
             title="Unidad">
             <a href="?page=unidad">
               <i class="fa-solid fa-users-gear"></i>
-              <span class="ms-2 me-2 menu-text">Unidad</span>
+              <span class="ms-2 me-2 menu-text">Unidades</span>
             </a>
           </li>
           <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "dependencia") ? "active" : "" ?>"
             title="Dependencia">
-            <a href="?page=Configuracion&dato=dependencia">
+            <a href="?page=dependencia">
+              <i class="fa-solid fa-users-gear"></i>
+              <span class="ms-2 me-2 menu-text">Dependencias</span>
+            </a>
+          </li>
+          <li class="menu-item <?php echo ($page == "solicitantes") ? "active" : "" ?>">
+            <a href="?page=ente">
               <i class="fa-solid fa-building"></i>
-              <span class="ms-2 me-2 menu-text">Dependencia</span>
+              <span class="ms-2 me-2 menu-text">Entes</span>
             </a>
           </li>
           <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "marca") ? "active" : "" ?>"

@@ -6,7 +6,6 @@ class Ente extends Conexion
     private $id;
     private $nombre;
     private $responsable;
-
     private $telefono;
     private $direccion;
     private $estatus;
@@ -227,6 +226,12 @@ class Ente extends Conexion
 
             case 'registrar':
                 return $this->Registrar();
+
+            case 'validar':
+                $array = $this->Validar();
+                $this->Cerrar_Conexion($this->conex, $none);
+                return $array;
+
 
             case 'consultar':
                 return $this->Consultar();

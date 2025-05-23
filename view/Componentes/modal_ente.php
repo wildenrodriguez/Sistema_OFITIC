@@ -10,9 +10,25 @@
         <div class="row justify-content-center" id="Fila1">
           <div class="col-8">
             <div class="form-floating mb-3 mt-4">
-              <input placeholder="" class="form-control" name="nombre" type="text" id="nombre" maxlength="200">
+              <input placeholder="" class="form-control" name="nombre" type="text" id="nombre" maxlength="90">
               <span id="snombre"></span>
-              <label for="nombre" class="form-label">Nombre del Edificio</label>
+              <label for="nombre" class="form-label">Nombre del Ente</label>
+            </div>
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-6">
+            <div class="form-floating mb-3 mt-4">
+              <input placeholder="" class="form-control" name="responsable" type="text" id="responsable" maxlength="65">
+              <span id="sresponsable"></span>
+              <label for="responsable" class="form-label">Nombre del Responsable</label>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-floating mb-3 mt-4">
+              <input placeholder="" class="form-control" name="telefono" type="text" id="telefono" maxlength="14">
+              <span id="stelefono"></span>
+              <label for="telefono" class="form-label">Teléfono</label>
             </div>
           </div>
         </div>
@@ -22,7 +38,7 @@
               <textarea placeholder="" class="form-control" name="direccion" type="text" id="direccion"
                 maxlength="200"></textarea>
               <span id="sdireccion"></span>
-              <label for="direccion" class="form-label">Dirección del Edificio</label>
+              <label for="direccion" class="form-label">Dirección del Ente</label>
             </div>
           </div>
         </div>

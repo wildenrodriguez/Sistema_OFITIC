@@ -134,7 +134,7 @@ function capaValidar() {
 		const obj = validarSelect();
 
 		if (obj.bool === 0) { }
-	})
+	});
 
 	$('#nro_piso').on('change blur input focusout mouseleave', function () {
 
@@ -254,6 +254,7 @@ function limpia() {
 
 
 function rellenar(pos, accion) {
+	limpia();
 
 	linea = $(pos).closest('tr');
 
@@ -268,8 +269,8 @@ function rellenar(pos, accion) {
 
 	$("#id_piso").val($(linea).find("td:eq(0)").text());
 
-	buscarSelectValor('#tipo_piso', $(linea).find("td:eq(1)").text());
-	buscarSelectValor('#nro_piso', $(linea).find("td:eq(2)").text());
+	buscarSelect('#tipo_piso', $(linea).find("td:eq(1)").text(), "value");
+	buscarSelect('#nro_piso', $(linea).find("td:eq(2)").text(), "value");
 
 
 	if (accion == 0) {

@@ -5,10 +5,7 @@ class Dependencia extends Conexion
 
     private $id;
     private $nombre;
-    private $telefono;
-    private $responsable;
-    private $direccion;
-    private $estatus;
+    private $id_ente;
 
     public function __construct()
     {
@@ -27,22 +24,9 @@ class Dependencia extends Conexion
         $this->nombre = $nombre;
     }
 
-    public function set_direccion($direccion)
+    public function set_id_ente($id_ente)
     {
-        $this->direccion = $direccion;
-    }
-
-    public function set_telefono($telefono){
-        $this->telefono = $telefono;
-    }
-
-    public function set_responsable($responsable){
-        $this->responsable = $responsable;
-    }
-
-    public function set_estatus($estatus)
-    {
-        $this->estatus = $estatus;
+        $this->id_ente = $id_ente;
     }
 
     public function get_id()
@@ -55,24 +39,11 @@ class Dependencia extends Conexion
         return $this->nombre;
     }
 
-    public function get_direccion()
+    public function get_id_ente()
     {
-        return $this->direccion;
+        return $this->id_ente;
     }
 
-
-    public function get_telefono(){
-        return $this->telefono;
-    }
-
-    public function get_responsable(){
-        return $this->responsable;
-    }
-
-    public function get_estatus()
-    {
-        return $this->estatus;
-    }
 
     private function Validar()
     {
@@ -80,7 +51,7 @@ class Dependencia extends Conexion
 
         try {
             $this->conex->beginTransaction();
-            $query = "SELECT * FROM dependencia WHERE id_dependencia = :id";
+            $query = "SELECT * FROM dependencia WHERE id = :id";
 
             $stm = $this->conex->prepare($query);
             $stm->bindParam(":id", $this->id);
@@ -109,18 +80,16 @@ class Dependencia extends Conexion
         if ($bool['bool'] == 0) {
             try {
                 $this->conex->beginTransaction();
-                $query = "INSERT INTO dependencia(id_dependencia, nombre_dependencia, direccion_dependencia, telefono_dependencia, nombre_responsable)
-                VALUES (NULL, :nombre , :direccion , :telefono, :cedula)";
+                $query = "INSERT INTO dependencia(id, id_ente, nombre)
+                VALUES (NULL, :id_ente, :nombre)";
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":nombre", $this->nombre);
-                $stm->bindParam(":direccion", $this->direccion);
-                $stm->bindParam(":telefono", $this->telefono);
-                $stm->bindParam(":cedula", $this->responsable);
+                $stm->bindParam(":id_ente", $this->id_ente);
                 $stm->execute();
                 $dato['resultado'] = "registrar";
                 $dato['estado'] = 1;
-                $dato['mensaje'] = "Se registró el dependencia exitosamente";
+                $dato['mensaje'] = "Se registró la dependencia exitosamente";
                 $this->conex->commit();
             } catch (PDOException $e) {
                 $this->conex->rollBack();
@@ -142,28 +111,26 @@ class Dependencia extends Conexion
     {
         $dato = [];
 
-            try {
-                $this->conex->beginTransaction();
-                $query = "UPDATE dependencia SET nombre_dependencia = :nombre, direccion_dependencia = :direccion,
-                telefono_dependencia = :telefono, nombre_responsable = :cedula WHERE id_dependencia = :id";
+        try {
+            $this->conex->beginTransaction();
+            $query = "UPDATE dependencia SET nombre = :nombre, id_ente = :id_ente
+                WHERE id = :id";
 
-                $stm = $this->conex->prepare($query);
-                $stm->bindParam(":id", $this->id);
-                $stm->bindParam(":nombre", $this->nombre);
-                $stm->bindParam(":direccion", $this->direccion);
-                $stm->bindParam(":telefono", $this->telefono);
-                $stm->bindParam(":cedula", $this->responsable);
-                $stm->execute();
-                $dato['resultado'] = "modificar";
-                $dato['estado'] = 1;
-                $dato['mensaje'] = "Se modificaron los datos del dependencia con éxito";
-                $this->conex->commit();
-            } catch (PDOException $e) {
-                $this->conex->rollBack();
-                $dato['estado'] = -1;
-                $dato['resultado'] = "error";
-                $dato['mensaje'] = $e->getMessage();
-            }
+            $stm = $this->conex->prepare($query);
+            $stm->bindParam(":id", $this->id);
+            $stm->bindParam(":nombre", $this->nombre);
+            $stm->bindParam(":id_ente", $this->id_ente);
+            $stm->execute();
+            $dato['resultado'] = "modificar";
+            $dato['estado'] = 1;
+            $dato['mensaje'] = "Se modificaron los datos de la dependencia exitosamente";
+            $this->conex->commit();
+        } catch (PDOException $e) {
+            $this->conex->rollBack();
+            $dato['estado'] = -1;
+            $dato['resultado'] = "error";
+            $dato['mensaje'] = $e->getMessage();
+        }
         $this->Cerrar_Conexion($this->conex, $stm);
         return $dato;
     }
@@ -175,7 +142,7 @@ class Dependencia extends Conexion
 
         if ($bool['bool'] != 0) {
             try {
-                $query = "UPDATE dependencia SET estatus = 0 WHERE id_dependencia = :id";
+                $query = "UPDATE dependencia SET estatus = 0 WHERE id_ente = :id";
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":id", $this->id);
@@ -202,7 +169,11 @@ class Dependencia extends Conexion
         $dato = [];
 
         try {
-            $query = "SELECT * FROM dependencia WHERE estatus = 1";
+            $query = "SELECT dependencia.id, dependencia.id_ente,
+            dependencia.nombre, ente.nombre AS ente
+            FROM dependencia
+            INNER JOIN ente ON dependencia.id_ente = ente.id
+            WHERE dependencia.estatus = 1";
 
             $stm = $this->conex->prepare($query);
             $stm->execute();
@@ -223,6 +194,9 @@ class Dependencia extends Conexion
 
             case 'registrar':
                 return $this->Registrar();
+
+            case 'validar':
+                return $this->Validar();
 
             case 'consultar':
                 return $this->Consultar();

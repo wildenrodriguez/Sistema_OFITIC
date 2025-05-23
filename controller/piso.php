@@ -7,13 +7,11 @@ if (!$_SESSION) {
 ob_start();
 if (is_file("view/" . $page . ".php")) {
 	require_once "controller/utileria.php";
-	require_once "model/edificio.php";
 	require_once "model/piso.php";
 
 	$titulo = "Gestionar Pisos";
 	$cabecera = array("ID Piso", "Piso", "Nro de Piso", "Modificar/Eliminar");
 
-	$edificio = new Edificio();
 	$piso = new Piso();
 
 	if (isset($_POST["entrada"])) {
