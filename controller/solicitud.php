@@ -16,7 +16,7 @@ if (is_file("view/" . $page . ".php")) {
 	$solicitud = new Solicitud();
 	$empleado = new Empleado();
 	$equipo = new Equipo();
-	$hoja = new Hoja();
+	$HojaServicio = new HojaServicio();
 
 
 
@@ -69,9 +69,9 @@ if (is_file("view/" . $page . ".php")) {
 			$peticion['peticion'] = "registrar";
 			$solicitud->set_id_equipo($equipoSerial);
 			$solicitud->set_cedula_solicitante($_POST["cedula"]);
-			$hoja->set_nro_solicitud($solicitud->Transaccion($peticion));
-			$hoja->set_tipo_servicio($_POST["area"]);
-			$hoja->NuevaHoja();
+			$HojaServicio->set_nro_solicitud($solicitud->Transaccion($peticion));
+			$HojaServicio->set_tipo_servicio($_POST["area"]);
+			$HojaServicio->NuevaHojaServicio();
 			header("refresh: 0");
 		}
 
@@ -90,9 +90,9 @@ if (is_file("view/" . $page . ".php")) {
 			$peticion['peticion'] = "actualizar";
 			$solicitud->set_id_equipo($equipo);
 			$solicitud->Transaccion($peticion);
-			$hoja->set_nro_solicitud($_POST["nrosol"]);
-			$hoja->set_tipo_servicio($_POST["area"]);
-			$hoja->NuevaHoja();
+			$HojaServicio->set_nro_solicitud($_POST["nrosol"]);
+			$HojaServicio->set_tipo_servicio($_POST["area"]);
+			$HojaServicio->NuevaHojaServicio();
 			header("refresh: 0");
 		}
 

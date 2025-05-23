@@ -20,7 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `sigso_usuario`
 --
-
+CREATE DATABASE `sigso_usuario`;
+USE `sigso_usuario`;
 -- --------------------------------------------------------
 
 --
