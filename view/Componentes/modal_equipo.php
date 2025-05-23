@@ -49,16 +49,16 @@
                 <div class="row justify-content-center">
                     <div class="col-12">
                         <div class="form-floating mb-3 mt-4">
-                            <select class="form-select" name="id_dependencia" id="id_dependencia">
-                                <option value="">Seleccione una dependencia</option>
-                                <?php foreach ($dependencias as $dependencia): ?>
-                                    <option value="<?= $dependencia['id_dependencia'] ?>">
-                                        <?= $dependencia['nombre_dependencia'] ?>
+                            <select class="form-select" name="id_unidad" id="id_unidad">
+                                <option value="">Seleccione una unidad</option>
+                                <?php foreach ($unidades as $unidad): ?>
+                                    <option value="<?= $unidad['id_unidad'] ?>">
+                                        <?= $unidad['nombre_unidad'] ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
-                            <span id="sid_dependencia"></span>
-                            <label for="id_dependencia" class="form-label">Dependencia</label>
+                            <span id="sid_unidad"></span>
+                            <label for="id_unidad" class="form-label">unidad</label>
                         </div>
                     </div>
                 </div>

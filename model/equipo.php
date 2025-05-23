@@ -6,7 +6,7 @@ class Equipo extends Conexion
     private $tipo_equipo;
     private $serial;
     private $codigo_bien;
-    private $id_dependencia;
+    private $id_unidad;
 
     public function __construct()
     {
@@ -34,9 +34,9 @@ class Equipo extends Conexion
         $this->codigo_bien = $codigo_bien;
     }
 
-    public function set_id_dependencia($id_dependencia)
+    public function set_id_unidad($id_unidad)
     {
-        $this->id_dependencia = $id_dependencia;
+        $this->id_unidad = $id_unidad;
     }
 
     public function get_id_equipo()
@@ -59,9 +59,9 @@ class Equipo extends Conexion
         return $this->codigo_bien;
     }
 
-    public function get_id_dependencia()
+    public function get_id_unidad()
     {
-        return $this->id_dependencia;
+        return $this->id_unidad;
     }
 
     private function Validar()
@@ -81,7 +81,6 @@ class Equipo extends Conexion
             } else {
                 $dato['bool'] = 0;
             }
-
         } catch (PDOException $e) {
             $dato['error'] = $e->getMessage();
         }
@@ -96,14 +95,15 @@ class Equipo extends Conexion
 
         if ($bool['bool'] == 0) {
             try {
-                $query = "INSERT INTO equipo(id_equipo, tipo_equipo, serial, codigo_bien, id_dependencia) VALUES 
-                (NULL, :tipo_equipo, :serial, :codigo_bien, :id_dependencia)";
+                $query = "INSERT INTO equipo(id_equipo, tipo_equipo, serial, codigo_bien, id_unidad, estatus) VALUES 
+                (NULL, :tipo_equipo, :serial, :codigo_bien, :id_unidad, :estatus)";
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":tipo_equipo", $this->tipo_equipo);
                 $stm->bindParam(":serial", $this->serial);
                 $stm->bindParam(":codigo_bien", $this->codigo_bien);
-                $stm->bindParam(":id_dependencia", $this->id_dependencia);
+                $stm->bindParam(":id_unidad", $this->id_unidad);
+                $stm->bindValue(":estatus", 1);
                 $stm->execute();
                 $dato['resultado'] = "registrar";
                 $dato['estado'] = 1;
@@ -128,14 +128,14 @@ class Equipo extends Conexion
 
         try {
             $query = "UPDATE equipo SET tipo_equipo= :tipo_equipo, serial= :serial, codigo_bien= :codigo_bien, 
-                     id_dependencia= :id_dependencia WHERE id_equipo = :id";
+                     id_unidad= :id_unidad WHERE id_equipo = :id";
 
             $stm = $this->conex->prepare($query);
             $stm->bindParam(":id", $this->id_equipo);
             $stm->bindParam(":tipo_equipo", $this->tipo_equipo);
             $stm->bindParam(":serial", $this->serial);
             $stm->bindParam(":codigo_bien", $this->codigo_bien);
-            $stm->bindParam(":id_dependencia", $this->id_dependencia);
+            $stm->bindParam(":id_unidad", $this->id_unidad);
             $stm->execute();
             $dato['resultado'] = "modificar";
             $dato['estado'] = 1;
@@ -183,10 +183,10 @@ class Equipo extends Conexion
         $dato = [];
 
         try {
-            $query = "SELECT e.*, d.nombre_dependencia
+            $query = "SELECT e.*, u.nombre_unidad
                      FROM equipo e 
-                     JOIN dependencia d ON e.id_dependencia = d.id_dependencia 
-                     WHERE d.estatus = 1 AND e.estatus = 1";
+                     JOIN unidad u ON e.id_unidad = u.id_unidad 
+                     WHERE u.estatus = 1 AND e.estatus = 1";
 
             $stm = $this->conex->prepare($query);
             $stm->execute();
@@ -200,12 +200,12 @@ class Equipo extends Conexion
         return $dato;
     }
 
-    public function ConsultarDependencias()
+    public function ConsultarUnidad()
     {
         $dato = [];
 
         try {
-            $query = "SELECT * FROM dependencia WHERE estatus = 1";
+            $query = "SELECT * FROM unidad WHERE estatus = 1";
 
             $stm = $this->conex->prepare($query);
             $stm->execute();
@@ -220,7 +220,15 @@ class Equipo extends Conexion
         $dato = [];
 
         try {
-            $query = "SELECT codigo_bien FROM bien WHERE estatus = 1";
+            $query = "SELECT b.codigo_bien 
+FROM bien b
+WHERE b.estatus = 1
+AND b.codigo_bien NOT IN (
+    SELECT e.codigo_bien 
+    FROM equipo e 
+    WHERE e.codigo_bien IS NOT NULL
+    AND e.estatus = 1
+);";
 
             $stm = $this->conex->prepare($query);
             $stm->execute();
@@ -235,10 +243,10 @@ class Equipo extends Conexion
         $dato = [];
 
         try {
-            $query = "SELECT e.*, d.nombre_dependencia 
+            $query = "SELECT e.*, u.nombre_unidad 
                      FROM equipo e 
-                     JOIN dependencia d ON e.id_dependencia = d.id_dependencia 
-                     WHERE d.estatus = 0 AND e.estatus = 0";
+                     JOIN unidad u ON e.id_unidad = u.id_unidad 
+                     WHERE u.estatus = 0 or e.estatus = 0";
 
             $stm = $this->conex->prepare($query);
             $stm->execute();
@@ -264,7 +272,7 @@ class Equipo extends Conexion
             $dato['resultado'] = "restaurar";
             $dato['estado'] = 1;
             $dato['mensaje'] = "Equipo restaurado exitosamente";
-            
+
             $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se restauró el equipo ID: " . $this->id_equipo;
             Bitacora($msg, "Equipo");
         } catch (PDOException $e) {
@@ -286,10 +294,10 @@ class Equipo extends Conexion
                 return $this->Consultar();
 
             case 'consultar_eliminadas':
-                return $this->ConsultarEliminadas();   
+                return $this->ConsultarEliminadas();
 
-            case 'consultar_dependencias':
-                return $this->ConsultarDependencias();
+            case 'consultar_unidad':
+                return $this->ConsultarUnidad();
 
             case 'consultar_bienes':
                 return $this->ConsultarBienes();
@@ -299,7 +307,7 @@ class Equipo extends Conexion
 
             case 'eliminar':
                 return $this->Eliminar();
-                
+
             case 'restaurar':
                 return $this->Restaurar();
 
@@ -308,4 +316,3 @@ class Equipo extends Conexion
         }
     }
 }
-?>

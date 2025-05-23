@@ -13,7 +13,7 @@ $(document).ready(function () {
 					datos.append('tipo_equipo', $("#tipo_equipo").val());
 					datos.append('serial', $("#serial").val());
 					datos.append('codigo_bien', $("#codigo_bien").val());
-					datos.append('id_dependencia', $("#id_dependencia").val());
+					datos.append('id_unidad', $("#id_unidad").val());
 					enviaAjax(datos);
 				}
 				break;
@@ -25,7 +25,7 @@ $(document).ready(function () {
 					datos.append('tipo_equipo', $("#tipo_equipo").val());
 					datos.append('serial', $("#serial").val());
 					datos.append('codigo_bien', $("#codigo_bien").val());
-					datos.append('id_dependencia', $("#id_dependencia").val());
+					datos.append('id_unidad', $("#id_unidad").val());
 					enviaAjax(datos);
 				}
 				break;
@@ -50,7 +50,7 @@ $(document).ready(function () {
         $("#tipo_equipo").parent().parent().show();
         $("#serial").parent().parent().show();
         $("#codigo_bien").parent().parent().show();
-        $("#id_dependencia").parent().parent().show();
+        $("#id_unidad").parent().parent().show();
 		$("#modalTitleId").text("Registrar Equipo");
 		$("#enviar").text("Registrar");
 		$("#modal1").modal("show");
@@ -153,19 +153,19 @@ function capaValidar() {
 		}
 	});
 
-	$("#id_dependencia").on("change", function () {
+	$("#id_unidad").on("change", function () {
 		if ($(this).val() == "") {
 			$(this).addClass("is-invalid");
 			$(this).removeClass("is-valid");
-			$("#sid_dependencia").addClass("invalid-feedback");
-			$("#sid_dependencia").removeClass("valid-feedback");
-			$("#sid_dependencia").text("Debe seleccionar una dependencia");
+			$("#sid_unidad").addClass("invalid-feedback");
+			$("#sid_unidad").removeClass("valid-feedback");
+			$("#sid_unidad").text("Debe seleccionar una unidad");
 		} else {
 			$(this).addClass("is-valid");
 			$(this).removeClass("is-invalid");
-			$("#sid_dependencia").addClass("valid-feedback");
-			$("#sid_dependencia").removeClass("invalid-feedback");
-			$("#sid_dependencia").text("");
+			$("#sid_unidad").addClass("valid-feedback");
+			$("#sid_unidad").removeClass("invalid-feedback");
+			$("#sid_unidad").text("");
 		}
 	});
 }
@@ -183,8 +183,8 @@ function validarenvio() {
 		mensajes("error", 10000, "Verifica", "Debe seleccionar un código de bien");
 		return false;
 
-	} else if ($("#id_dependencia").val() == "") {
-		mensajes("error", 10000, "Verifica", "Debe seleccionar una dependencia");
+	} else if ($("#id_unidad").val() == "") {
+		mensajes("error", 10000, "Verifica", "Debe seleccionar una unidad");
 		return false;
 	}
 	return true;
@@ -209,7 +209,7 @@ function crearDataTable(arreglo) {
 			{ data: 'tipo_equipo' },
 			{ data: 'serial' },
 			{ data: 'codigo_bien' },
-			{ data: 'nombre_dependencia' },
+			{ data: 'nombre_unidad' },
 			{
 				data: null, render: function () {
 					const botones = `<button onclick="rellenar(this, 0)" class="btn btn-update"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -233,8 +233,8 @@ function limpia() {
 	$("#codigo_bien").removeClass("is-valid is-invalid");
 	$("#codigo_bien").val("");
 
-	$("#id_dependencia").removeClass("is-valid is-invalid");
-	$("#id_dependencia").val("");
+	$("#id_unidad").removeClass("is-valid is-invalid");
+	$("#id_unidad").val("");
 
 	$('#enviar').prop('disabled', false);
 }
@@ -258,10 +258,10 @@ function rellenar(pos, accion) {
 	$("#codigo_bien").val($(linea).find("td:eq(3)").text());
 	$("#codigo_bien").trigger("change");
 	
-	$("#id_dependencia option").each(function() {
+	$("#id_unidad option").each(function() {
 		if ($(this).text() == $(linea).find("td:eq(4)").text()) {
 			$(this).prop("selected", true);
-			$("#id_dependencia").trigger("change");
+			$("#id_unidad").trigger("change");
 			return false;
 		}
 	});
@@ -307,14 +307,8 @@ function consultarEliminadas() {
                           { data: 'tipo_equipo' },
                           { data: 'serial' },
                           { data: 'codigo_bien' },
-                          { data: 'nombre_dependencia' },
-                          { 
-                              data: 'estado',
-                              render: function(data, type, row) {
-                                  var clase = data === 'Activo' ? 'badge bg-success' : 'badge bg-danger';
-                                  return '<span class="' + clase + '">' + data + '</span>';
-                              }
-                          },
+                          { data: 'nombre_unidad' },
+                          
                           {
                               data: null, 
                               render: function() {

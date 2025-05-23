@@ -70,7 +70,7 @@
                                     <th>Tipo</th>
                                     <th>Serial</th>
                                     <th>Código Bien</th>
-                                    <th>Dependencia</th>
+                                    <th>Unidad</th>
                                     <th>Restaurar</th>
                                 </tr>
                             </thead>

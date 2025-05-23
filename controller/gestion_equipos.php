@@ -10,7 +10,7 @@ if (is_file("view/" . $page . ".php")) {
     require_once "model/equipo.php";
 
     $titulo = "Gestionar Equipos";
-    $cabecera = array('#', "Tipo", "Serial", "Código Bien", "Dependencia", "Modificar/Eliminar");
+    $cabecera = array('#', "Tipo", "Serial", "Código Bien", "Unidad", "Modificar/Eliminar");
 
     $equipo = new Equipo();
 
@@ -26,7 +26,7 @@ if (is_file("view/" . $page . ".php")) {
         $equipo->set_tipo_equipo($_POST["tipo_equipo"]);
         $equipo->set_serial($_POST["serial"]);
         $equipo->set_codigo_bien($_POST["codigo_bien"]);
-        $equipo->set_id_dependencia($_POST["id_dependencia"]);
+        $equipo->set_id_unidad($_POST["id_unidad"]);
         $peticion["peticion"] = "registrar";
         $datos = $equipo->Transaccion($peticion);
         echo json_encode($datos);
@@ -62,8 +62,8 @@ if (is_file("view/" . $page . ".php")) {
         exit;
     }
 
-    if (isset($_POST['consultar_dependencias'])) {
-        $peticion["peticion"] = "consultar_dependencias";
+    if (isset($_POST['consultar_unidad'])) {
+        $peticion["peticion"] = "consultar_unidad";
         $datos = $equipo->Transaccion($peticion);
         echo json_encode($datos);
         exit;
@@ -81,7 +81,7 @@ if (is_file("view/" . $page . ".php")) {
         $equipo->set_tipo_equipo($_POST["tipo_equipo"]);
         $equipo->set_serial($_POST["serial"]);
         $equipo->set_codigo_bien($_POST["codigo_bien"]);
-        $equipo->set_id_dependencia($_POST["id_dependencia"]);
+        $equipo->set_id_unidad($_POST["id_unidad"]);
         $peticion["peticion"] = "actualizar";
         $datos = $equipo->Transaccion($peticion);
         echo json_encode($datos);
@@ -110,7 +110,7 @@ if (is_file("view/" . $page . ".php")) {
         exit;
     }
 
-    $dependencias = $equipo->Transaccion(['peticion' => 'consultar_dependencias']);
+    $unidades = $equipo->Transaccion(['peticion' => 'consultar_unidad']);
     $bienes = $equipo->Transaccion(['peticion' => 'consultar_bienes']);
 
     require_once "view/" . $page . ".php";
