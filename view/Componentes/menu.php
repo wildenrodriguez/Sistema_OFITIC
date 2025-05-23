@@ -89,28 +89,28 @@
 
                 <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "unidad") ? "active" : "" ?>"
                   title="Gestión de Switches">
-                  <a href="?page=gestion_equipos">
+                  <a href="?page=switch">
                     <i class="fa-solid fa-server"></i>
                     <span class="ms-2 me-2 menu-text">Gestión de Switches</span>
                   </a>
                 </li>
                 <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "Bien") ? "active" : "" ?>"
                   title="Gestión de Interconexiones">
-                  <a href="?page=bien">
+                  <a href="?page=interconexion">
                     <i class="fa-solid fa-network-wired"></i>
                     <span class="ms-2 me-2 menu-text">Gestión de Interconexiones</span>
                   </a>
                 </li>
                 <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "unidad") ? "active" : "" ?>"
                   title="Gestión de Patch Panel">
-                  <a href="?page=gestion_equipos">
+                  <a href="?page=patch_panel">
                     <i class="fa-solid fa-server"></i>
                     <span class="ms-2 me-2 menu-text">Gestión de Patch Panel</span>
                   </a>
                 </li>
                 <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "Bien") ? "active" : "" ?>"
                   title="Gestión de Puntos de Conexión">
-                  <a href="?page=bien">
+                  <a href="?page=punto_conexion">
                     <i class="fa-solid fa-ethernet"></i>
                     <span class="ms-2 me-2 menu-text">Gestión de Puntos de Conexión</span>
                   </a>
