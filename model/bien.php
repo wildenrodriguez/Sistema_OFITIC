@@ -217,6 +217,32 @@ class Bien extends Conexion
         return $dato;
     }
 
+    private function FiltrarBienAsignado()
+    {
+        $dato = [];
+
+        try {
+            $query = "SELECT b.codigo_bien, CONCAT(tb.nombre_tipo_bien, ' ', m.nombre_marca) AS nombre_bien
+            FROM bien b
+            LEFT JOIN tipo_bien tb ON b.id_tipo_bien = tb.id_tipo_bien
+            LEFT JOIN marca m ON b.id_marca = m.id_marca
+            WHERE b.estatus = 1
+            AND b.codigo_bien NOT IN (
+            SELECT e.codigo_bien FROM equipo e 
+            WHERE e.codigo_bien IS NOT NULL
+            AND e.estatus = 1)";
+
+            $stm = $this->conex->prepare($query);
+            $stm->execute();
+            $dato['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
+            $dato['resultado'] = "filtrar_bien";
+        } catch (PDOException $e) {
+            $dato['datos'] = [];
+        }
+        return $dato;
+    }
+
+
     private function Consultar()
     {
         $dato = [];
@@ -327,7 +353,7 @@ class Bien extends Conexion
             $dato['resultado'] = "restaurar";
             $dato['estado'] = 1;
             $dato['mensaje'] = "Bien restaurado exitosamente";
-            
+
             $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se restauró el bien Código: " . $this->codigo_bien;
             Bitacora($msg, "Bien");
         } catch (PDOException $e) {
@@ -348,8 +374,11 @@ class Bien extends Conexion
             case 'consultar':
                 return $this->Consultar();
 
+            case 'filtrar':
+                return $this->FiltrarBienAsignado();
+
             case 'consultar_eliminadas':
-                return $this->ConsultarEliminadas();   
+                return $this->ConsultarEliminadas();
 
             case 'consultar_tipos_bien':
                 return $this->ConsultarTiposBien();

@@ -69,12 +69,13 @@ class Equipo extends Conexion
         $dato = [];
 
         try {
+            $this->conex->beginTransaction();
             $query = "SELECT * FROM equipo WHERE id_equipo = :id";
 
             $stm = $this->conex->prepare($query);
             $stm->bindParam(":id", $this->id_equipo);
             $stm->execute();
-
+            $this->conex->commit();
             if ($stm->rowCount() > 0) {
                 $dato['arreglo'] = $stm->fetch(PDO::FETCH_ASSOC);
                 $dato['bool'] = 1;
@@ -82,6 +83,7 @@ class Equipo extends Conexion
                 $dato['bool'] = 0;
             }
         } catch (PDOException $e) {
+            $this->conex->rollBack();
             $dato['error'] = $e->getMessage();
         }
         $this->Cerrar_Conexion($none, $stm);
@@ -95,6 +97,7 @@ class Equipo extends Conexion
 
         if ($bool['bool'] == 0) {
             try {
+                $this->conex->beginTransaction();
                 $query = "INSERT INTO equipo(id_equipo, tipo_equipo, serial, codigo_bien, id_unidad, estatus) VALUES 
                 (NULL, :tipo_equipo, :serial, :codigo_bien, :id_unidad, :estatus)";
 
@@ -105,15 +108,18 @@ class Equipo extends Conexion
                 $stm->bindParam(":id_unidad", $this->id_unidad);
                 $stm->bindValue(":estatus", 1);
                 $stm->execute();
+                $this->conex->commit();
                 $dato['resultado'] = "registrar";
                 $dato['estado'] = 1;
                 $dato['mensaje'] = "Se registró el equipo exitosamente";
             } catch (PDOException $e) {
+                $this->conex->rollBack();
                 $dato['resultado'] = "error";
                 $dato['estado'] = -1;
                 $dato['mensaje'] = $e->getMessage();
             }
         } else {
+            $this->conex->rollBack();
             $dato['resultado'] = "error";
             $dato['estado'] = -1;
             $dato['mensaje'] = "Registro duplicado";
@@ -127,6 +133,7 @@ class Equipo extends Conexion
         $dato = [];
 
         try {
+            $this->conex->beginTransaction();
             $query = "UPDATE equipo SET tipo_equipo= :tipo_equipo, serial= :serial, codigo_bien= :codigo_bien, 
                      id_unidad= :id_unidad WHERE id_equipo = :id";
 
@@ -137,10 +144,12 @@ class Equipo extends Conexion
             $stm->bindParam(":codigo_bien", $this->codigo_bien);
             $stm->bindParam(":id_unidad", $this->id_unidad);
             $stm->execute();
+            $this->conex->commit();
             $dato['resultado'] = "modificar";
             $dato['estado'] = 1;
             $dato['mensaje'] = "Se modificaron los datos del equipo con éxito";
         } catch (PDOException $e) {
+            $this->conex->rollBack();
             $dato['estado'] = -1;
             $dato['resultado'] = "error";
             $dato['mensaje'] = $e->getMessage();
@@ -156,20 +165,24 @@ class Equipo extends Conexion
 
         if ($bool['bool'] != 0) {
             try {
+                $this->conex->beginTransaction();
                 $query = "UPDATE equipo SET estatus = 0 WHERE id_equipo = :id";
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":id", $this->id_equipo);
                 $stm->execute();
+                $this->conex->commit();
                 $dato['resultado'] = "eliminar";
                 $dato['estado'] = 1;
                 $dato['mensaje'] = "Se eliminó el equipo exitosamente";
             } catch (PDOException $e) {
+                $this->conex->rollBack();
                 $dato['resultado'] = "error";
                 $dato['estado'] = -1;
                 $dato['mensaje'] = $e->getMessage();
             }
         } else {
+            $this->rollBack();
             $dato['resultado'] = "error";
             $dato['estado'] = -1;
             $dato['mensaje'] = "Error al eliminar el registro";
@@ -183,6 +196,7 @@ class Equipo extends Conexion
         $dato = [];
 
         try {
+            $this->conex->beginTransaction();
             $query = "SELECT e.*, u.nombre_unidad
                      FROM equipo e 
                      JOIN unidad u ON e.id_unidad = u.id_unidad 
@@ -190,9 +204,11 @@ class Equipo extends Conexion
 
             $stm = $this->conex->prepare($query);
             $stm->execute();
+            $this->conex->commit();
             $dato['resultado'] = "consultar";
             $dato['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            $this->conex->rollBack();
             $dato['resultado'] = "error";
             $dato['mensaje'] = $e->getMessage();
         }
@@ -224,11 +240,9 @@ class Equipo extends Conexion
 FROM bien b
 WHERE b.estatus = 1
 AND b.codigo_bien NOT IN (
-    SELECT e.codigo_bien 
-    FROM equipo e 
+    SELECT e.codigo_bien FROM equipo e 
     WHERE e.codigo_bien IS NOT NULL
-    AND e.estatus = 1
-);";
+    AND e.estatus = 1);";
 
             $stm = $this->conex->prepare($query);
             $stm->execute();
@@ -243,6 +257,7 @@ AND b.codigo_bien NOT IN (
         $dato = [];
 
         try {
+            $this->conex->beginTransaction();
             $query = "SELECT e.*, u.nombre_unidad 
                      FROM equipo e 
                      JOIN unidad u ON e.id_unidad = u.id_unidad 
@@ -250,9 +265,11 @@ AND b.codigo_bien NOT IN (
 
             $stm = $this->conex->prepare($query);
             $stm->execute();
+            $this->conex->commit();
             $dato['resultado'] = "consultar_eliminadas";
             $dato['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            $this->conex->rollBack();
             $dato['resultado'] = "error";
             $dato['mensaje'] = $e->getMessage();
         }
@@ -264,11 +281,13 @@ AND b.codigo_bien NOT IN (
     {
         $dato = [];
         try {
+            $this->conex->beginTransaction();
             $query = "UPDATE equipo SET estatus = 1 WHERE id_equipo = :id";
 
             $stm = $this->conex->prepare($query);
             $stm->bindParam(":id", $this->id_equipo);
             $stm->execute();
+            $this->conex->commit();
             $dato['resultado'] = "restaurar";
             $dato['estado'] = 1;
             $dato['mensaje'] = "Equipo restaurado exitosamente";
@@ -276,6 +295,7 @@ AND b.codigo_bien NOT IN (
             $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se restauró el equipo ID: " . $this->id_equipo;
             Bitacora($msg, "Equipo");
         } catch (PDOException $e) {
+            $this->conex->rollBack();
             $dato['resultado'] = "error";
             $dato['estado'] = -1;
             $dato['mensaje'] = $e->getMessage();

@@ -10,14 +10,16 @@
                 <div class="row justify-content-center" id="Fila1">
                     <div class="col-4">
                         <div class="form-floating mb-3 mt-4">
-                            <input placeholder="" class="form-control" name="id_equipo" type="text" id="id_equipo" readonly>
+                            <input placeholder="" class="form-control" name="id_equipo" type="text" id="id_equipo"
+                                readonly>
                             <span id="sid_equipo"></span>
                             <label for="id_equipo" class="form-label">ID Equipo</label>
                         </div>
                     </div>
                     <div class="col-8">
                         <div class="form-floating mb-3 mt-4">
-                            <input placeholder="" class="form-control" name="tipo_equipo" type="text" id="tipo_equipo" maxlength="45">
+                            <input placeholder="" class="form-control" name="tipo_equipo" type="text" id="tipo_equipo"
+                                maxlength="45">
                             <span id="stipo_equipo"></span>
                             <label for="tipo_equipo" class="form-label">Tipo de Equipo</label>
                         </div>
@@ -26,7 +28,8 @@
                 <div class="row justify-content-center">
                     <div class="col-6">
                         <div class="form-floating mb-3 mt-4">
-                            <input placeholder="" class="form-control" name="serial" type="text" id="serial" maxlength="45">
+                            <input placeholder="" class="form-control" name="serial" type="text" id="serial"
+                                maxlength="45">
                             <span id="sserial"></span>
                             <label for="serial" class="form-label">Serial</label>
                         </div>
@@ -34,12 +37,6 @@
                     <div class="col-6">
                         <div class="form-floating mb-3 mt-4">
                             <select class="form-select" name="codigo_bien" id="codigo_bien">
-                                <option value="">Seleccione un código de bien</option>
-                                <?php foreach ($bienes as $bien): ?>
-                                    <option value="<?= $bien['codigo_bien'] ?>">
-                                        <?= $bien['codigo_bien'] ?>
-                                    </option>
-                                <?php endforeach; ?>
                             </select>
                             <span id="scodigo_bien"></span>
                             <label for="codigo_bien" class="form-label">Código de Bien</label>
@@ -47,18 +44,20 @@
                     </div>
                 </div>
                 <div class="row justify-content-center">
-                    <div class="col-12">
+                    <div class="col-6">
+                        <div class="form-floating mb-3 mt-4">
+                            <select class="form-select" name="id_dependencia" id="id_dependencia">
+                            </select>
+                            <span id="sid_dependencia"></span>
+                            <label for="id_dependencia" class="form-label">Dependencia</label>
+                        </div>
+                    </div>
+                    <div class="col-6">
                         <div class="form-floating mb-3 mt-4">
                             <select class="form-select" name="id_unidad" id="id_unidad">
-                                <option value="">Seleccione una unidad</option>
-                                <?php foreach ($unidades as $unidad): ?>
-                                    <option value="<?= $unidad['id_unidad'] ?>">
-                                        <?= $unidad['nombre_unidad'] ?>
-                                    </option>
-                                <?php endforeach; ?>
                             </select>
                             <span id="sid_unidad"></span>
-                            <label for="id_unidad" class="form-label">unidad</label>
+                            <label for="id_unidad" class="form-label">Unidad</label>
                         </div>
                     </div>
                 </div>

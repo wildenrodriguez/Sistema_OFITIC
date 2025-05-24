@@ -1,5 +1,7 @@
 $(document).ready(function () {
 	consultar();
+	filtrarBien();
+	cargarDependencia();
 	registrarEntrada();
 	capaValidar();
 
@@ -47,20 +49,39 @@ $(document).ready(function () {
 	$("#btn-registrar").on("click", function () {
 		limpia();
 		$("#id_equipo").parent().parent().remove();
-        $("#tipo_equipo").parent().parent().show();
-        $("#serial").parent().parent().show();
-        $("#codigo_bien").parent().parent().show();
-        $("#id_unidad").parent().parent().show();
+		$("#tipo_equipo").parent().parent().show();
+		$("#serial").parent().parent().show();
+		$("#codigo_bien").parent().parent().show();
+		$("#id_unidad").parent().parent().show();
 		$("#modalTitleId").text("Registrar Equipo");
 		$("#enviar").text("Registrar");
 		$("#modal1").modal("show");
 	});
-    
-    $("#btn-consultar-eliminados").on("click", function() {
-        consultarEliminadas();
-        $("#modalEliminadas").modal("show");
-    });
+
+	$("#btn-consultar-eliminados").on("click", function () {
+		consultarEliminadas();
+		$("#modalEliminadas").modal("show");
+	});
 });
+
+function cargarDependencia() {
+	var datos = new FormData();
+	datos.append('cargar_dependencia', 'cargar_dependencia');
+	enviaAjax(datos);
+};
+
+function cargarUnidad(parametro = 0) {
+	var datos = new FormData();
+	datos.append('cargar_unidad', 'cargar_unidad');
+	datos.append('id_dependencia', parametro);
+	enviaAjax(datos);
+};
+
+function filtrarBien() {
+	var datos = new FormData();
+	datos.append('filtrar_bien', 'filtrar_bien')
+	enviaAjax(datos);
+};
 
 function enviaAjax(datos) {
 	$.ajax({
@@ -72,7 +93,7 @@ function enviaAjax(datos) {
 		processData: false,
 		cache: false,
 		beforeSend: function () { },
-		timeout: 10000, 
+		timeout: 10000,
 		success: function (respuesta) {
 			try {
 				var lee = JSON.parse(respuesta);
@@ -82,7 +103,16 @@ function enviaAjax(datos) {
 					consultar();
 
 				} else if (lee.resultado == "consultar") {
-					iniciarTabla(lee.datos);
+					crearDataTable(lee.datos);
+
+				} else if (lee.resultado == "filtrar_bien") {
+					selectBien(lee.datos);
+
+				} else if (lee.resultado == "consultar_dependencia") {
+					selectDependencia(lee.datos);
+
+				} else if (lee.resultado == "consultar_unidad") {
+					selectUnidad(lee.datos)
 
 				} else if (lee.resultado == "modificar") {
 					$("#modal1").modal("hide");
@@ -100,10 +130,10 @@ function enviaAjax(datos) {
 					mensajes("error", null, lee.mensaje, null);
 				}
 			} catch (e) {
-				mensajes("error", null, "Error en JSON Tipo: " + e.name + "\n" +
+				console.log("error", null, "Error en JSON Tipo: " + e.name + "\n" +
 					"Mensaje: " + e.message + "\n" +
 					"Posición: " + e.lineNumber);
-			}
+			} console.log(lee);
 		},
 		error: function (request, status, err) {
 			if (status == "timeout") {
@@ -138,36 +168,34 @@ function capaValidar() {
 	});
 
 	$("#codigo_bien").on("change", function () {
-		if ($(this).val() == "") {
-			$(this).addClass("is-invalid");
-			$(this).removeClass("is-valid");
-			$("#scodigo_bien").addClass("invalid-feedback");
-			$("#scodigo_bien").removeClass("valid-feedback");
-			$("#scodigo_bien").text("Debe seleccionar un código de bien");
+		if ($(this).val() == "default") {
+			estadoSelect(this, "scodigo_bien", "Debe seleccionar un código de bien", 0)
+
 		} else {
-			$(this).addClass("is-valid");
-			$(this).removeClass("is-invalid");
-			$("#scodigo_bien").addClass("valid-feedback");
-			$("#scodigo_bien").removeClass("invalid-feedback");
-			$("#scodigo_bien").text("");
+			estadoSelect(this, "scodigo_bien", "", 1)
 		}
 	});
 
 	$("#id_unidad").on("change", function () {
-		if ($(this).val() == "") {
-			$(this).addClass("is-invalid");
-			$(this).removeClass("is-valid");
-			$("#sid_unidad").addClass("invalid-feedback");
-			$("#sid_unidad").removeClass("valid-feedback");
-			$("#sid_unidad").text("Debe seleccionar una unidad");
+		if ($(this).val() == "default" && $(this).val() == "") {
+			estadoSelect(this, "sid_unidad", "Debe seleccionar una unidad", 0);
+
 		} else {
-			$(this).addClass("is-valid");
-			$(this).removeClass("is-invalid");
-			$("#sid_unidad").addClass("valid-feedback");
-			$("#sid_unidad").removeClass("invalid-feedback");
-			$("#sid_unidad").text("");
+			estadoSelect(this, "sid_unidad", "", 1);
 		}
 	});
+
+	$("#id_dependencia").on("change", function () {
+		if ($(this).val() == "default") {
+			estadoSelect(this, "sid_dependencia", "Debe seleccionar una dependencia", 0);
+			estadoSelect("#id_unidad", "sid_unidad", "", 0);
+			cargarUnidad(0);
+		} else {
+			estadoSelect(this, "sid_dependencia", "", 1);
+			cargarUnidad($(this).val());
+		}
+	});
+
 }
 
 function validarenvio() {
@@ -190,19 +218,71 @@ function validarenvio() {
 	return true;
 }
 
-var tabla;
 
-function iniciarTabla(arreglo) {
-	if (tabla == null) {
-		crearDataTable(arreglo);
+function selectBien(arreglo) {
+	$("#codigo_bien").empty();
+	if (Array.isArray(arreglo) && arreglo.length > 0) {
+
+		$("#codigo_bien").append(
+			new Option('Seleccione un Bien', 'default')
+		);
+		arreglo.forEach(item => {
+			$("#codigo_bien").append(
+				new Option(item.nombre_bien, item.codigo_bien)
+			);
+		});
 	} else {
-		tabla.destroy();
-		crearDataTable(arreglo);
+		$("#codigo_bien").append(
+			new Option('No Hay Bienes', 'default')
+		);
 	}
-};
+}
+
+function selectDependencia(arreglo) {
+	$("#id_dependencia").empty();
+	if (Array.isArray(arreglo) && arreglo.length > 0) {
+
+		$("#id_dependencia").append(
+			new Option('Seleccione una Dependencia', 'default')
+		);
+		arreglo.forEach(item => {
+			$("#id_dependencia").append(
+				new Option(item.ente + " - " + item.nombre, item.id)
+			);
+		});
+	} else {
+		$("#id_dependencia").append(
+			new Option('No Hay Dependencia', 'default')
+		);
+	}
+}
+
+function selectUnidad(arreglo) {
+	$("#id_unidad").empty();
+	if (Array.isArray(arreglo) && arreglo.length > 0) {
+
+		$("#id_unidad").append(
+			new Option('Seleccione una Unidad', 'default')
+		);
+		arreglo.forEach(item => {
+			$("#id_unidad").append(
+				new Option(item.nombre_unidad, item.id_unidad)
+			);
+		});
+	} else {
+		$("#id_unidad").append(
+			new Option('No Hay unidad', 'default')
+		);
+		estadoSelect("#id_unidad", "#sid_unidad", "", 0);
+	}
+}
 
 function crearDataTable(arreglo) {
-	tabla = $('#tabla1').DataTable({
+	if ($.fn.DataTable.isDataTable('#tabla1')) {
+		$('#tabla1').DataTable().destroy();
+	}
+
+	$('#tabla1').DataTable({
 		data: arreglo,
 		columns: [
 			{ data: 'id_equipo' },
@@ -231,7 +311,7 @@ function limpia() {
 	$("#serial").val("");
 
 	$("#codigo_bien").removeClass("is-valid is-invalid");
-	$("#codigo_bien").val("");
+	filtrarBien();
 
 	$("#id_unidad").removeClass("is-valid is-invalid");
 	$("#id_unidad").val("");
@@ -254,11 +334,11 @@ function rellenar(pos, accion) {
 	$("#id_equipo").val($(linea).find("td:eq(0)").text());
 	$("#tipo_equipo").val($(linea).find("td:eq(1)").text());
 	$("#serial").val($(linea).find("td:eq(2)").text());
-	
+
 	$("#codigo_bien").val($(linea).find("td:eq(3)").text());
 	$("#codigo_bien").trigger("change");
-	
-	$("#id_unidad option").each(function() {
+
+	$("#id_unidad option").each(function () {
 		if ($(this).text() == $(linea).find("td:eq(4)").text()) {
 			$(this).prop("selected", true);
 			$("#id_unidad").trigger("change");
@@ -279,103 +359,103 @@ function rellenar(pos, accion) {
 }
 
 function consultarEliminadas() {
-  var datos = new FormData();
-  datos.append('consultar_eliminadas', 'consultar_eliminadas');
-  
-  $.ajax({
-      async: true,
-      url: "",
-      type: "POST",
-      contentType: false,
-      data: datos,
-      processData: false,
-      cache: false,
-      beforeSend: function() {},
-      timeout: 10000,
-      success: function(respuesta) {
-          try {
-              var lee = JSON.parse(respuesta);
-              if (lee.resultado == "consultar_eliminadas") {
-                  if ($.fn.DataTable.isDataTable('#tablaEliminadas')) {
-                      $('#tablaEliminadas').DataTable().destroy();
-                  }
-                  
-                  $('#tablaEliminadas').DataTable({
-                      data: lee.datos,
-                      columns: [
-                          { data: 'id_equipo' },
-                          { data: 'tipo_equipo' },
-                          { data: 'serial' },
-                          { data: 'codigo_bien' },
-                          { data: 'nombre_unidad' },
-                          
-                          {
-                              data: null, 
-                              render: function() {
-                                  return `<button onclick="restaurarEquipo(this)" class="btn btn-success">
+	var datos = new FormData();
+	datos.append('consultar_eliminadas', 'consultar_eliminadas');
+
+	$.ajax({
+		async: true,
+		url: "",
+		type: "POST",
+		contentType: false,
+		data: datos,
+		processData: false,
+		cache: false,
+		beforeSend: function () { },
+		timeout: 10000,
+		success: function (respuesta) {
+			try {
+				var lee = JSON.parse(respuesta);
+				if (lee.resultado == "consultar_eliminadas") {
+					if ($.fn.DataTable.isDataTable('#tablaEliminadas')) {
+						$('#tablaEliminadas').DataTable().destroy();
+					}
+
+					$('#tablaEliminadas').DataTable({
+						data: lee.datos,
+						columns: [
+							{ data: 'id_equipo' },
+							{ data: 'tipo_equipo' },
+							{ data: 'serial' },
+							{ data: 'codigo_bien' },
+							{ data: 'nombre_unidad' },
+
+							{
+								data: null,
+								render: function () {
+									return `<button onclick="restaurarEquipo(this)" class="btn btn-success">
                                           <i class="fa-solid fa-recycle"></i>
                                           </button>`;
-                              }
-                          }
-                      ],
-                      language: {
-                          url: idiomaTabla,
-                      }
-                  });
-              }
-          } catch (e) {
-              console.error("Error procesando datos:", e);
-          }
-      },
-      error: function(request, status, err) {
-          mensajes("error", null, "Error al cargar equipos eliminados", "Intente nuevamente");
-      }
-  });
+								}
+							}
+						],
+						language: {
+							url: idiomaTabla,
+						}
+					});
+				}
+			} catch (e) {
+				console.error("Error procesando datos:", e);
+			}
+		},
+		error: function (request, status, err) {
+			mensajes("error", null, "Error al cargar equipos eliminados", "Intente nuevamente");
+		}
+	});
 }
 
 function restaurarEquipo(boton) {
-    var linea = $(boton).closest('tr');
-    var id = $(linea).find('td:eq(0)').text();
-    
-    Swal.fire({
-        title: '¿Restaurar Equipo?',
-        text: "¿Está seguro que desea restaurar este equipo?",
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Sí, restaurar',
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            var datos = new FormData();
-            datos.append('restaurar', 'restaurar');
-            datos.append('id_equipo', id);
-            
-            $.ajax({
-                url: "",
-                type: "POST",
-                data: datos,
-                processData: false,
-                contentType: false,
-                success: function(respuesta) {
-                    try {
-                        var lee = JSON.parse(respuesta);
-                        if (lee.estado == 1) {
-                            mensajes("success", null, "Equipo restaurado", lee.mensaje);
-                            consultarEliminadas();
-                            consultar();
-                        } else {
-                            mensajes("error", null, "Error", lee.mensaje);
-                        }
-                    } catch (e) {
-                        mensajes("error", null, "Error", "Error procesando la respuesta");
-                    }
-                },
-                error: function() {
-                    mensajes("error", null, "Error", "No se pudo restaurar el equipo");
-                }
-            });
-        }
-    });
+	var linea = $(boton).closest('tr');
+	var id = $(linea).find('td:eq(0)').text();
+
+	Swal.fire({
+		title: '¿Restaurar Equipo?',
+		text: "¿Está seguro que desea restaurar este equipo?",
+		icon: 'question',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Sí, restaurar',
+		cancelButtonText: 'Cancelar'
+	}).then((result) => {
+		if (result.isConfirmed) {
+			var datos = new FormData();
+			datos.append('restaurar', 'restaurar');
+			datos.append('id_equipo', id);
+
+			$.ajax({
+				url: "",
+				type: "POST",
+				data: datos,
+				processData: false,
+				contentType: false,
+				success: function (respuesta) {
+					try {
+						var lee = JSON.parse(respuesta);
+						if (lee.estado == 1) {
+							mensajes("success", null, "Equipo restaurado", lee.mensaje);
+							consultarEliminadas();
+							consultar();
+						} else {
+							mensajes("error", null, "Error", lee.mensaje);
+						}
+					} catch (e) {
+						mensajes("error", null, "Error", "Error procesando la respuesta");
+					}
+				},
+				error: function () {
+					mensajes("error", null, "Error", "No se pudo restaurar el equipo");
+				}
+			});
+		}
+	});
 }
