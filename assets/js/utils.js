@@ -82,7 +82,6 @@ async function confirmarAccion(titulo, mensaje, icono) {
   })
 
   return resultado;
-  ;
 }
 
 function consultar() {
@@ -98,7 +97,7 @@ function registrarEntrada() {
 }
 
 
-function buscarSelect(id_select, valor, opcion) {
+async function buscarSelect(id_select, valor, opcion) {
 
   if (opcion === 'text') {
 
@@ -107,7 +106,7 @@ function buscarSelect(id_select, valor, opcion) {
     $(`${id_select} option`).each(function () {
       if ($(this).text().trim() === valor.trim()) {
         $(this).prop('selected', true);
-        $("#id_piso").change();
+        $(this).change();
         bool = true;
       }
     })
@@ -129,7 +128,7 @@ function buscarSelect(id_select, valor, opcion) {
   } else {
     console.error("Opcion no Válida: " + opcion + "")
   }
-
+  return true;
 }
 
 function selectEdificio(arreglo) {

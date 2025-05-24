@@ -53,7 +53,41 @@ if (is_file("view/" . $page . ".php")) {
         exit;
     }
 
-    if (isset($_POST['filtrar_bien'])) {
+    if (isset($_POST["modificar"])) {
+        $equipo->set_id_equipo($_POST["id_equipo"]);
+        $equipo->set_tipo_equipo($_POST["tipo_equipo"]);
+        $equipo->set_serial($_POST["serial"]);
+        $equipo->set_codigo_bien($_POST["codigo_bien"]);
+        $equipo->set_id_unidad($_POST["id_unidad"]);
+        $peticion["peticion"] = "actualizar";
+        $json = $equipo->Transaccion($peticion);
+        echo json_encode($json);
+
+        if ($json['estado'] == 1) {
+            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se modificó el registro del equipo";
+        } else {
+            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al modificar equipo";
+        }
+        Bitacora($msg, "Equipo");
+        exit;
+    }
+
+    if (isset($_POST["eliminar"])) {
+        $equipo->set_id_equipo($_POST["id_equipo"]);
+        $peticion["peticion"] = "eliminar";
+        $json = $equipo->Transaccion($peticion);
+        echo json_encode($json);
+
+        if ($json['estado'] == 1) {
+            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se eliminó un equipo";
+        } else {
+            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al eliminar un equipo";
+        }
+        Bitacora($msg, "Equipo");
+        exit;
+    }
+
+        if (isset($_POST['filtrar_bien'])) {
         $peticion["peticion"] = "filtrar";
         $json = $bien->Transaccion($peticion);
         $json['resultado'] = "filtrar_bien";
@@ -92,57 +126,6 @@ if (is_file("view/" . $page . ".php")) {
         echo json_encode($json);
         exit;
     }
-
-    if (isset($_POST['consultar_unidad'])) {
-        $peticion["peticion"] = "consultar_unidad";
-        $json = $equipo->Transaccion($peticion);
-        echo json_encode($json);
-        exit;
-    }
-
-    if (isset($_POST['consultar_bienes'])) {
-        $peticion["peticion"] = "consultar_bienes";
-        $json = $equipo->Transaccion($peticion);
-        echo json_encode($json);
-        exit;
-    }
-
-    if (isset($_POST["modificar"])) {
-        $equipo->set_id_equipo($_POST["id_equipo"]);
-        $equipo->set_tipo_equipo($_POST["tipo_equipo"]);
-        $equipo->set_serial($_POST["serial"]);
-        $equipo->set_codigo_bien($_POST["codigo_bien"]);
-        $equipo->set_id_unidad($_POST["id_unidad"]);
-        $peticion["peticion"] = "actualizar";
-        $json = $equipo->Transaccion($peticion);
-        echo json_encode($json);
-
-        if ($json['estado'] == 1) {
-            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se modificó el registro del equipo";
-        } else {
-            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al modificar equipo";
-        }
-        Bitacora($msg, "Equipo");
-        exit;
-    }
-
-    if (isset($_POST["eliminar"])) {
-        $equipo->set_id_equipo($_POST["id_equipo"]);
-        $peticion["peticion"] = "eliminar";
-        $json = $equipo->Transaccion($peticion);
-        echo json_encode($json);
-
-        if ($json['estado'] == 1) {
-            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se eliminó un equipo";
-        } else {
-            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al eliminar un equipo";
-        }
-        Bitacora($msg, "Equipo");
-        exit;
-    }
-
-    $unidades = $equipo->Transaccion(['peticion' => 'consultar_unidad']);
-    $bienes = $equipo->Transaccion(['peticion' => 'consultar_bienes']);
 
     require_once "view/" . $page . ".php";
 } else {

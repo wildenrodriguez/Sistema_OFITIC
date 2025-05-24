@@ -60,7 +60,7 @@
 
               <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "unidad") ? "active" : "" ?>"
                 title="Equipos">
-                <a href="?page=gestion_equipos">
+                <a href="?page=equipo">
                   <i class="fa-solid fa-computer"></i>
                   <span class="ms-2 me-2 menu-text">Equipos</span>
                 </a>

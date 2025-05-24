@@ -21,10 +21,11 @@
           <div class="card">
             <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
-              <img src="<?php echo $foto; ?>" alt="Profile" class="rounded-circle" style="width: 200px; height: 200px; object-fit: cover;">
+              <img src="<?php echo $foto; ?>" alt="Profile" class="rounded-circle"
+                style="width: 200px; height: 200px; object-fit: cover;">
               <h2><?php echo $datos["nombres"]; ?></h2>
               <h3><?php // echo $datos["unidad"]; 
-                  ?></h3>
+              ?></h3>
             </div>
           </div>
 
@@ -37,13 +38,19 @@
               <!-- Bordered Tabs -->
               <ul class="nav nav-tabs nav-tabs-bordered">
                 <li class="nav-item">
-                  <button class="nav-link <?php echo $active1; ?>" data-bs-toggle="tab" data-bs-target="#profile-overview">Información</button>
+                  <button class="nav-link <?php echo $active1; ?>" data-bs-toggle="tab"
+                    data-bs-target="#profile-overview">Información</button>
                 </li>
                 <li class="nav-item hidden">
                   <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Editar Perfil</button>
                 </li>
                 <li class="nav-item <?php echo $active3; ?>">
-                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Cambiar Contraseña</button>
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Cambiar
+                    Contraseña</button>
+                </li>
+                <li class="nav-item <?php echo $active3; ?>">
+                  <button class="nav-link" data-bs-toggle="tab"
+                    data-bs-target="#profile-notification">Notificaciones</button>
                 </li>
               </ul>
               <div class="tab-content pt-2">
@@ -60,12 +67,12 @@
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Unidad</div>
                     <div class="col-lg-9 col-md-8"><?php // echo $datos["unidad"]; 
-                                                    ?></div>
+                    ?></div>
                   </div>
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Dependencia</div>
                     <div class="col-lg-9 col-md-8"><?php //echo $datos["dependencia"]; 
-                                                    ?></div>
+                    ?></div>
                   </div>
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label ">Correo electronico</div>
@@ -88,13 +95,16 @@
                     <div class="row mb-3">
                       <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Foto de Perfil</label>
                       <div class="col-md-8 col-lg-9">
-                        <img src="<?php echo $foto; ?>" alt="Profile" style="width: 100px; height: 100px; object-fit: cover;">
+                        <img src="<?php echo $foto; ?>" alt="Profile"
+                          style="width: 100px; height: 100px; object-fit: cover;">
                         <div class="pt-2">
                           <input type="file" name="foto_perfil" id="foto_perfil" class="d-none" accept="image/*">
-                          <button type="button" class="btn btn-primary btn-sm" title="Subir imagen" onclick="document.getElementById('foto_perfil').click()">
+                          <button type="button" class="btn btn-primary btn-sm" title="Subir imagen"
+                            onclick="document.getElementById('foto_perfil').click()">
                             <i class="fa-solid fa-arrow-up-from-bracket"></i>
                           </button>
-                          <button type="submit" name="eliminarF"  class="btn btn-danger btn-sm" title="Remover mi imagen de perfil" onclick="removeProfileImage()">
+                          <button type="submit" name="eliminarF" class="btn btn-danger btn-sm"
+                            title="Remover mi imagen de perfil" onclick="removeProfileImage()">
                             <i class="fa-solid fa-trash-arrow-up"></i>
                           </button>
                           <div class="mt-2" id="nombre-archivo"></div>
@@ -106,28 +116,32 @@
                     <div class="row mb-3">
                       <label for="Nombre" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="Nombre" type="text" class="form-control" id="Nombre" value="<?php echo $datos["nombres"]; ?>" required maxlength="50">
+                        <input name="Nombre" type="text" class="form-control" id="Nombre"
+                          value="<?php echo $datos["nombres"]; ?>" required maxlength="50">
                         <span id="snombre"></span>
                       </div>
                     </div>
                     <div class="row mb-3">
                       <label for="apellido" class="col-md-4 col-lg-3 col-form-label">Apellido</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="Apellido" type="text" class="form-control" id="Apellido" value="<?php echo $datos["apellidos"]; ?>" required maxlength="50">
+                        <input name="Apellido" type="text" class="form-control" id="Apellido"
+                          value="<?php echo $datos["apellidos"]; ?>" required maxlength="50">
                         <span id="sapellido"></span>
                       </div>
                     </div>
                     <div class="row mb-3">
                       <label for="correo" class="col-md-4 col-lg-3 col-form-label">Correo</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="Correo" type="text" class="form-control" id="Correo" value="<?php echo $datos["correo"]; ?>" required maxlength="50">
+                        <input name="Correo" type="text" class="form-control" id="Correo"
+                          value="<?php echo $datos["correo"]; ?>" required maxlength="50">
                         <span id="scorreo"></span>
                       </div>
                     </div>
                     <div class="row mb-3">
                       <label for="telefono" class="col-md-4 col-lg-3 col-form-label">Telefono</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="Telefono" type="text" class="form-control" id="Telefono" value="<?php echo $datos["telefono"]; ?>" required maxlength="50">
+                        <input name="Telefono" type="text" class="form-control" id="Telefono"
+                          value="<?php echo $datos["telefono"]; ?>" required maxlength="50">
                         <span id="stelefono"></span>
                       </div>
                     </div>
@@ -151,21 +165,82 @@
                     <div class="row mb-3">
                       <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">Contraseña Nueva</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="newpassword" type="password" class="form-control" id="newPassword" required maxlength="20">
+                        <input name="newpassword" type="password" class="form-control" id="newPassword" required
+                          maxlength="20">
                       </div>
                     </div>
 
                     <div class="row mb-3">
-                      <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-ingrese nueva contraseña</label>
+                      <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-ingrese nueva
+                        contraseña</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="renewpassword" type="password" class="form-control" id="renewPassword" required maxlength="20">
+                        <input name="renewpassword" type="password" class="form-control" id="renewPassword" required
+                          maxlength="20">
                       </div>
                     </div>
 
                     <div class="text-center">
-                      <button type="submit" name="passw" class="btn btn-primary cc" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-custom-class="custom-tooltip" data-bs-title="Confirmar y cambiar la contraseña" id="">Cambiar contraseña</button>
+                      <button type="submit" name="passw" class="btn btn-primary cc" data-bs-toggle="tooltip"
+                        data-bs-placement="bottom" data-bs-custom-class="custom-tooltip"
+                        data-bs-title="Confirmar y cambiar la contraseña" id="">Cambiar contraseña</button>
                     </div>
                   </form><!-- End Change Password Form -->
+
+                </div>
+
+                <div class="tab-pane fade <?php echo $active4; ?> pt-3" id="profile-notification">
+                  <section class="section">
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="card text-center">
+                          <div class="card-header">
+                            Módulo
+                          </div>
+                          <div class="card-body">
+                            <h5 class="card-title">Título</h5>
+                            <p class="card-text">Mensaje
+                            </p>
+                            <a href="#" class="btn btn-primary">Ver Evento</a>
+                          </div>
+                          <div class="card-footer text-body-secondary">
+                            Tiempo
+                          </div>
+                        </div>
+                      </div>
+                                            <div class="col-md-4">
+                        <div class="card text-center">
+                          <div class="card-header">
+                            Módulo
+                          </div>
+                          <div class="card-body">
+                            <h5 class="card-title">Título</h5>
+                            <p class="card-text">Mensaje
+                            </p>
+                            <a href="#" class="btn btn-primary">Ver Evento</a>
+                          </div>
+                          <div class="card-footer text-body-secondary">
+                            Tiempo
+                          </div>
+                        </div>
+                      </div>
+                                            <div class="col-md-4">
+                        <div class="card text-center">
+                          <div class="card-header">
+                            Módulo
+                          </div>
+                          <div class="card-body">
+                            <h5 class="card-title">Título</h5>
+                            <p class="card-text">Mensaje
+                            </p>
+                            <a href="#" class="btn btn-primary">Ver Evento</a>
+                          </div>
+                          <div class="card-footer text-body-secondary">
+                            Tiempo
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
 
                 </div>
 
@@ -183,7 +258,8 @@
   <!-- ======= Footer ======= -->
   <?php require_once "Componentes/footer.php"; ?>
 
-  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+      class="bi bi-arrow-up-short"></i></a>
   <script src="assets/js/perfil.js"></script>
   <script>
     // Mostrar nombre del archivo seleccionado

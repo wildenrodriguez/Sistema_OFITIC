@@ -5,54 +5,78 @@ $(document).ready(function () {
 	registrarEntrada();
 	capaValidar();
 
-	$("#enviar").on("click", function () {
+	$("#enviar").on("click", async function () {
+		var confirmacion = false;
+		var envio = false;
 		switch ($(this).text()) {
 
 			case "Registrar":
 				if (validarenvio()) {
-					var datos = new FormData();
-					datos.append('registrar', 'registrar');
-					datos.append('tipo_equipo', $("#tipo_equipo").val());
-					datos.append('serial', $("#serial").val());
-					datos.append('codigo_bien', $("#codigo_bien").val());
-					datos.append('id_unidad', $("#id_unidad").val());
-					enviaAjax(datos);
+					confirmacion = await confirmarAccion('Se registrará un nuevo Equipo', '¿Seguro de realizar la acción?', 'question');
+					if (confirmacion) {
+						var datos = new FormData();
+						datos.append('registrar', 'registrar');
+						datos.append('tipo_equipo', $("#tipo_equipo").val());
+						datos.append('serial', $("#serial").val());
+						datos.append('codigo_bien', $("#codigo_bien").val());
+						datos.append('id_unidad', $("#id_unidad").val());
+						enviaAjax(datos);
+					} else {
+						envio = false;
+					}
 				}
 				break;
 			case "Modificar":
 				if (validarenvio()) {
-					var datos = new FormData();
-					datos.append('modificar', 'modificar');
-					datos.append('id_equipo', $("#id_equipo").val());
-					datos.append('tipo_equipo', $("#tipo_equipo").val());
-					datos.append('serial', $("#serial").val());
-					datos.append('codigo_bien', $("#codigo_bien").val());
-					datos.append('id_unidad', $("#id_unidad").val());
-					enviaAjax(datos);
+					confirmacion = await confirmarAccion('Se registrará un nuevo Equipo', '¿Seguro de realizar la acción?', 'question');
+					if (confirmacion) {
+						var datos = new FormData();
+						datos.append('modificar', 'modificar');
+						datos.append('id_equipo', $("#id_equipo").val());
+						datos.append('tipo_equipo', $("#tipo_equipo").val());
+						datos.append('serial', $("#serial").val());
+						datos.append('codigo_bien', $("#codigo_bien").val());
+						datos.append('id_unidad', $("#id_unidad").val());
+						enviaAjax(datos);
+					} else {
+						envio = false;
+					}
 				}
 				break;
 			case "Eliminar":
 				if (validarenvio()) {
-					var datos = new FormData();
-					datos.append('eliminar', 'eliminar');
-					datos.append('id_equipo', $("#id_equipo").val());
-					enviaAjax(datos);
+					confirmacion = await confirmarAccion('Se registrará un nuevo Equipo', '¿Seguro de realizar la acción?', 'question');
+					if (confirmacion) {
+						var datos = new FormData();
+						datos.append('eliminar', 'eliminar');
+						datos.append('id_equipo', $("#id_equipo").val());
+						enviaAjax(datos);
+					} else {
+						envio = false;
+					}
+
 				}
 				break;
 
 			default:
 				mensajes("question", 10000, "Error", "Acción desconocida: " + $(this).text());;
 		}
-		$('#enviar').prop('disabled', true);
+		if (envio) {
+			$('#enviar').prop('disabled', true);
+		} else {
+			$('#enviar').prop('disabled', false);
+		}
+
+		if (!confirmacion) {
+			$('#enviar').prop('disabled', false);
+		} else {
+			$('#enviar').prop('disabled', true);
+		}
 	});
 
 	$("#btn-registrar").on("click", function () {
 		limpia();
 		$("#id_equipo").parent().parent().remove();
-		$("#tipo_equipo").parent().parent().show();
-		$("#serial").parent().parent().show();
-		$("#codigo_bien").parent().parent().show();
-		$("#id_unidad").parent().parent().show();
 		$("#modalTitleId").text("Registrar Equipo");
 		$("#enviar").text("Registrar");
 		$("#modal1").modal("show");
@@ -70,11 +94,12 @@ function cargarDependencia() {
 	enviaAjax(datos);
 };
 
-function cargarUnidad(parametro = 0) {
+async function cargarUnidad(parametro = 0) {
 	var datos = new FormData();
 	datos.append('cargar_unidad', 'cargar_unidad');
 	datos.append('id_dependencia', parametro);
-	enviaAjax(datos);
+	await enviaAjax(datos);
+	return true;
 };
 
 function filtrarBien() {
@@ -83,8 +108,9 @@ function filtrarBien() {
 	enviaAjax(datos);
 };
 
-function enviaAjax(datos) {
-	$.ajax({
+async function enviaAjax(datos) {
+
+	return await $.ajax({
 		async: true,
 		url: "",
 		type: "POST",
@@ -112,7 +138,7 @@ function enviaAjax(datos) {
 					selectDependencia(lee.datos);
 
 				} else if (lee.resultado == "consultar_unidad") {
-					selectUnidad(lee.datos)
+					selectUnidad(lee.datos);
 
 				} else if (lee.resultado == "modificar") {
 					$("#modal1").modal("hide");
@@ -134,6 +160,7 @@ function enviaAjax(datos) {
 					"Mensaje: " + e.message + "\n" +
 					"Posición: " + e.lineNumber);
 			} console.log(lee);
+
 		},
 		error: function (request, status, err) {
 			if (status == "timeout") {
@@ -142,8 +169,11 @@ function enviaAjax(datos) {
 				mensajes("error", null, "Ocurrió un error", "ERROR: <br/>" + request + status + err);
 			}
 		},
-		complete: function () { },
+		complete: function () {
+
+		},
 	});
+
 }
 
 function capaValidar() {
@@ -158,11 +188,11 @@ function capaValidar() {
 	});
 
 	$("#serial").on("keypress", function (e) {
-		validarKeyPress(/^[0-9 a-zA-ZáéíóúüñÑçÇ -.\b]*$/, e);
+		validarKeyPress(/^[0-9a-zA-ZáéíóúüñÑçÇ.-]*$/, e);
 	});
 	$("#serial").on("keyup", function () {
 		validarKeyUp(
-			/^[0-9 a-zA-ZáéíóúüñÑçÇ -.]{3,45}$/, $(this), $("#sserial"),
+			/^[0-9a-zA-ZáéíóúüñÑçÇ.-]{3,45}$/, $(this), $("#sserial"),
 			"El serial debe tener de 3 a 45 carácteres"
 		);
 	});
@@ -177,7 +207,7 @@ function capaValidar() {
 	});
 
 	$("#id_unidad").on("change", function () {
-		if ($(this).val() == "default" && $(this).val() == "") {
+		if ($(this).val() == "default" || $(this).val() == "") {
 			estadoSelect(this, "sid_unidad", "Debe seleccionar una unidad", 0);
 
 		} else {
@@ -203,15 +233,19 @@ function validarenvio() {
 		mensajes("error", 10000, "Verifica", "El tipo de equipo debe tener de 3 a 45 carácteres");
 		return false;
 
-	} else if (validarKeyUp(/^[0-9 a-zA-ZáéíóúüñÑçÇ -.]{3,45}$/, $("#serial"), $("#sserial"), "") == 0) {
+	} else if (validarKeyUp(/^[0-9a-zA-ZáéíóúüñÑçÇ.-]{3,45}$/, $("#serial"), $("#sserial"), "") == 0) {
 		mensajes("error", 10000, "Verifica", "El serial debe tener de 3 a 45 carácteres");
 		return false;
 
-	} else if ($("#codigo_bien").val() == "") {
+	} else if ($("#codigo_bien").val() == "default") {
 		mensajes("error", 10000, "Verifica", "Debe seleccionar un código de bien");
 		return false;
 
-	} else if ($("#id_unidad").val() == "") {
+	} else if($("#id_dependencia").val() == "default") {
+		mensajes("error", 10000, "Verifica", "Debe seleccionar un una dependencia");
+		return false;
+
+	} else if ($("#id_unidad").val() == "default") {
 		mensajes("error", 10000, "Verifica", "Debe seleccionar una unidad");
 		return false;
 	}
@@ -257,7 +291,9 @@ function selectDependencia(arreglo) {
 	}
 }
 
-function selectUnidad(arreglo) {
+async function selectUnidad(arreglo) {
+	$("#id_unidad").removeClass("is-valid is-invalid");
+	$("#id_unidad").val("");
 	$("#id_unidad").empty();
 	if (Array.isArray(arreglo) && arreglo.length > 0) {
 
@@ -275,6 +311,7 @@ function selectUnidad(arreglo) {
 		);
 		estadoSelect("#id_unidad", "#sid_unidad", "", 0);
 	}
+	return true;
 }
 
 function crearDataTable(arreglo) {
@@ -289,6 +326,7 @@ function crearDataTable(arreglo) {
 			{ data: 'tipo_equipo' },
 			{ data: 'serial' },
 			{ data: 'codigo_bien' },
+			{ data: 'dependencia' },
 			{ data: 'nombre_unidad' },
 			{
 				data: null, render: function () {
@@ -304,6 +342,7 @@ function crearDataTable(arreglo) {
 }
 
 function limpia() {
+	filtrarBien();
 	$("#tipo_equipo").removeClass("is-valid is-invalid");
 	$("#tipo_equipo").val("");
 
@@ -311,15 +350,21 @@ function limpia() {
 	$("#serial").val("");
 
 	$("#codigo_bien").removeClass("is-valid is-invalid");
-	filtrarBien();
+
+	$("#id_dependencia").removeClass("is-valid is-invalid");
+	$("#id_dependencia").val("default");
 
 	$("#id_unidad").removeClass("is-valid is-invalid");
-	$("#id_unidad").val("");
+	$("#id_unidad").empty();
+	$("#id_unidad").append(
+		new Option('Seleccione una Dependencia primero', 'default')
+	);
 
 	$('#enviar').prop('disabled', false);
 }
 
-function rellenar(pos, accion) {
+async function rellenar(pos, accion) {
+	var espera;
 	linea = $(pos).closest('tr');
 
 	if (!$("#id_equipo").length) {
@@ -330,21 +375,18 @@ function rellenar(pos, accion) {
                 <label for="id_equipo" class="form-label">ID Equipo</label>
             </div>`);
 	}
-
+	$("#codigo_bien").find('option[value="default"]').remove()
 	$("#id_equipo").val($(linea).find("td:eq(0)").text());
 	$("#tipo_equipo").val($(linea).find("td:eq(1)").text());
 	$("#serial").val($(linea).find("td:eq(2)").text());
+	$("#codigo_bien").append(new Option($(linea).find("td:eq(3)").text() + ' (Código Actual)', $(linea).find("td:eq(3)").text()));
+	buscarSelect("#id_dependencia", $(linea).find("td:eq(4)").text(), "text");
 
-	$("#codigo_bien").val($(linea).find("td:eq(3)").text());
-	$("#codigo_bien").trigger("change");
+	espera = await cargarUnidad($("#id_dependencia").val());
 
-	$("#id_unidad option").each(function () {
-		if ($(this).text() == $(linea).find("td:eq(4)").text()) {
-			$(this).prop("selected", true);
-			$("#id_unidad").trigger("change");
-			return false;
-		}
-	});
+	if (espera) {
+		buscarSelect("#id_unidad", $(linea).find("td:eq(5)").text(), "text");
+	}
 
 	if (accion == 0) {
 		$("#modalTitleId").text("Modificar Equipo")

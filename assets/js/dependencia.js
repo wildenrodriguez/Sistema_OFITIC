@@ -14,9 +14,7 @@ $(document).ready(function () {
 			case "Registrar":
 				if (validarenvio()) {
 					confirmacion = await confirmarAccion("Se registrará una Dependencia", "¿Está seguro de realizar la acción?", "question");
-
 					if (confirmacion) {
-
 						var datos = new FormData();
 						datos.append('registrar', 'registrar');
 						datos.append('nombre', $("#nombre").val());
@@ -24,7 +22,6 @@ $(document).ready(function () {
 						enviaAjax(datos);
 						envio = true;
 					}
-
 				} else {
 					envio = false;
 				}
@@ -32,7 +29,6 @@ $(document).ready(function () {
 			case "Modificar":
 				if (validarenvio()) {
 					confirmacion = await confirmarAccion("Se modificará un Dependencia", "¿Está seguro de realizar la acción?", "question");
-
 					if (confirmacion) {
 						var datos = new FormData();
 						datos.append('modificar', 'modificar');
@@ -49,7 +45,6 @@ $(document).ready(function () {
 			case "Eliminar":
 				if (validarKeyUp(/^[0-9]{1,11}$/, $("#id_dependencia"), $("#sid_dependencia"), "") === 1) {
 					confirmacion = await confirmarAccion("Se eliminará un Dependencia", "¿Está seguro de realizar la acción?", "warning");
-
 					if (confirmacion) {
 						var datos = new FormData();
 						datos.append('eliminar', 'eliminar');

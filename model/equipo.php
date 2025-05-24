@@ -197,9 +197,11 @@ class Equipo extends Conexion
 
         try {
             $this->conex->beginTransaction();
-            $query = "SELECT e.*, u.nombre_unidad
+            $query = "SELECT e.*, u.nombre_unidad, CONCAT(et.nombre,' - ', d.nombre) AS dependencia
                      FROM equipo e 
-                     JOIN unidad u ON e.id_unidad = u.id_unidad 
+                     JOIN unidad u ON e.id_unidad = u.id_unidad
+                     JOIN dependencia d ON u.id_dependencia = d.id
+                     JOIN ente et ON d.id_ente = et.id
                      WHERE u.estatus = 1 AND e.estatus = 1";
 
             $stm = $this->conex->prepare($query);
@@ -214,42 +216,6 @@ class Equipo extends Conexion
         }
         $this->Cerrar_Conexion($this->conex, $stm);
         return $dato;
-    }
-
-    public function ConsultarUnidad()
-    {
-        $dato = [];
-
-        try {
-            $query = "SELECT * FROM unidad WHERE estatus = 1";
-
-            $stm = $this->conex->prepare($query);
-            $stm->execute();
-            return $stm->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            return [];
-        }
-    }
-
-    public function ConsultarBienes()
-    {
-        $dato = [];
-
-        try {
-            $query = "SELECT b.codigo_bien 
-FROM bien b
-WHERE b.estatus = 1
-AND b.codigo_bien NOT IN (
-    SELECT e.codigo_bien FROM equipo e 
-    WHERE e.codigo_bien IS NOT NULL
-    AND e.estatus = 1);";
-
-            $stm = $this->conex->prepare($query);
-            $stm->execute();
-            return $stm->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            return [];
-        }
     }
 
     private function ConsultarEliminadas()
@@ -315,12 +281,6 @@ AND b.codigo_bien NOT IN (
 
             case 'consultar_eliminadas':
                 return $this->ConsultarEliminadas();
-
-            case 'consultar_unidad':
-                return $this->ConsultarUnidad();
-
-            case 'consultar_bienes':
-                return $this->ConsultarBienes();
 
             case 'actualizar':
                 return $this->Actualizar();
