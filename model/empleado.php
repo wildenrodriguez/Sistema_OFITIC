@@ -77,12 +77,13 @@ class Empleado extends Conexion
                 e.telefono_empleado AS telefono,
                 e.correo_empleado AS correo,
                 u.nombre_unidad AS unidad,
-                d.nombre AS dependencia,
+                CONCAT(et.nombre,' - ',d.nombre) AS dependencia,
                 c.nombre_cargo AS cargo,
                 ts.nombre_tipo_servicio AS servicio
             FROM empleado AS e
             LEFT JOIN unidad AS u ON e.id_unidad = u.id_unidad
             LEFT JOIN dependencia AS d ON u.id_dependencia = d.id
+            LEFT JOIN ente AS et ON d.id_ente = et.id
             LEFT JOIN cargo AS c ON e.id_cargo = c.id_cargo
             LEFT JOIN tipo_servicio AS ts ON e.id_servicio = ts.id_tipo_servicio";
             
@@ -95,7 +96,7 @@ class Empleado extends Conexion
             }
             
             $stm->execute();
-            $datos['resultado'] = "success";
+            $datos['resultado'] = "consultar";
             $datos['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             $datos['resultado'] = "error";

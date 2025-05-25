@@ -87,7 +87,7 @@ if (is_file("view/" . $page . ".php")) {
         exit;
     }
 
-        if (isset($_POST['filtrar_bien'])) {
+    if (isset($_POST['filtrar_bien'])) {
         $peticion["peticion"] = "filtrar";
         $json = $bien->Transaccion($peticion);
         $json['resultado'] = "filtrar_bien";
@@ -104,7 +104,7 @@ if (is_file("view/" . $page . ".php")) {
         exit;
     }
 
-        if (isset($_POST['cargar_dependencia'])) {
+    if (isset($_POST['cargar_dependencia'])) {
         $peticion["peticion"] = "consultar";
         $json = $dependencia->Transaccion($peticion);
         $json['resultado'] = "consultar_dependencia";

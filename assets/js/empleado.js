@@ -161,8 +161,8 @@ function crearDataTable(arreglo) {
 			{ data: 'apellido' },
 			{ data: 'telefono' },
 			{ data: 'correo' },
-			{ data: 'unidad' },
 			{ data: 'dependencia' },
+			{ data: 'unidad' },
 			{ data: 'cargo' },
 			{ data: 'servicio' },
 			{

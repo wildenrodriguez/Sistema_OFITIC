@@ -27,7 +27,7 @@
                     <div class="col-12">
                         <div class="form-floating mb-3 mt-4">
                             <select class="form-select" name="id_piso" id="id_piso">
-                                <option value="">Seleccione un piso</option>
+                                <option value="">Seleccione un Piso</option>
                                 <?php foreach ($pisos as $piso): ?>
                                     <option value="<?= $piso['id_piso'] ?>">
                                         <?= $piso['tipo_piso'] ?> <?= $piso['nro_piso'] ?>

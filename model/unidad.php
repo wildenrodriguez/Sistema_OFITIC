@@ -79,11 +79,12 @@ class Unidad extends Conexion
         if ($bool['bool'] == 0) {
             try {
                 $this->conex->beginTransaction();
-                $query = "INSERT INTO unidad(id_unidad, nombre_unidad) VALUES 
-            (NULL, :nombre)";
+                $query = "INSERT INTO unidad(id_unidad, id_dependencia, nombre_unidad) VALUES 
+                (NULL, :id_dependencia, :nombre)";
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":nombre", $this->nombre);
+                $stm->bindParam(":id_dependencia", $this->id_dependencia);
                 $stm->execute();
                 $dato['resultado'] = "registrar";
                 $dato['estado'] = 1;
@@ -111,11 +112,12 @@ class Unidad extends Conexion
 
         try {
             $this->conex->beginTransaction();
-            $query = "UPDATE unidad SET nombre_unidad = :nombre WHERE id_unidad = :id";
+            $query = "UPDATE unidad SET nombre_unidad = :nombre, id_dependencia = :id_dependencia WHERE id_unidad = :id";
 
             $stm = $this->conex->prepare($query);
             $stm->bindParam(":id", $this->id);
             $stm->bindParam(":nombre", $this->nombre);
+            $stm->bindParam(":id_dependencia", $this->id_dependencia);
             $stm->execute();
             $dato['resultado'] = "modificar";
             $dato['estado'] = 1;
@@ -170,9 +172,9 @@ class Unidad extends Conexion
 
         try {
             $this->conex->beginTransaction();
-            $query = "SELECT unidad.id_unidad, unidad.id_dependencia, 
-            unidad.nombre_unidad, unidad.estatus, dependencia.nombre AS Dependencia,
-            ente.nombre AS Ente
+            $query = "SELECT unidad.id_unidad, 
+            unidad.nombre_unidad, unidad.estatus,
+            CONCAT(ente.nombre, ' - ' , dependencia.nombre) AS dependencia
             FROM unidad
             INNER JOIN dependencia ON unidad.id_dependencia = dependencia.id
             INNER JOIN ente ON dependencia.id_ente = ente.id
