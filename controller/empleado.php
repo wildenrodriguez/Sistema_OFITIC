@@ -8,12 +8,18 @@ ob_start();
 if (is_file("view/" . $page . ".php")) {
 	require_once "controller/utileria.php";
 	require_once "model/empleado.php";
+	require_once "model/cargo.php";
+	require_once "model/unidad.php";
+	require_once "model/dependencia.php";
 
 
 	$titulo = "Gestionar Empleados";
-	$cabecera = array('Cédula', "Nombre", "Apellido", "Teléfono", "Correo","Dependencia", "Unidad", "Cargo", "Servicio", "Modificar/Eliminar");
+	$cabecera = array('Cédula', "Nombre", "Apellido", "Teléfono", "Correo","Dependencia", "Unidad", "Cargo", "Modificar/Eliminar");
 
-	$empleado = new empleado();
+	$empleado = new Empleado();
+	$cargo = new Cargo();
+	$unidad = new Unidad();
+	$dependencia = new Dependencia();
 
 	if (isset($_POST["entrada"])) {
 		$json['resultado'] = "entrada";
@@ -30,14 +36,13 @@ if (is_file("view/" . $page . ".php")) {
 		$empleado->set_apellido($_POST["apellido"]);
 		$empleado->set_telefono($_POST["telefono"]);
 		$empleado->set_correo($_POST["correo"]);
-		$empleado->set_dependencia($_POST["dependencia"]);
-		$empleado->set_unidad($_POST["unidad"]);
-		$empleado->set_cargo($_POST["dependencia"]);
+		$empleado->set_id_unidad($_POST["unidad"]);
+		$empleado->set_id_cargo($_POST["cargo"]);
 		$peticion["peticion"] = "registrar";
-		$datos = $empleado->Transaccion($peticion);
-		echo json_encode($datos);
+		$json = $empleado->Transaccion($peticion);
+		echo json_encode($json);
 
-		if ($datos['estado'] == 1) {
+		if ($json['estado'] == 1) {
 			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se registró un nuevo empleado";
 		} else {
 			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al registrar un nuevo empleado";
@@ -48,8 +53,8 @@ if (is_file("view/" . $page . ".php")) {
 
 	if (isset($_POST['consultar'])) {
 		$peticion["peticion"] = "consultar";
-		$datos = $empleado->Transaccion($peticion);
-		echo json_encode($datos);
+		$json = $empleado->Transaccion($peticion);
+		echo json_encode($json);
 		exit;
 	}
 
@@ -59,14 +64,13 @@ if (is_file("view/" . $page . ".php")) {
 		$empleado->set_apellido($_POST["apellido"]);
 		$empleado->set_telefono($_POST["telefono"]);
 		$empleado->set_correo($_POST["correo"]);
-		$empleado->set_dependencia($_POST["dependencia"]);
-		$empleado->set_unidad($_POST["unidad"]);
-		$empleado->set_cargo($_POST["dependencia"]);
+		$empleado->set_id_unidad($_POST["unidad"]);
+		$empleado->set_id_cargo($_POST["dependencia"]);
 		$peticion["peticion"] = "actualizar";
-		$datos = $empleado->Transaccion($peticion);
-		echo json_encode($datos);
+		$json = $empleado->Transaccion($peticion);
+		echo json_encode($json);
 
-		if ($datos['estado'] == 1) {
+		if ($json['estado'] == 1) {
 			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se modificó el registro del empleado";
 		} else {
 			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al modificar empleado";
@@ -78,15 +82,40 @@ if (is_file("view/" . $page . ".php")) {
 	if (isset($_POST["eliminar"])) {
 		$empleado->set_cedula($_POST["cedula"]);
 		$peticion["peticion"] = "eliminar";
-		$datos = $empleado->Transaccion($peticion);
-		echo json_encode($datos);
+		$json = $empleado->Transaccion($peticion);
+		echo json_encode($json);
 
-		if ($datos['estado'] == 1) {
+		if ($json['estado'] == 1) {
 			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se eliminó un empleado";
 		} else {
 			$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al eliminar un empleado";
 		}
 		Bitacora($msg, "Empleado");
+		exit;
+	}
+
+		if (isset($_POST['cargar_unidad'])) {
+		$peticion["peticion"] = "filtrar";
+		$unidad->set_id_dependencia($_POST['id_dependencia']);
+		$json = $unidad->Transaccion($peticion);
+		$json["resultado"] = "cargar_unidad";
+		echo json_encode($json);
+		exit;
+	}
+
+		if (isset($_POST['cargar_dependencia'])) {
+		$peticion["peticion"] = "consultar";
+		$json = $dependencia->Transaccion($peticion);
+		$json["resultado"] = "cargar_dependencia";
+		echo json_encode($json);
+		exit;
+	}
+
+		if (isset($_POST['cargar_cargo'])) {
+		$peticion["peticion"] = "consultar";
+		$json = $cargo->Transaccion($peticion);
+		$json["resultado"] = "cargar_cargo";
+		echo json_encode($json);
 		exit;
 	}
 

@@ -228,7 +228,7 @@ function limpia() {
 	$("#nombre").val("");
 
 	$("#id_dependencia").removeClass("is-valid is-invalid");
-	$("#id_dependencia").val("");
+	$("#id_dependencia").val("default");
 
 	$("#nombre").prop('readOnly', false);
 	$("#id_dependencia").prop('disabled', false);
