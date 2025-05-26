@@ -38,7 +38,7 @@
           <div class="col-md-6">
             <div class="form-floating mb-3">
               <input placeholder="Teléfono" class="form-control" name="telefono" type="text" id="telefono"
-                maxlength="45">
+                maxlength="15">
               <label for="telefono" class="form-label">Teléfono</label>
               <span id="stelefono"></span>
             </div>

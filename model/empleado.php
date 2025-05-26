@@ -20,57 +20,124 @@ class Empleado extends Conexion
     }
 
     // Setters y Getters
-    public function set_cedula($cedula) { $this->cedula = $cedula; }
-    public function get_cedula() { return $this->cedula; }
-    
-    public function set_nombre($nombre) { $this->nombre = $nombre; }
-    public function get_nombre() { return $this->nombre; }
-    
-    public function set_apellido($apellido) { $this->apellido = $apellido; }
-    public function get_apellido() { return $this->apellido; }
-    
-    public function set_telefono($telefono) { $this->telefono = $telefono; }
-    public function get_telefono() { return $this->telefono; }
-    
-    public function set_correo($correo) { $this->correo = $correo; }
-    public function get_correo() { return $this->correo; }
-    
-    public function set_id_cargo($id_cargo) { $this->id_cargo = $id_cargo; }
-    public function get_id_cargo() { return $this->id_cargo; }
-    
-    public function set_id_servicio($id_servicio) { $this->id_servicio = $id_servicio; }
-    public function get_id_servicio() { return $this->id_servicio; }
-    
-    public function set_id_unidad($id_unidad) { $this->id_unidad = $id_unidad; }
-    public function get_id_unidad() { return $this->id_unidad; }
+    public function set_cedula($cedula)
+    {
+        $this->cedula = $cedula;
+    }
+    public function get_cedula()
+    {
+        return $this->cedula;
+    }
+
+    public function set_nombre($nombre)
+    {
+        $this->nombre = $nombre;
+    }
+    public function get_nombre()
+    {
+        return $this->nombre;
+    }
+
+    public function set_apellido($apellido)
+    {
+        $this->apellido = $apellido;
+    }
+    public function get_apellido()
+    {
+        return $this->apellido;
+    }
+
+    public function set_telefono($telefono)
+    {
+        $this->telefono = $telefono;
+    }
+    public function get_telefono()
+    {
+        return $this->telefono;
+    }
+
+    public function set_correo($correo)
+    {
+        $this->correo = $correo;
+    }
+    public function get_correo()
+    {
+        return $this->correo;
+    }
+
+    public function set_id_cargo($id_cargo)
+    {
+        $this->id_cargo = $id_cargo;
+    }
+    public function get_id_cargo()
+    {
+        return $this->id_cargo;
+    }
+
+    public function set_id_servicio($id_servicio)
+    {
+        $this->id_servicio = $id_servicio;
+    }
+    public function get_id_servicio()
+    {
+        return $this->id_servicio;
+    }
+
+    public function set_id_unidad($id_unidad)
+    {
+        $this->id_unidad = $id_unidad;
+    }
+    public function get_id_unidad()
+    {
+        return $this->id_unidad;
+    }
 
     private function Registrar()
     {
-        try {
-            $stm = $this->conex->prepare("INSERT INTO empleado 
+        $datos = [];
+        $bool = $this->Validar();
+
+        if ($bool['bool'] == 0) {
+            try {
+                $stm = $this->conex->prepare("INSERT INTO empleado 
                 (cedula_empleado, nombre_empleado, apellido_empleado, id_cargo, id_servicio, id_unidad, telefono_empleado, correo_empleado) 
                 VALUES (:cedula, :nombre, :apellido, :cargo, :servicio, :unidad, :telefono, :correo)");
-            
-            $stm->bindParam(':cedula', $this->cedula);
-            $stm->bindParam(':nombre', $this->nombre);
-            $stm->bindParam(':apellido', $this->apellido);
-            $stm->bindParam(':cargo', $this->id_cargo);
-            $stm->bindParam(':servicio', $this->id_servicio);
-            $stm->bindParam(':unidad', $this->id_unidad);
-            $stm->bindParam(':telefono', $this->telefono);
-            $stm->bindParam(':correo', $this->correo);
-            
-            return $stm->execute();
-        } catch (PDOException $e) {
-            return false;
+
+                $stm->bindParam(':cedula', $this->cedula);
+                $stm->bindParam(':nombre', $this->nombre);
+                $stm->bindParam(':apellido', $this->apellido);
+                $stm->bindParam(':cargo', $this->id_cargo);
+                $stm->bindParam(':servicio', $this->id_servicio);
+                $stm->bindParam(':unidad', $this->id_unidad);
+                $stm->bindParam(':telefono', $this->telefono);
+                $stm->bindParam(':correo', $this->correo);
+
+                $stm->execute();
+                $this->conex->commit();
+                $datos['resultado'] = "registrar";
+                $datos['mensaje'] = "Se registró el empleado exitosamente";
+                $datos['estado'] = 1;
+            } catch (PDOException $e) {
+                $this->conex->rollBack();
+                $datos['resultado'] = "error";
+                $datos['estado'] = -1;
+                $datos['mensaje'] = $e->getMessage();
+            }
+        } else {
+            $datos['resultado'] = "error";
+            $datos['mensaje'] = "Error: registro duplicado";
+            $datos['estado'] = -1;
         }
+        $this->Cerrar_Conexion($this->conex, $stm);
+        return $datos;
     }
 
-    private function Consultar($filtro = null)
+    private function Consultar($filtro = NULL)
     {
         $datos = [];
         try {
-            $sql = "SELECT 
+            $this->conex->beginTransaction();
+            $query = "SELECT 
                 e.cedula_empleado AS cedula,
                 e.nombre_empleado AS nombre,
                 e.apellido_empleado AS apellido,
@@ -86,22 +153,24 @@ class Empleado extends Conexion
             LEFT JOIN ente AS et ON d.id_ente = et.id
             LEFT JOIN cargo AS c ON e.id_cargo = c.id_cargo
             LEFT JOIN tipo_servicio AS ts ON e.id_servicio = ts.id_tipo_servicio";
-            
             if ($filtro && isset($filtro['cedula'])) {
-                $sql .= " WHERE e.cedula_empleado = :cedula";
-                $stm = $this->conex->prepare($sql);
+                $query .= " WHERE e.cedula_empleado = :cedula";
+                $stm = $this->conex->prepare($query);
                 $stm->bindParam(':cedula', $filtro['cedula']);
             } else {
-                $stm = $this->conex->prepare($sql);
+                $stm = $this->conex->prepare($query);
             }
-            
+
             $stm->execute();
             $datos['resultado'] = "consultar";
             $datos['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
+            $this->conex->commit();
         } catch (PDOException $e) {
+            $this->conex->rollBack();
             $datos['resultado'] = "error";
             $datos['mensaje'] = $e->getMessage();
         }
+        $this->Cerrar_Conexion($this->conex, $stm);
         return $datos;
     }
 
@@ -109,20 +178,22 @@ class Empleado extends Conexion
     {
         $datos = [];
         try {
-            $sql = "SELECT 
+            $query = "SELECT 
                 e.cedula_empleado AS cedula, 
                 CONCAT(e.nombre_empleado, ' ', e.apellido_empleado) AS nombre 
             FROM empleado AS e
             JOIN unidad AS u ON e.id_unidad = u.id_unidad
             WHERE u.id_dependencia = ?";
-            
-            $stm = $this->conex->prepare($sql);
+
+            $stm = $this->conex->prepare($query);
             $stm->bindParam(1, $dependenciaId, PDO::PARAM_INT);
             $stm->execute();
-            
+
             $datos['resultado'] = "success";
             $datos['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
+            $this->conex->commit();
         } catch (PDOException $e) {
+
             $datos['resultado'] = "error";
             $datos['mensaje'] = $e->getMessage();
         }
@@ -131,30 +202,61 @@ class Empleado extends Conexion
 
     private function Validar()
     {
+        $datos = [];
         try {
+            $this->conex->beginTransaction();
             $stm = $this->conex->prepare("SELECT * FROM empleado WHERE cedula_empleado = ?");
             $stm->execute([$this->cedula]);
-            return $stm->fetch(PDO::FETCH_ASSOC);
+            $this->conex->commit();
+            if ($stm->rowCount() > 0) {
+                $datos['arreglo'] = $stm->fetch(PDO::FETCH_ASSOC);
+                $datos['bool'] = 1;
+            } else {
+                $datos['bool'] = 0;
+            }
+
         } catch (PDOException $e) {
-            return false;
+            $datos['error'] = $e->getMessage();
         }
+        $this->Cerrar_Conexion($none, $stm);
+        return $datos;
     }
 
     private function Eliminar()
     {
+        $datos = [];
         try {
-            $sql = "DELETE FROM empleado WHERE cedula_empleado = ?";
-            $stm = $this->conex->prepare($sql);
-            $stm->execute([$this->cedula]);
-            return $stm->rowCount() > 0;
+            $this->conex->beginTransaction();
+            $query = "DELETE FROM empleado WHERE cedula_empleado = :cedula";
+            $stm = $this->conex->prepare($query);
+            $stm->bindParam(":cedula", $this->cedula);
+            $stm->execute();
+
+            if ($stm->rowCount() > 0) {
+                $datos['resultado'] = "eliminar";
+                $datos['mensaje'] = "Se eliminó el empleado exitosamente";
+                $datos['estado'] = 1;
+            } else {
+                $datos['resultado'] = "eliminar";
+                $datos['mensaje'] = "Error: No se encontró el registro";
+                $datos['estado'] = -1;
+            }
+            $this->conex->commit();
         } catch (PDOException $e) {
-            return false;
+            $this->conex->rollBack();
+            $datos['resultado'] = "error";
+            $datos['estado'] = -1;
+            $datos['mensaje'] = $e->getMessage();
         }
+        $this->Cerrar_Conexion($this->conex, $stm);
+        return $datos;
     }
 
     private function Modificar()
     {
+        $datos = [];
         try {
+            $this->conex->beginTransaction();
             $stm = $this->conex->prepare("UPDATE empleado SET 
                 nombre_empleado = :nombre, 
                 apellido_empleado = :apellido, 
@@ -164,7 +266,7 @@ class Empleado extends Conexion
                 telefono_empleado = :telefono, 
                 correo_empleado = :correo 
                 WHERE cedula_empleado = :cedula");
-                
+
             $stm->bindParam(':cedula', $this->cedula);
             $stm->bindParam(':nombre', $this->nombre);
             $stm->bindParam(':apellido', $this->apellido);
@@ -173,11 +275,28 @@ class Empleado extends Conexion
             $stm->bindParam(':unidad', $this->id_unidad);
             $stm->bindParam(':telefono', $this->telefono);
             $stm->bindParam(':correo', $this->correo);
-            
-            return $stm->execute();
+
+            $stm->execute();
+            $this->conex->commit();
+
+            if ($stm->rowCount() > 0) {
+                $datos['resultado'] = "modificar";
+                $datos['mensaje'] = "Se modificó el empleado exitosamente";
+                $datos['estado'] = 1;
+            } else {
+                $datos['resultado'] = "modificar";
+                $datos['mensaje'] = "Error: No se encontró el registro";
+                $datos['estado'] = -1;
+            }
+
         } catch (PDOException $e) {
-            return false;
+            $this->conex->rollBack();
+            $datos['resultado'] = "error";
+            $datos['estado'] = -1;
+            $datos['mensaje'] = $e->getMessage();
         }
+        $this->Cerrar_Conexion($this->conex, $stm);
+        return $datos;
     }
 
     private function consultar_solicitantes()
@@ -194,7 +313,7 @@ class Empleado extends Conexion
             FROM empleado AS e
             JOIN unidad AS u ON e.id_unidad = u.id_unidad
             JOIN dependencia AS d ON u.id_dependencia = d.id";
-            
+
             $stm = $this->conex->prepare($query);
             $stm->execute();
             return $stm->fetchAll(PDO::FETCH_ASSOC);
@@ -217,41 +336,16 @@ class Empleado extends Conexion
 
     public function Transaccion($peticion)
     {
-        if (isset($peticion['cedula'])) {
-            $this->set_cedula($peticion['cedula']);
-        }
-        if (isset($peticion['nombre'])) {
-            $this->set_nombre($peticion['nombre']);
-        }
-        if (isset($peticion['apellido'])) {
-            $this->set_apellido($peticion['apellido']);
-        }
-        if (isset($peticion['id_cargo'])) {
-            $this->set_id_cargo($peticion['id_cargo']);
-        }
-        if (isset($peticion['id_servicio'])) {
-            $this->set_id_servicio($peticion['id_servicio']);
-        }
-        if (isset($peticion['id_unidad'])) {
-            $this->set_id_unidad($peticion['id_unidad']);
-        }
-        if (isset($peticion['telefono'])) {
-            $this->set_telefono($peticion['telefono']);
-        }
-        if (isset($peticion['correo'])) {
-            $this->set_correo($peticion['correo']);
-        }
-
         switch ($peticion['peticion']) {
-            case 'Registrar':
+            case 'registrar':
                 return $this->Registrar();
-            case 'Modificar':
+            case 'modificar':
                 return $this->Modificar();
-            case 'Eliminar':
+            case 'eliminar':
                 return $this->Eliminar();
             case 'consultar':
                 return $this->Consultar($peticion);
-            case 'Validar':
+            case 'validar':
                 return $this->Validar();
             case 'listar':
                 return $this->consultar_solicitantes();
