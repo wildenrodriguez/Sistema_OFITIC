@@ -24,7 +24,7 @@
         <div class="col-lg-12">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">AYUDA</h5>
+              <h5 class="card-title">Modulo ayuda</h5>
               <div>
                 <input type="text" id="buscador" class="form-control mb-2 mt-2" placeholder="Buscar...">
                 <h3 id="resultado-busqueda"></h3>
