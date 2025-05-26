@@ -251,6 +251,34 @@ class Material extends Conexion
         return $dato;
     }
 
+    private function reporte($fechaInicio, $fechaFin)
+    {
+        $dato = [];
+
+        try {
+            $query = "SELECT m.*, o.nombre_oficina 
+                 FROM material m 
+                 LEFT JOIN oficina o ON m.ubicacion = o.id_oficina 
+                 WHERE m.estatus = 1 ";
+                // --  AND DATE(m.fecha_registro) BETWEEN :fechaInicio AND :fechaFin
+                // --  ORDER BY m.fecha_registro DESC;
+
+            $stm = $this->conex->prepare($query);
+            // $stm->bindParam(":fechaInicio", $fechaInicio);
+            // $stm->bindParam(":fechaFin", $fechaFin);
+            $stm->execute();
+
+            $dato['resultado'] = "success";
+            $dato['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $dato['resultado'] = "error";
+            $dato['mensaje'] = $e->getMessage();
+        }
+
+        $this->Cerrar_Conexion($this->conex, $stm);
+        return $dato;
+    }
+
     public function Transaccion($peticion)
     {
         switch ($peticion['peticion']) {
@@ -273,9 +301,12 @@ class Material extends Conexion
 
             case 'consultar_eliminadas':
                 return $this->ConsultarEliminadas();
-            
+
             case 'restaurar':
                 return $this->Restaurar();
+            
+            case 'reporte':
+                return $this->reporte($peticion['fecha_inicio'], $peticion['fecha_fin']);
 
             default:
                 return "Operacion: " . $peticion['peticion'] . " no valida";
