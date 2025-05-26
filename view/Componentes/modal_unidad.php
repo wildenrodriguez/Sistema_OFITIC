@@ -7,8 +7,19 @@
         <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="row justify-content-center" id="Fila1">
-          <div class="col-8">
+         <div class="row justify-content-center" id="Fila1">
+
+         </div>
+        <div class="row justify-content-center" id="Fila2">
+          <div class="col-6">
+            <div class="form-floating mb-3 mt-4">
+              <select class="form-select" name="id_dependencia" id="id_dependencia">
+              </select>
+              <span id="sid_dependencia"></span>
+              <label for="id_dependencia" class="form-label">Dependencia</label>
+            </div>
+          </div>
+          <div class="col-6">
             <div class="form-floating mb-3 mt-4">
               <input placeholder="" class="form-control" name="nombre" type="text" id="nombre" maxlength="200">
               <span id="snombre"></span>

@@ -14,6 +14,7 @@
 
 
   <div class="row">
+  <!-- redes -->
     <div class="col-md-6 mb-6">
       <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -23,7 +24,13 @@
         <div class="card-body">
           <h2 class="total-balance mb-3">30 Disponibles</h2>
           <p class="text-muted mb-4">
-            Piso 5
+            <select class="form-select mt-2" name="" id="">
+              <option value="">Piso 1</option>
+              <option value="">Piso 2</option>
+              <option value="">Piso 3</option>
+              <option value="">Piso 4</option>
+              <option value="">Piso 5</option>
+            </select>
           </p>
           <div class="account-list">
             <div class="account-item d-flex justify-content-between mb-2">
@@ -51,6 +58,7 @@
         </div>
       </div>
     </div>
+  <!-- redes -->
     <div class="col-md-6 mb-6">
       <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">

@@ -21,7 +21,12 @@
                     <div class="card-body">
                         <h5 class="card-title">Gestión de Backups</h5>
                         <form method="POST" action="?page=backup">
-                            <button type="submit" name="generar" class="btn btn-primary my-4">
+                            <select class="form-select" name="base_datos" id="" required title="Seleccione la base de datos">
+                                <option value="" hidden>Seleccione la base de datos</option>
+                                <option value="sistema"><i class="fa fa-sign-in" aria-hidden="true"></i> Sistema</option>
+                                <option value="usuario"><i class="fa fa-user" aria-hidden="true"></i> Usuario</option>
+                            </select>
+                            <button type="submit" name="generar" class="btn btn-primary my-4" title="Generar Backup">
                                 Generar Backup
                             </button>
                         </form>
@@ -43,8 +48,11 @@
                                                 <td>
                                                     <form method="POST" action="?page=backup" style="display:inline;">
                                                         <input type="hidden" name="filename" value="<?= $archivo ?>">
-                                                        <button type="submit" name="eliminar" class="btn btn-danger">
+                                                        <button type="submit" name="eliminar" value="<?= $archivo ?>" class="btn btn-danger">
                                                             <i class="fa-solid fa-trash"></i>
+                                                        </button>
+                                                        <button type="submit" name="importar" value="<?= $archivo ?>" class="btn btn-success">
+                                                            <i class="fa-solid fa-upload"></i>
                                                         </button>
                                                     </form>
                                                 </td>

@@ -142,7 +142,7 @@ class Dependencia extends Conexion
 
         if ($bool['bool'] != 0) {
             try {
-                $query = "UPDATE dependencia SET estatus = 0 WHERE id_ente = :id";
+                $query = "UPDATE dependencia SET estatus = 0 WHERE id = :id";
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":id", $this->id);
@@ -196,7 +196,9 @@ class Dependencia extends Conexion
                 return $this->Registrar();
 
             case 'validar':
-                return $this->Validar();
+                $validar = $this->Validar();
+                $this->Cerrar_Conexion($this->conex, $none);
+                return $validar;
 
             case 'consultar':
                 return $this->Consultar();

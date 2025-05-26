@@ -11,7 +11,7 @@ if (is_file("view/" . $page . ".php")) {
 	require_once "model/dependencia.php";
 
 
-	$titulo = " Dependencia";
+	$titulo = "Dependencia";
 	$cabecera = array('#', "Nombre", "Ente", "Modificar/Eliminar");
 
 	$dependencia = new Dependencia();
@@ -50,7 +50,7 @@ if (is_file("view/" . $page . ".php")) {
 			$ente->set_id($_POST["ente"]);
 			$validar = $ente->Transaccion($peticion);
 
-			if ($validar['bool'] === 1 && $validar['arreglo']['estatus'] === 1) {
+			if ($validar['bool'] == 1 && $validar['arreglo']['estatus'] == 1) {
 
 				$dependencia->set_nombre($_POST["nombre"]);
 				$dependencia->set_id_ente($_POST["ente"]);
