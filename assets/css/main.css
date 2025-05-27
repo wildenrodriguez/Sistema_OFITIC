@@ -981,7 +981,7 @@ ul {
 .input-group-text {
   background-color: var(--secondary);
   border-color: var(--border);
-  color: var(--secondary-foreground);
+  color: var(--input-foreground);
 }
 
 /* Custom styles for better visibility in dark mode */
