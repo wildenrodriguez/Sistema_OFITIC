@@ -1,7 +1,7 @@
 <?php
 if (!$_SESSION) {
 	echo '<script>window.location="?page=login"</script>';
-	$msg["danger"] = "Sesion Finalizada.";
+	$msg["danger"] = "Sesion Finalizada."; 
 }
 
 ob_start();
