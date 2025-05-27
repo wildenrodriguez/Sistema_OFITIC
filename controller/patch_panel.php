@@ -15,7 +15,7 @@
         require_once "model/patch_panel.php";
 
         $titulo = "Gestionar Patch Panel";
-        $cabecera = array('Codigo de Bien', "Tipo de Patch Panel", "Cantidad de Puertos", "Modificar / Eliminar");
+        $cabecera = array('Código de Bien', "Cantidad de Puertos", "Tipo de Patch Panel", "Modificar / Eliminar");
 
         $patch_panel = new patch_panel();
 

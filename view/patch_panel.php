@@ -1,7 +1,12 @@
 <?php 
 
     require_once("Componentes/head.php"); ?>
-
+<style>
+     #tabla1 td,
+     #tabla1 th {
+       text-align: center;
+     }
+   </style>
 <body>
 
     <?php require_once("Componentes/menu.php");
@@ -36,11 +41,11 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table" id="tabla1">
+                            <table class="table" id="tabla1" >
                                 <thead>
-                                    <tr>
+                                    <tr >
                                         <?php foreach ($cabecera as $campo)
-                                            echo "<th scope='col'>$campo</th>"; ?>
+                                            echo "<th scope='col'style='text-align: center;'>$campo</th>"; ?>
                                     </tr>
                                 </thead>
 

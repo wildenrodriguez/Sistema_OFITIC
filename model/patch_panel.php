@@ -118,6 +118,7 @@ class patch_panel extends Conexion {
             $query = "UPDATE patch_panel SET tipo_patch_panel= :tipo_patch_panel, cantidad_puertos= :cantidad_puertos WHERE codigo_bien = :codigo_bien";
 
             $stm = $this->conex->prepare($query);
+             $stm->bindParam(":codigo_bien", $this->codigo_bien);
             $stm->bindParam(":tipo_patch_panel", $this->tipo_patch_panel);
             $stm->bindParam(":cantidad_puertos", $this->cantidad_puertos);
             $stm->execute();
@@ -215,7 +216,15 @@ class patch_panel extends Conexion {
 
         try {
 
-            $query = "SELECT * FROM bien WHERE estatus = 1";
+            $query = "SELECT b.codigo_bien, b.descripcion  
+                        FROM bien b
+                        WHERE b.estatus = 1
+                            AND NOT EXISTS (
+                                SELECT 1 FROM patch_panel p WHERE p.codigo_bien = b.codigo_bien
+                            )
+                            AND NOT EXISTS (
+                                SELECT 1 FROM switch s WHERE s.codigo_bien = b.codigo_bien
+                            )";
 
             $stm = $this->conex->prepare($query);
             $stm->execute();

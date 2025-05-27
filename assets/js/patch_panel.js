@@ -101,7 +101,7 @@ $(document).ready(function () {
 
 	});
 
-	$("#btn-registrar").on("click", function () { //<---- Evento del Boton Registrar
+	$("#btn-registrar").on("click", function () { 
 
 		limpia();
 
@@ -109,7 +109,7 @@ $(document).ready(function () {
 		$("#enviar").text("Registrar");
 		$("#modal1").modal("show");
 
-	}); //<----Fin Evento del Boton Registrar
+	}); 
 
 	$("#btn-consultar-eliminados").on("click", function () {
 		consultarEliminadas();
@@ -289,8 +289,8 @@ function crearDataTable(arreglo) {
 
 		columns: [
 			{ data: 'codigo_bien' },
-			{ data: 'tipo_patch_panel' },
 			{ data: 'cantidad_puertos' },
+			{ data: 'tipo_patch_panel' },
 			{
 				data: null, render: function () {
 					const botones = `<button onclick="rellenar(this, 0)" class="btn btn-update"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -315,23 +315,39 @@ function limpia() {
 	$("#codigo_bien").removeClass("is-valid is-invalid");
 	$("#codigo_bien option:first-child").prop('selected', true);
 	$("#scodigo_bien").val("");
-
 	$('#codigo_bien').prop('disabled', false);
+	*/
+
+	$("#div_codigo_oculto").css("display", "none");
+	$("#codigo_bien_a").attr("id", "codigo_bien");
+	$("#codigo_bien").attr("id", "codigo_bien_oculto").prop('readonly', false);
+	$("#codigo_visible").css("display", "block");
+
 	$('#tipo_patch_panel').prop('disabled', false);
 	$('#cantidad_puertos').prop('disabled', false);
 
-	*/
+	
 }
 
 
 function rellenar(pos, accion) {
-
+	
 	linea = $(pos).closest('tr');
 
 	
-	buscarSelect('#codigo_bien', $(linea).find("td:eq(0)").text(), "value");
-	$("#tipo_patch_panel").val($(linea).find("td:eq(1)").text());
-	$("#cantidad_puertos").val($(linea).find("td:eq(2)").text());
+
+
+	//buscarSelect('#codigo_bien', $(linea).find("td:eq(0)").text(), "value");
+
+	$("#div_codigo_oculto").css("display", "block");
+	$("#codigo_bien").attr("id", "codigo_bien_a");
+	$("#codigo_bien_oculto").attr("id", "codigo_bien").prop('readonly', true).val($(linea).find("td:eq(0)").text());
+	$("#codigo_visible").css("display", "none");
+
+
+
+	$("#cantidad_puertos").val($(linea).find("td:eq(1)").text());
+	$("#tipo_patch_panel").val($(linea).find("td:eq(2)").text());
 
 	if (accion == 0) {
 
