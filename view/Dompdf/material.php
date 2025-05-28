@@ -26,17 +26,17 @@
                 </thead>
                 <tbody>';
 
-			foreach ($resultado['datos'] as $material) {
-				$html .= '
+foreach ($resultado['datos'] as $material) {
+    $html .= '
                     <tr>
                         <td>' . $material['id_material'] . '</td>
                         <td>' . $material['nombre_material'] . '</td>
                         <td>' . $material['nombre_oficina'] . '</td>
                         <td>' . $material['stock'] . '</td>
                     </tr>';
-			}
+}
 
-			$html .= '
+$html .= '
                 </tbody>
             </table>
         </body>

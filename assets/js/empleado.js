@@ -369,7 +369,6 @@ function limpia() {
 	$('#enviar').prop('disabled', false);
 }
 
-
 async function rellenar(pos, accion) {
 
 	var espera;

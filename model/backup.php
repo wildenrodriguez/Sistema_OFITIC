@@ -19,7 +19,7 @@ class Backup extends Conexion
             $dbname = $this->conex->query("SELECT DATABASE()")->fetchColumn();
             $filename = $this->backupPath . "backup_" . date("Y-m-d_H-i-s") . ".sql";
 
-            $command = "mysqldump --user=" . _DB_USER_ . " --password=" . _DB_PASS_ . " --host=" .  _DB_HOST_ . " $dbname > $filename";
+            $command = "mysqldump --user=" . _DB_USER_ . " --password=" . _DB_PASS_ . " --host=" . _DB_HOST_ . " $dbname > $filename";
             system($command, $output);
 
             if ($output === 0) {

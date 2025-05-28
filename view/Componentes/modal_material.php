@@ -9,8 +9,8 @@
       <div class="modal-body">
         <div class="mb-3">
           <label for="material" class="form-label">Nombre del Material</label>
-          <input placeholder="Nombre del Material" class="form-control" name="material" type="text"
-            id="material" maxlength="45">
+          <input placeholder="Nombre del Material" class="form-control" name="material" type="text" id="material"
+            maxlength="45">
           <span id="smaterial"></span>
         </div>
       </div>

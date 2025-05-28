@@ -7,8 +7,8 @@ if (!$_SESSION) {
 ob_start();
 if (is_file("view/" . $page . ".php")) {
 	require_once "model/usuario.php";
-	require_once "model/empleado.php";
 	require_once "model/bitacora.php";
+	require_once "model/empleado.php";
 	require_once "model/material.php";
 
 	$peticion = [];

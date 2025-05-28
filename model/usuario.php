@@ -25,6 +25,10 @@ class Usuario extends Conexion
     {
         $this->cedula = $cedula;
     }
+    public function set_nombre_usuario($nombre_usuario)
+    {
+        $this->nombre_usuario = $nombre_usuario;
+    }
 
     public function set_nombres($nombres)
     {
@@ -49,6 +53,11 @@ class Usuario extends Conexion
     public function set_rol($rol)
     {
         $this->rol = $rol;
+    }
+
+        public function get_nombre_usuario()
+    {
+        return $this->nombre_usuario;
     }
 
     public function get_nombres()
@@ -105,31 +114,34 @@ class Usuario extends Conexion
 
         $con = $this->conex->prepare($query);
         $con->bindParam(':cedula', $this->cedula);
-        $con->bindParam(':clave', $this->clave);
-        $con->bindParam(':rol', $this->rol);
+        $con->bindParam(':nombre_usuario', $this->nombre_usuario);
+        $con->bindParam(':nombres', $this->nombres);
+        $con->bindParam(':apellidos', $this->apellidos);
+        $con->bindParam(':correo', $this->correo);
+        $con->bindParam(':telefono', $this->telefono);
 
         return $con->execute();
     }
 
     private function ModificarUsuario()
-{
-    $query = "UPDATE `usuario` SET 
+    {
+        $query = "UPDATE `usuario` SET 
                 `nombres` = :nombres,
                 `apellidos` = :apellidos,
                 `correo` = :correo,
                 `telefono` = :telefono 
-                WHERE `nombre_usuario` = :id_usuario OR `cedula` = :cedula";
+                WHERE `nombre_usuario` = :nombre_usuario OR `cedula` = :cedula";
 
-    $con = $this->conex->prepare($query);
-    $con->bindParam(':cedula', $this->cedula);
-    $con->bindParam(':id_usuario', $this->nombre_usuario);
-    $con->bindParam(':nombres', $this->nombres);
-    $con->bindParam(':apellidos', $this->apellidos);
-    $con->bindParam(':correo', $this->correo);
-    $con->bindParam(':telefono', $this->telefono);
+        $con = $this->conex->prepare($query);
+        $con->bindParam(':cedula', $this->cedula);
+        $con->bindParam(':nombre_usuario', $this->nombre_usuario);
+        $con->bindParam(':nombres', $this->nombres);
+        $con->bindParam(':apellidos', $this->apellidos);
+        $con->bindParam(':correo', $this->correo);
+        $con->bindParam(':telefono', $this->telefono);
 
-    return $con->execute();
-}
+        return $con->execute();
+    }
 
     private function crear_tecnico()
     {
@@ -200,9 +212,6 @@ class Usuario extends Conexion
         $registro->bindValue(":cedula", $this->cedula);
         $registro->execute();
 
-        $tecnico = $this->conex->prepare("DELETE FROM tecnico WHERE cedula = :cedula");
-        $tecnico->bindValue(":cedula", $this->cedula);
-        $tecnico->execute();
     }
 
     private function ActualizarClave()
@@ -307,9 +316,9 @@ class Usuario extends Conexion
 
                 return $this->ActualizarClave();
 
-                case 'actualizarFoto':
+            case 'actualizarFoto':
 
-                    return $this->ActualizarFoto();
+                return $this->ActualizarFoto();
 
             case 'permiso':
                 return $this->ValidarPermiso($peticion['user'], $peticion['rol']);

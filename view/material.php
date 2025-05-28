@@ -56,5 +56,4 @@ require_once("Componentes/modal_solicitar.php");?>
   <script defer src="assets/js/material.js"></script>
 
 </body>
-
 </html>

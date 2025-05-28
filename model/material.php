@@ -11,7 +11,6 @@ class Material extends Conexion
 
     public function __construct()
     {
-
         $this->conex = new Conexion("sistema");
         $this->conex = $this->conex->Conex();
     }

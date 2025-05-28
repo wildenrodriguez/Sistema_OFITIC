@@ -2,7 +2,7 @@
 
 <body>
 <?php require_once("Componentes/menu.php");
-      require_once("Componentes/modal_crear_usuario.php");?>
+      require_once("Componentes/modal_usuario.php");?>
 
   <main id="main" class="main">
           
@@ -52,7 +52,6 @@
 
       </div>
     </section>
-
   </main><!-- End #main -->
 
   <?php require_once "Componentes/footer.php"; ?>

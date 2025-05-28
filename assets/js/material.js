@@ -137,7 +137,6 @@ function crearDataTable(arreglo) {
 
 }
 
-
 function limpia() {
 	$("#motivo").last().removeClass("is-valid");
 	$("#motivo").last().removeClass("is-invalid");
