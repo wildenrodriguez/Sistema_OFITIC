@@ -13,84 +13,79 @@ if (is_file("view/" . $page . ".php")) {
     $backup = new Backup();
 
 
-    if (isset($_POST["generar"])) {
-        
-        $backup->setBaseDatos($_POST["base_datos"]);
-        $peticion["peticion"] = "generar";
-        $datos = $backup->Transaccion($peticion);
+        if (isset($_POST["generar"])) {
+            $backup->setBaseDatos($_POST["base_datos"]);
+            $peticion["peticion"] = "generar";
+            $datos = $backup->Transaccion($peticion);
 
-        
-
-        if ($datos['estado'] == 1) {
-            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se generó un nuevo backup";
-            echo "<script>
+            if ($datos['estado'] == 1) {
+                $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se generó un nuevo backup";
+                echo "<script>
                     Swal.fire('Éxito', '{$datos['mensaje']}', 'success').then(() => {
                         window.location = '?page=backup';
                     });
                 </script>";
-        } else {
-            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al generar un backup";
-            echo "<script>
+            } else {
+                $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al generar un backup";
+                echo "<script>
                     Swal.fire('Error', '{$datos['mensaje']}', 'error').then(() => {
                         window.location = '?page=backup';
                     });
                 </script>";
+            }
+            Bitacora($msg, "Backup");
+            header("Location: ?page=backup");
+            exit;
         }
-        Bitacora($msg, "Backup");
-        
 
-        header("Location: ?page=backup");
-        exit;
-    }
+        if (isset($_POST["eliminar"])) {
+            $peticion["peticion"] = "eliminar";
+            $peticion["filename"] = $_POST["filename"];
+            $datos = $backup->Transaccion($peticion);
 
-    if (isset($_POST["eliminar"])) {
-        $peticion["peticion"] = "eliminar";
-        $peticion["filename"] = $_POST["filename"];
-        $datos = $backup->Transaccion($peticion);
-
-        if ($datos['estado'] == 1) {
-            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se eliminó un backup";
-            echo "<script>
+            if ($datos['estado'] == 1) {
+                $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se eliminó un backup";
+                echo "<script>
                     Swal.fire('Éxito', '{$datos['mensaje']}', 'success').then(() => {
                         window.location = '?page=backup';
                     });
                 </script>";
-        } else {
-            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al eliminar un backup";
-            echo "<script>
+            } else {
+                $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al eliminar un backup";
+                echo "<script>
                     Swal.fire('Error', '{$datos['mensaje']}', 'error').then(() => {
                         window.location = '?page=backup';
                     });
                 </script>";
+            }
+            Bitacora($msg, "Backup");
+            header("Location: ?page=backup");
+            exit;
         }
-        Bitacora($msg, "Backup");
-        header("Location: ?page=backup");
-        exit;
-    }
-    if (isset($_POST["importar"])) {
-        $peticion["peticion"] = "importar";
-        $peticion["filename"] = $_POST["filename"];
-        $datos = $backup->Transaccion($peticion);
+        if (isset($_POST["importar"])) {
+            $peticion["peticion"] = "importar";
+            $peticion["filename"] = $_POST["filename"];
+            $datos = $backup->Transaccion($peticion);
 
-        if ($datos['estado'] == 1) {
-            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se importó un backup";
-            echo "<script>
+            if ($datos['estado'] == 1) {
+                $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se importó un backup";
+                echo "<script>
                     Swal.fire('Éxito', '{$datos['mensaje']}', 'success').then(() => {
                         window.location = '?page=backup';
                     });
                 </script>";
-        } else {
-            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al importar un backup";
-            echo "<script>
+            } else {
+                $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al importar un backup";
+                echo "<script>
                     Swal.fire('Error', '{$datos['mensaje']}', 'error').then(() => {
                         window.location = '?page=backup';
                     });
                 </script>";
+            }
+            Bitacora($msg, "Backup");
+            header("Location: ?page=backup");
+            exit;
         }
-        Bitacora($msg, "Backup");
-        header("Location: ?page=backup");
-        exit;
-    }
 
 
     $backups = $backup->Transaccion(['peticion' => 'listar']);
@@ -98,3 +93,4 @@ if (is_file("view/" . $page . ".php")) {
 } else {
     require_once "view/404.php";
 }
+?>
