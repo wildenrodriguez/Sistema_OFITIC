@@ -94,7 +94,7 @@ class patch_panel extends Conexion {
                 $stm->execute();
                 $dato['resultado'] = "registrar";
                 $dato['estado'] = 1;
-                $dato['mensaje'] = "Se registró el Patch Panel exitosamente";
+                $dato['mensaje'] = "Se Registro el Patch Panel Exitosamente";
 
             } catch (PDOException $e) {
 
@@ -133,7 +133,7 @@ class patch_panel extends Conexion {
             $stm->execute();
             $dato['resultado'] = "modificar";
             $dato['estado'] = 1;
-            $dato['mensaje'] = "Se modificaron los datos del Patch Panel con éxito";
+            $dato['mensaje'] = "Se Modificaron los datos del Patch Panel Exitosamente";
 
         } catch (PDOException $e) {
 
@@ -167,7 +167,7 @@ class patch_panel extends Conexion {
                 $stm->execute();
                 $dato['resultado'] = "eliminar";
                 $dato['estado'] = 1;
-                $dato['mensaje'] = "Se eliminó El Patch Panel exitosamente";
+                $dato['mensaje'] = "Se Eliminó El Patch Panel Exitosamente";
 
             } catch (PDOException $e) {
 
@@ -293,7 +293,7 @@ class patch_panel extends Conexion {
             $stm->execute();
             $dato['resultado'] = "restaurar";
             $dato['estado'] = 1;
-            $dato['mensaje'] = "Patch Panel restaurado exitosamente";
+            $dato['mensaje'] = "Se Restauro el Patch Panel exitosamente";
             
             $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se restauró el Patch Panel. Codigo de Bien: " . $this->codigo_bien;
             Bitacora($msg, "patch_panel");

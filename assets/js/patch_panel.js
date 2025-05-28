@@ -110,6 +110,7 @@ $(document).ready(function () {
 		$("#modalTitleId").text("Registrar Patch Panel");
 		$("#enviar").text("Registrar");
 		$("#enviar").prop('disabled', false);
+		$("#enviar").attr("title", "Registrar Patch Panel");
 		$("#modal1").modal("show");
 
 	}); 
@@ -174,7 +175,7 @@ function enviaAjax(datos) {
 
                 } else if (lee.resultado == "restaurar") {
 
-                    mensajes("success", null, "Patch Panel restaurado", lee.mensaje);
+                    mensajes("success", 10000, lee.mensaje, null);
                     consultarEliminadas();
 					actualizarSelectBien();
                     consultar();
@@ -289,8 +290,8 @@ function crearDataTable(arreglo) {
 			{ data: 'serial' },
 			{
 				data: null, render: function () {
-					const botones = `<button onclick="rellenar(this, 0)" class="btn btn-update"><i class="fa-solid fa-pen-to-square"></i></button>
-					<button onclick="rellenar(this, 1)" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>`;
+					const botones = `<button onclick="rellenar(this, 0)" class="btn btn-update" title="Modificar Patch Panel"><i class="fa-solid fa-pen-to-square"></i></button>
+					<button onclick="rellenar(this, 1)" class="btn btn-danger" title="Eliminar Patch Panel"><i class="fa-solid fa-trash"></i></button>`;
 					return botones;
 				}
 			}],
@@ -338,65 +339,6 @@ function consultarEliminadas() {
 	var datos = new FormData();
 	datos.append('consultar_eliminadas', 'consultar_eliminadas');
 
-	/*$.ajax({
-
-		async: true,
-		url: "",
-		type: "POST",
-		contentType: false,
-		data: datos,
-		processData: false,
-		cache: false,
-		beforeSend: function () { },
-		timeout: 10000,
-		success: function (respuesta) {
-
-			try {
-
-				var lee = JSON.parse(respuesta);
-
-				if (lee.resultado == "consultar_eliminadas") {
-
-					if ($.fn.DataTable.isDataTable('#tablaEliminadas')) {
-						$('#tablaEliminadas').DataTable().destroy();
-					}
-
-					$('#tablaEliminadas').DataTable({
-
-						data: lee.datos,
-						columns: [
-							{ data: 'codigo_bien' },
-							{ data: 'tipo_patch_panel' },
-							{ data: 'cantidad_puertos' },
-							{ data: 'serial' },
-							{
-								data: null,
-								render: function () {
-									return `<button onclick="restaurarPatchPanel(this)" class="btn btn-success">
-                                            <i class="fa-solid fa-recycle"></i>
-                                            </button>`;
-								}
-							}
-						],
-						language: {
-							url: idiomaTabla,
-						}
-					});
-				}
-
-			} catch (e) {
-
-				console.error("Error procesando datos:", e);
-
-			}
-		},
-		error: function (request, status, err) {
-
-			mensajes("error", null, "Error al cargar Patch Panel eliminados", "Intente nuevamente");
-
-		}
-	});*/
-
 	enviaAjax(datos);
 }
 
@@ -424,7 +366,7 @@ function TablaEliminados(arreglo) {
             {
                 data: null,
                 render: function () {
-                    return `<button onclick="restaurarPatchPanel(this)" class="btn btn-success">
+                    return `<button onclick="restaurarPatchPanel(this)" class="btn btn-success" title="Restaurar Patch Panel Eliminado">
                                             <i class="fa-solid fa-recycle"></i>
                                             </button>`;
                 }
@@ -502,6 +444,7 @@ function rellenar(pos, accion) {
 		$('#cantidad_puertos').prop('disabled', false);
 		$('#serial_patch_panel').prop('disabled', false);
 		$("#modalTitleId").text("Modificar Patch Panel")
+		$("#enviar").attr("title", "Modificar Patch Panel");
 		$("#enviar").text("Modificar");
 	}
 	else {
@@ -510,6 +453,7 @@ function rellenar(pos, accion) {
 		$('#cantidad_puertos').prop('disabled', true);
 		$('#serial_patch_panel').prop('disabled', true);
 		$("#modalTitleId").text("Eliminar Patch Panel")
+		$("#enviar").attr("title", "Eliminar Patch Panel");
 		$("#enviar").text("Eliminar");
 	}
 

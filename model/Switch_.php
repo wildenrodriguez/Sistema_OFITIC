@@ -85,7 +85,7 @@ class Switch_ extends Conexion {
                 $stm->execute();
                 $dato['resultado'] = "registrar";
                 $dato['estado'] = 1;
-                $dato['mensaje'] = "Se registró el Switch exitosamente";
+                $dato['mensaje'] = "Se Registró el Switch Exitosamente";
 
             } catch (PDOException $e) {
 
@@ -123,7 +123,7 @@ class Switch_ extends Conexion {
             $stm->execute();
             $dato['resultado'] = "modificar";
             $dato['estado'] = 1;
-            $dato['mensaje'] = "Se modificaron los datos del Switch con éxito";
+            $dato['mensaje'] = "Se Modificaron los datos del Switch Exitosamente";
 
         } catch (PDOException $e) {
 
@@ -157,7 +157,7 @@ class Switch_ extends Conexion {
                 $stm->execute();
                 $dato['resultado'] = "eliminar";
                 $dato['estado'] = 1;
-                $dato['mensaje'] = "Se eliminó el Switch exitosamente";
+                $dato['mensaje'] = "Se Eliminó el Switch Exitosamente";
 
             } catch (PDOException $e) {
 
@@ -283,7 +283,7 @@ class Switch_ extends Conexion {
             $stm->execute();
             $dato['resultado'] = "restaurar";
             $dato['estado'] = 1;
-            $dato['mensaje'] = "Switch restaurado exitosamente";
+            $dato['mensaje'] = "Se Restauro el Switch Exitosamente";
 
         } catch (PDOException $e) {
 

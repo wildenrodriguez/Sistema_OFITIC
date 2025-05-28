@@ -31,16 +31,16 @@
                         <h5 class="card-title">Gestionar Switch</h5>
 
                         <div class="d-flex justify-content-between">
-                            <button type="button" class="btn btn-primary my-4" id="btn-registrar">
+                            <button type="button" class="btn btn-primary my-4" id="btn-registrar" title="Agregar nuevo Switch">
                                 Registrar Switch
                             </button>
-                            <button type="button" class="btn btn-primary my-4" id="btn-consultar-eliminados">
+                            <button type="button" class="btn btn-primary my-4" id="btn-consultar-eliminados" title="Consulta los Switch Eliminados">
                                 Switch Eliminados <i class="fa-solid fa-recycle"></i>
                             </button>
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table" id="tabla1" >
+                            <table class="table" id="tabla1" title="Campo de Consulta de Switch">
                                 <thead>
                                     <tr>
                                         <?php foreach ($cabecera as $campo)
@@ -67,11 +67,11 @@
             <div class="modal-content">
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title text-white" id="modalEliminadasTitle">Switch Eliminados</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" title="Cerrar Modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive">
-                        <table class="table" id="tablaEliminadas">
+                        <table class="table" id="tablaEliminadas" title="Campo de Consulta de Switch">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -87,7 +87,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" title="Cerrar Modal">Cerrar</button>
                 </div>
             </div>
         </div>

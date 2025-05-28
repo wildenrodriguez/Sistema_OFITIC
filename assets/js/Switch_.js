@@ -100,6 +100,7 @@ $(document).ready(function () {
         $("#modalTitleId").text("Registrar Switch");
         $("#enviar").text("Registrar");
         $("#enviar").prop('disabled', false);
+        $("#enviar").attr("title", "Registrar Switch");
         $("#modal1").modal("show");
 
     }); 
@@ -164,7 +165,7 @@ function enviaAjax(datos) {
 
                 } else if (lee.resultado == "restaurar") {
 
-                    mensajes("success", null, "Switch restaurado", lee.mensaje);
+                    mensajes("success", 10000, lee.mensaje, null);
                     consultarEliminadas();
                     actualizarSelectBien();
                     consultar();
@@ -275,8 +276,8 @@ function crearDataTable(arreglo) {
             { data: 'serial' },
             {
                 data: null, render: function () {
-                    const botones = `<button onclick="rellenar(this, 0)" class="btn btn-update"><i class="fa-solid fa-pen-to-square"></i></button>
-                    <button onclick="rellenar(this, 1)" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>`;
+                    const botones = `<button onclick="rellenar(this, 0)" class="btn btn-update" title="Modificar Switch"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button onclick="rellenar(this, 1)" class="btn btn-danger" title="Eliminar Switch"><i class="fa-solid fa-trash"></i></button>`;
                     return botones;
                 }
             }
@@ -346,7 +347,7 @@ function TablaEliminados(arreglo) {
             {
                 data: null,
                 render: function () {
-                    return `<button onclick="restaurarSwitch(this)" class="btn btn-success">
+                    return `<button onclick="restaurarSwitch(this)" class="btn btn-success" title="Restaurar Switch Eliminado">
                                 <i class="fa-solid fa-recycle"></i>
                             </button>`;
                 }
@@ -412,16 +413,21 @@ function rellenar(pos, accion) {
     $("#serial_switch").val($(linea).find("td:eq(2)").text());
 
     if (accion == 0) {
+
         $('#codigo_bien').prop('disabled', true);
         $('#cantidad_puertos').prop('disabled', false);
         $('#serial_switch').prop('disabled', false);
         $("#modalTitleId").text("Modificar Switch");
+        $("#enviar").attr("title", "Modificar Switch");
         $("#enviar").text("Modificar");
+
     } else {
+
         $('#codigo_bien').prop('disabled', true);
         $('#cantidad_puertos').prop('disabled', true);
         $('#serial_switch').prop('disabled', true);
         $("#modalTitleId").text("Eliminar Switch");
+        $("#enviar").attr("title", "Eliminar Switch");
         $("#enviar").text("Eliminar");
     }
 
