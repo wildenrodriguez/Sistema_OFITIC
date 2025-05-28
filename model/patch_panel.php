@@ -7,6 +7,7 @@ class patch_panel extends Conexion {
     private $codigo_bien;
     private $tipo_patch_panel;
     private $cantidad_puertos;
+    private $serial_patch_panel;
 
     public function __construct() {
         $this->conex = new Conexion("sistema");
@@ -35,6 +36,12 @@ class patch_panel extends Conexion {
         $this->cantidad_puertos = $cantidad_puertos;
     }
 
+    public function get_serial_patch_panel() {
+        return $this->serial_patch_panel;
+    }
+    public function set_serial_patch_panel($serial_patch_panel) {
+        $this->serial_patch_panel = $serial_patch_panel;
+    }
 
 
     private function Validar() {
@@ -46,7 +53,7 @@ class patch_panel extends Conexion {
             $query = "SELECT * FROM patch_panel WHERE codigo_bien = :codigo_bien";
 
             $stm = $this->conex->prepare($query);
-            $stm->bindParam(":codigo_bien", $this->id);
+            $stm->bindParam(":codigo_bien", $this->codigo_bien);
             $stm->execute();
 
             if ($stm->rowCount() > 0) {
@@ -76,13 +83,14 @@ class patch_panel extends Conexion {
 
             try {
 
-                $query = "INSERT INTO patch_panel(codigo_bien, tipo_patch_panel, cantidad_puertos) VALUES 
-                (:codigo_bien, :tipo_patch_panel, :cantidad_puertos)";
+                $query = "INSERT INTO patch_panel(codigo_bien, tipo_patch_panel, cantidad_puertos,  `serial`) VALUES 
+                (:codigo_bien, :tipo_patch_panel, :cantidad_puertos, :serial_patch_panel)";
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":codigo_bien", $this->codigo_bien);
                 $stm->bindParam(":tipo_patch_panel", $this->tipo_patch_panel);
                 $stm->bindParam(":cantidad_puertos", $this->cantidad_puertos);
+                $stm->bindParam(":serial_patch_panel", $this->serial_patch_panel);
                 $stm->execute();
                 $dato['resultado'] = "registrar";
                 $dato['estado'] = 1;
@@ -115,11 +123,13 @@ class patch_panel extends Conexion {
 
         try {
 
-            $query = "UPDATE patch_panel SET tipo_patch_panel= :tipo_patch_panel, cantidad_puertos= :cantidad_puertos WHERE codigo_bien = :codigo_bien";
+            $query = "UPDATE patch_panel SET tipo_patch_panel= :tipo_patch_panel, cantidad_puertos= :cantidad_puertos,  `serial`=:serial_patch_panel WHERE codigo_bien = :codigo_bien";
 
             $stm = $this->conex->prepare($query);
+            $stm->bindParam(":codigo_bien", $this->codigo_bien);
             $stm->bindParam(":tipo_patch_panel", $this->tipo_patch_panel);
             $stm->bindParam(":cantidad_puertos", $this->cantidad_puertos);
+            $stm->bindParam(":serial_patch_panel", $this->serial_patch_panel);
             $stm->execute();
             $dato['resultado'] = "modificar";
             $dato['estado'] = 1;
@@ -187,7 +197,7 @@ class patch_panel extends Conexion {
 
         try {
 
-            $query = "SELECT p.codigo_bien, p.tipo_patch_panel, p.cantidad_puertos 
+            $query = "SELECT p.codigo_bien, p.tipo_patch_panel, p.cantidad_puertos, p.serial
                     FROM patch_panel p
                     JOIN bien b ON p.codigo_bien = b.codigo_bien
                     WHERE b.estatus = 1";
@@ -215,7 +225,15 @@ class patch_panel extends Conexion {
 
         try {
 
-            $query = "SELECT * FROM bien WHERE estatus = 1";
+            $query = "SELECT b.codigo_bien, b.descripcion  
+                        FROM bien b
+                        WHERE b.estatus = 1
+                            AND NOT EXISTS (
+                                SELECT 1 FROM patch_panel p WHERE p.codigo_bien = b.codigo_bien
+                            )
+                            AND NOT EXISTS (
+                                SELECT 1 FROM switch s WHERE s.codigo_bien = b.codigo_bien
+                            )";
 
             $stm = $this->conex->prepare($query);
             $stm->execute();
@@ -234,14 +252,10 @@ class patch_panel extends Conexion {
 
         try {
 
-            $query = /*"SELECT p.*
+            $query = "SELECT p.*
                     FROM patch_panel p 
                     JOIN bien b ON p.codigo_bien = b.codigo_bien 
-                    WHERE b.estatus = 0";*/
-
-                    "SELECT p.*
-                    FROM patch_panel p 
-                    ";
+                    WHERE b.estatus = 0";
 
             $stm = $this->conex->prepare($query);
             $stm->execute();
@@ -272,7 +286,7 @@ class patch_panel extends Conexion {
                     WHERE b.codigo_bien = :codigo_bien";
 
             $stm = $this->conex->prepare($query);
-            $stm->bindParam(":codigo_bien", $this->id);
+            $stm->bindParam(":codigo_bien", $this->codigo_bien);
             $stm->execute();
             $dato['resultado'] = "restaurar";
             $dato['estado'] = 1;
@@ -315,6 +329,7 @@ class patch_panel extends Conexion {
 
             case 'eliminar':
                 return $this->Eliminar();
+                
             case 'restaurar':
                 return $this->Restaurar();
 

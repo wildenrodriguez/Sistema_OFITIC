@@ -1,7 +1,12 @@
 <?php 
 
     require_once("Componentes/head.php"); ?>
-
+<style>
+     #tabla1 td,
+     #tabla1 th {
+       text-align: center;
+     }
+   </style>
 <body>
 
     <?php require_once("Componentes/menu.php");
@@ -36,11 +41,11 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table" id="tabla1">
+                            <table class="table" id="tabla1" >
                                 <thead>
-                                    <tr>
+                                    <tr >
                                         <?php foreach ($cabecera as $campo)
-                                            echo "<th scope='col'>$campo</th>"; ?>
+                                            echo "<th scope='col'style='text-align: center;'>$campo</th>"; ?>
                                     </tr>
                                 </thead>
 
@@ -60,7 +65,7 @@
     </main><!-- End #main -->
 
     <!-- Modal Eliminados -->
-    <div class="modal fade" id="modalEliminadas" tabindex="-1" role="dialog" aria-labelledby="modalEliminadasTitle" aria-hidden="true">
+    <div class="modal fade" id="modalEliminadas" tabindex="-1" role="dialog" aria-labelledby="modalEliminadasTitle" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-warning">
@@ -72,9 +77,12 @@
                         <table class="table" id="tablaEliminadas">
                             <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>Código Bien</th>
                                     <th>Tipo de Patch Panel</th>
                                     <th>Cantidad de Puertos</th>
+                                    <th>Serial</th>
+                                    <th>Restaurar</th>
                                 </tr>
                             </thead>
 
