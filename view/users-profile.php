@@ -25,7 +25,7 @@
                 style="width: 200px; height: 200px; object-fit: cover;">
               <h2><?php echo $datos["nombres"]; ?></h2>
               <h3><?php // echo $datos["unidad"]; 
-              ?></h3>
+                  ?></h3>
             </div>
           </div>
 
@@ -56,30 +56,20 @@
               <div class="tab-content pt-2">
                 <div class="tab-pane fade <?php echo $active2; ?> profile-overview" id="profile-overview">
                   <h5 class="card-title">Detalles</h5>
-                  <div class="row">
+                  <div class="row mt-3">
                     <div class="col-lg-3 col-md-4 label ">Nombre Completo</div>
                     <div class="col-lg-9 col-md-8"><?php echo $datos["nombres"] . " " . $datos["apellidos"]; ?></div>
                   </div>
-                  <div class="row">
+                  <div class="row mt-3">
                     <div class="col-lg-3 col-md-4 label ">Cédula</div>
                     <div class="col-lg-9 col-md-8"><?php echo $datos["cedula"]; ?></div>
                   </div>
-                  <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Unidad</div>
-                    <div class="col-lg-9 col-md-8"><?php // echo $datos["unidad"]; 
-                    ?></div>
-                  </div>
-                  <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Dependencia</div>
-                    <div class="col-lg-9 col-md-8"><?php //echo $datos["dependencia"]; 
-                    ?></div>
-                  </div>
-                  <div class="row">
+                  <div class="row mt-3">
                     <div class="col-lg-3 col-md-4 label ">Correo electronico</div>
                     <div class="col-lg-9 col-md-8"><?php echo $datos["correo"]; ?></div>
                   </div>
-                  <div class="row">
-                    <div class="col-lg-3 col- md-4 label ">Telefono</div>
+                  <div class="row mt-3">
+                    <div class="col-lg-3 col-md-4 label ">Telefono</div>
                     <div class="col-lg-9 col-md-8"><?php echo $datos["telefono"]; ?></div>
                   </div>
                   <?php if (isset($datos["especialidad"])) {
@@ -207,7 +197,7 @@
                           </div>
                         </div>
                       </div>
-                                            <div class="col-md-4">
+                      <div class="col-md-4">
                         <div class="card text-center">
                           <div class="card-header">
                             Módulo
@@ -223,7 +213,7 @@
                           </div>
                         </div>
                       </div>
-                                            <div class="col-md-4">
+                      <div class="col-md-4">
                         <div class="card text-center">
                           <div class="card-header">
                             Módulo
@@ -261,10 +251,111 @@
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
       class="bi bi-arrow-up-short"></i></a>
   <script src="assets/js/perfil.js"></script>
+  <!-- Script para SweetAlert y manejo de formularios -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
-    // Mostrar nombre del archivo seleccionado
-  </script>
+    // Mostrar alertas de PHP
+    <?php if (isset($alert)): ?>
+      Swal.fire({
+        icon: '<?php echo $alert['type']; ?>',
+        title: '<?php echo $alert['title']; ?>',
+        text: '<?php echo $alert['message']; ?>',
+        confirmButtonText: 'Aceptar'
+      });
+    <?php endif; ?>
 
+    // Confirmación para eliminar foto de perfil
+    function confirmDeletePhoto() {
+      Swal.fire({
+        title: '¿Eliminar foto de perfil?',
+        text: "¿Estás seguro de que deseas eliminar tu foto de perfil?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Crear un formulario dinámico para enviar la petición de eliminación
+          const form = document.createElement('form');
+          form.method = 'POST';
+          form.action = '?page=users-profile';
+          
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = 'eliminarF';
+          input.value = '1';
+          
+          form.appendChild(input);
+          document.body.appendChild(form);
+          form.submit();
+        }
+      });
+    }
+
+    // Confirmación para cambiar contraseña
+    document.getElementById('passwordForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const newPassword = document.getElementById('newPassword').value;
+      const renewPassword = document.getElementById('renewPassword').value;
+      
+      if (newPassword !== renewPassword) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Las contraseñas no coinciden',
+          confirmButtonText: 'Aceptar'
+        });
+        return;
+      }
+      
+      Swal.fire({
+        title: '¿Cambiar contraseña?',
+        text: "¿Estás seguro de que deseas cambiar tu contraseña?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, cambiar',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.submit();
+        }
+      });
+    });
+
+    // Confirmación para guardar cambios en el perfil
+    document.getElementById('profileForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      Swal.fire({
+        title: '¿Guardar cambios?',
+        text: "¿Estás seguro de que deseas guardar los cambios en tu perfil?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, guardar',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.submit();
+        }
+      });
+    });
+
+    // Mostrar nombre del archivo seleccionado
+    document.getElementById('foto_perfil').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        document.getElementById('nombre-archivo').textContent = file.name;
+      }
+    });
+  </script>
+  
 </body>
 
 </html

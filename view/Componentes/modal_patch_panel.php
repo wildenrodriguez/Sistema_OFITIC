@@ -4,56 +4,65 @@
     <div class="modal-content card">
       <div class="modal-header card-header">
         <h5 class="modal-title" id="modalTitleId"></h5>
-        <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close" title="Cerrar Modal"></button>
       </div>
       <div class="modal-body">
         <div class="row justify-content-center" id="Fila1">
 
         </div>
         <div class="row justify-content-center">
-          <div class="col-7">
+
+          <div class="col-6" id="">
             <div class="form-floating mb-3">
 
-              <select class="form-select" name="codigo_bien" id="codigo_bien">
-                <option selected value="default" disabled>Código de Bien</option>
-                <option value="JK2450">JK2450</option>
-                <option value="aaaaa">aaaaa</option>
-                <option value="">,</option>
-                <option value="">,</option>
+              <select class="form-select" name="codigo_bien" id="codigo_bien" title="Seleccionar el Código del Bien del Patch Panel">
+                <option selected value="default" disabled>Seleciones un Código de Bien</option>
+                 
+                <?php foreach ($bien as $bien): ?>
+                      <option value="<?= $bien['codigo_bien'] ?>">
+                       <?= $bien['codigo_bien'] . " - " .  $bien['descripcion']?>
+                      </option>
+                 <?php endforeach; ?>
+
               </select>
 
               <span id="scodigo_bien"></span>
               <label for="codigo_bien">Código de Bien</label>
             </div>
           </div>
+                
+          
+                  
 
-          <div class="col-7" style="display:none;">
-            <div class="form-floating mb-3">
-
-              <select class="form-select" name="codigo_bien_oculto" id="codigo_bien_oculto">
-                <option selected value="default" disabled>Código de Bien</option>
-              </select>
-
-              <span id="scodigo_bien_oculto"></span>
-              <label for="codigo_bien_oculto">Código de Bien</label>
-            </div>
-          </div>
-         
-
-          <div class="col-4">
+          <div class="col-5">
             <div class="form-floating mb-3 ">
 
-              <input placeholder="" class="form-control" name="cantidad_puertos" type="number" id="cantidad_puertos">
+              <input placeholder="" class="form-control" name="serial_patch_panel" type="text" id="serial_patch_panel" title="Ingresar Serial del Patch Panel" maxlength="45">
+              <span id="sserial_patch_panel"></span>
+              <label for="serial_patch_panel" class="form-label">Serial del Patch Panel</label>
+
+            </div>
+          </div>
+
+        </div>
+        
+        <div class="row justify-content-center">
+
+           <div class="col-4">
+            <div class="form-floating mb-3 ">
+
+              <input placeholder="" class="form-control" name="cantidad_puertos" type="number" id="cantidad_puertos" title="Ingresar Cantidad de Puertos del Patch Panel" maxlength="11" min="1">
               <span id="scantidad_puertos"></span>
               <label for="cantidad_puertos" class="form-label">Cantidad Puertos</label>
 
             </div>
           </div>
 
-           <div class="col-8">
-            <div class="form-floating mb-3 mt-4">
 
-              <input placeholder="" class="form-control" name="tipo_patch_panel" type="text" id="tipo_patch_panel" maxlength=" ">
+           <div class="col-7">
+            <div class="form-floating mb-3">
+
+              <input placeholder="" class="form-control" name="tipo_patch_panel" type="text" id="tipo_patch_panel" maxlength="45" title="Ingresar Tipo de Patch Panel">
               <span id="stipo_patch_panel"></span>
               <label for="tipo_patch_panel" class="form-label">Tipo de Patch Panel</label>
 
@@ -66,7 +75,7 @@
 
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" title="Cerrar Modal">Cerrar</button>
         <button id="enviar" name="" class="btn btn-primary"></button>
       </div>
     </div>
