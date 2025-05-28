@@ -65,7 +65,7 @@
     </main><!-- End #main -->
 
     <!-- Modal Eliminados -->
-    <div class="modal fade" id="modalEliminadas" tabindex="-1" role="dialog" aria-labelledby="modalEliminadasTitle" aria-hidden="true">
+    <div class="modal fade" id="modalEliminadas" tabindex="-1" role="dialog" aria-labelledby="modalEliminadasTitle" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-warning">
@@ -77,9 +77,12 @@
                         <table class="table" id="tablaEliminadas">
                             <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>Código Bien</th>
                                     <th>Tipo de Patch Panel</th>
                                     <th>Cantidad de Puertos</th>
+                                    <th>Serial</th>
+                                    <th>Restaurar</th>
                                 </tr>
                             </thead>
 

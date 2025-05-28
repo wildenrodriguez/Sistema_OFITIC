@@ -11,7 +11,8 @@
 
         </div>
         <div class="row justify-content-center">
-          <div class="col-7" id="codigo_visible">
+
+          <div class="col-6" id="">
             <div class="form-floating mb-3">
 
               <select class="form-select" name="codigo_bien" id="codigo_bien">
@@ -30,19 +31,24 @@
             </div>
           </div>
                 
-          <div class="col-7" style="display:none;" id="div_codigo_oculto">
-            <div class="form-floating mb-3">
-
-             <input placeholder="" class="form-control" name="codigo_bien_oculto" type="text" id="codigo_bien_oculto">
-              <label for="codigo_bien_oculto" class="form-label">Código de Bien</label>
-
-              <span id="scodigo_bien_oculto"></span>
-              <label for="codigo_bien_oculto">Código de Bien</label>
-            </div>
-          </div>
+          
                   
 
-          <div class="col-4">
+          <div class="col-5">
+            <div class="form-floating mb-3 ">
+
+              <input placeholder="" class="form-control" name="serial_patch_panel" type="number" id="serial_patch_panel">
+              <span id="sserial_patch_panel"></span>
+              <label for="serial_patch_panel" class="form-label">Serial del Patch Panel</label>
+
+            </div>
+          </div>
+
+        </div>
+        
+        <div class="row justify-content-center">
+
+           <div class="col-4">
             <div class="form-floating mb-3 ">
 
               <input placeholder="" class="form-control" name="cantidad_puertos" type="number" id="cantidad_puertos">
@@ -52,8 +58,9 @@
             </div>
           </div>
 
-           <div class="col-9">
-            <div class="form-floating mb-3 mt-4">
+
+           <div class="col-7">
+            <div class="form-floating mb-3">
 
               <input placeholder="" class="form-control" name="tipo_patch_panel" type="text" id="tipo_patch_panel" maxlength=" ">
               <span id="stipo_patch_panel"></span>
