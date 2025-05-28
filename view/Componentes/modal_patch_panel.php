@@ -4,7 +4,7 @@
     <div class="modal-content card">
       <div class="modal-header card-header">
         <h5 class="modal-title" id="modalTitleId"></h5>
-        <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close" title="Cerrar Modal"></button>
       </div>
       <div class="modal-body">
         <div class="row justify-content-center" id="Fila1">
@@ -15,7 +15,7 @@
           <div class="col-6" id="">
             <div class="form-floating mb-3">
 
-              <select class="form-select" name="codigo_bien" id="codigo_bien">
+              <select class="form-select" name="codigo_bien" id="codigo_bien" title="Seleccionar el Código del Bien del Patch Panel">
                 <option selected value="default" disabled>Seleciones un Código de Bien</option>
                  
                 <?php foreach ($bien as $bien): ?>
@@ -37,7 +37,7 @@
           <div class="col-5">
             <div class="form-floating mb-3 ">
 
-              <input placeholder="" class="form-control" name="serial_patch_panel" type="number" id="serial_patch_panel">
+              <input placeholder="" class="form-control" name="serial_patch_panel" type="text" id="serial_patch_panel" title="Ingresar Serial del Patch Panel" maxlength="45">
               <span id="sserial_patch_panel"></span>
               <label for="serial_patch_panel" class="form-label">Serial del Patch Panel</label>
 
@@ -51,7 +51,7 @@
            <div class="col-4">
             <div class="form-floating mb-3 ">
 
-              <input placeholder="" class="form-control" name="cantidad_puertos" type="number" id="cantidad_puertos">
+              <input placeholder="" class="form-control" name="cantidad_puertos" type="number" id="cantidad_puertos" title="Ingresar Cantidad de Puertos del Patch Panel" maxlength="11" min="1">
               <span id="scantidad_puertos"></span>
               <label for="cantidad_puertos" class="form-label">Cantidad Puertos</label>
 
@@ -62,7 +62,7 @@
            <div class="col-7">
             <div class="form-floating mb-3">
 
-              <input placeholder="" class="form-control" name="tipo_patch_panel" type="text" id="tipo_patch_panel" maxlength=" ">
+              <input placeholder="" class="form-control" name="tipo_patch_panel" type="text" id="tipo_patch_panel" maxlength="45" title="Ingresar Tipo de Patch Panel">
               <span id="stipo_patch_panel"></span>
               <label for="tipo_patch_panel" class="form-label">Tipo de Patch Panel</label>
 
@@ -75,7 +75,7 @@
 
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" title="Cerrar Modal">Cerrar</button>
         <button id="enviar" name="" class="btn btn-primary"></button>
       </div>
     </div>

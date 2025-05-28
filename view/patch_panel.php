@@ -1,6 +1,7 @@
 <?php 
 
-    require_once("Componentes/head.php"); ?>
+    require_once("Componentes/head.php"); 
+?>
 <style>
      #tabla1 td,
      #tabla1 th {
@@ -32,16 +33,16 @@
                         <h5 class="card-title">Gestionar Patch Panel</h5>
 
                         <div class="d-flex justify-content-between">
-                            <button type="button" class="btn btn-primary my-4" id="btn-registrar">
+                            <button type="button" class="btn btn-primary my-4" id="btn-registrar" title="Agregar nuevo Patch Panel">
                                 Registrar Patch Panel
                             </button>
-                            <button type="button" class="btn btn-primary my-4" id="btn-consultar-eliminados">
+                            <button type="button" class="btn btn-primary my-4" id="btn-consultar-eliminados" title="Consulta los Patch Panel Eliminados">
                                 Patch Panel Eliminados <i class="fa-solid fa-recycle"></i>
                             </button>
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table" id="tabla1" >
+                            <table class="table" id="tabla1" title="Campo de Consulta de Patch Panel">
                                 <thead>
                                     <tr >
                                         <?php foreach ($cabecera as $campo)
@@ -70,11 +71,11 @@
             <div class="modal-content">
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title text-white" id="modalEliminadasTitle">Patch Eliminados</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" title="Cerrar Modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive">
-                        <table class="table" id="tablaEliminadas">
+                        <table class="table" id="tablaEliminadas" title="Campo de Consulta de Patch Panel">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -94,7 +95,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" title="Cerrar Modal">Cerrar</button>
                 </div>
             </div>
         </div>
