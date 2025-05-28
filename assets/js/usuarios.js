@@ -1,53 +1,72 @@
-function consultar() {
-	var peticion = new FormData();
-	peticion.append('consultar', 'consultar');
-	enviaAjax(peticion);
-}
-
 $(document).ready(function () {
 	consultar();
+	registrarEntrada();
+	capaValidar();
+	cargarRol();
 
-	$("#motivo").on("keypress", function (e) {
-		validarKeyPress(/^[0-9 a-zA-ZáéíóúüñÑçÇ -.\b]*$/, e);
-	});
-	$("#motivo").on("keyup", function () {
-		validarKeyUp(
-			/^[0-9 a-zA-ZáéíóúüñÑçÇ -.]{3,30}$/,
-			$(this),
-			$("#smotivo"),
-			"El motivo debe tener entre 3 y 30 caracteres"
-		);
-	});
-
-	$("#solicitar").on("click", function () {
+	$("#enviar").on("click", function () {
 		switch ($(this).text()) {
 
-			case "Enviar":
+			case "Registrar":
 				if (validarenvio()) {
 					var datos = new FormData();
-					datos.append('solicitud', '');
-					datos.append('motivo', $("#motivo").val());
+					datos.append('registrar', 'registrar');
+					datos.append('cedula', $("#cedula").val());
+					datos.append('nombre', $("#nombre").val());
+					datos.append('apellido', $("#apellido").val());
+					datos.append('telefono', $("#telefono").val());
+					datos.append('correo', $("#correo").val());
+					datos.append('unidad', $("#unidad").val());
+					datos.append('cargo', $("#cargo").val());
 					enviaAjax(datos);
 				}
-
+				break;
+			case "Modificar":
+				if (validarenvio()) {
+					var datos = new FormData();
+					datos.append('modificar', 'modificar');
+					datos.append('cedula', $("#cedula").val());
+					datos.append('nombre', $("#nombre").val());
+					datos.append('apellido', $("#apellido").val());
+					datos.append('telefono', $("#telefono").val());
+					datos.append('correo', $("#correo").val());
+					datos.append('unidad', $("#unidad").val());
+					datos.append('cargo', $("#cargo").val());
+					enviaAjax(datos);
+				}
+				break;
+			case "Eliminar":
+				if (validarenvio()) {
+					var datos = new FormData();
+					datos.append('eliminar', 'eliminar');
+					datos.append('cedula', $("#cedula").val());
+					enviaAjax(datos);
+				}
 				break;
 
 			default:
 				mensajes("question", 10000, "Error", "Acción desconocida: " + $(this).text());;
 		}
-
+		$('#enviar').prop('disabled', true);
 	});
 
-	$("#btn-solicitud").on("click", function () { //<---- Evento del Boton Registrar
+	$("#btn-registrar").on("click", function () { //<---- Evento del Boton Registrar
 		limpia();
-		$("#modalTitleId").text("Crear Solicitud");
-		$("#solicitar").text("Enviar");
+		$("#idEmpleado").remove();
+		$("#modalTitleId").text("Registrar Empleado");
+		$("#enviar").text("Registrar");
 		$("#modal1").modal("show");
 	}); //<----Fin Evento del Boton Registrar
 });
 
-function enviaAjax(datos) {
-	$.ajax({
+function cargarRol() {
+	var datos = new FormData();
+	datos.append('cargar_rol', 'cargar_rol');
+	enviaAjax(datos);
+};
+
+async function enviaAjax(datos) {
+	return await $.ajax({
 		async: true,
 		url: "",
 		type: "POST",
@@ -63,11 +82,26 @@ function enviaAjax(datos) {
 				var lee = JSON.parse(respuesta);
 				if (lee.resultado == "registrar") {
 					$("#modal1").modal("hide");
-					mensajes("success", 10000, "Se envió la solicitud exitosamente", null);
+					mensajes("success", 10000, lee.mensaje, null);
 					consultar();
 
 				} else if (lee.resultado == "consultar") {
-					iniciarTabla(lee.datos);
+					crearDataTable(lee.datos);
+
+				} else if (lee.resultado == "modificar") {
+					$("#modal1").modal("hide");
+					mensajes("success", 10000, lee.mensaje, null);
+					consultar();
+
+				} else if (lee.resultado == "eliminar") {
+					$("#modal1").modal("hide");
+					mensajes("success", 10000, lee.mensaje, null);
+					consultar();
+
+				} else if (lee.resultado == "cargar_rol") {
+					selectRol(lee.datos);
+
+				} else if (lee.resultado == "entrada") {
 
 				} else if (lee.resultado == "error") {
 					mensajes("error", null, lee.mensaje, null);
@@ -75,8 +109,7 @@ function enviaAjax(datos) {
 			} catch (e) {
 				mensajes("error", null, "Error en JSON Tipo: " + e.name + "\n" +
 					"Mensaje: " + e.message + "\n" +
-					"Posición: " + e.lineNumber + ":" + e.columnNumber + "\n" +
-					"Stack: " + e.stack, null);
+					"Posición: " + e.lineNumber);
 			}
 		},
 		error: function (request, status, err) {
@@ -99,6 +132,25 @@ function validarenvio() {
 		return false;
 	}
 	return true;
+}
+
+function selectCargo(arreglo) {
+	$("#cargo").empty();
+	if (Array.isArray(arreglo) && arreglo.length > 0) {
+
+		$("#cargo").append(
+			new Option('Seleccione un Cargo', 'default')
+		);
+		arreglo.forEach(item => {
+			$("#cargo").append(
+				new Option(item.nombre_cargo, item.id_cargo)
+			);
+		});
+	} else {
+		$("#cargo").append(
+			new Option('No Hay Cargos', 'default')
+		);
+	}
 }
 
 var tabla;
@@ -135,6 +187,7 @@ function crearDataTable(arreglo) {
 
 }
 
+z
 function limpia() {
 	$("#motivo").last().removeClass("is-valid");
 	$("#motivo").last().removeClass("is-invalid");

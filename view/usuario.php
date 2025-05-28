@@ -30,7 +30,7 @@
         <div class="col-lg-12">
           <div class="card">
             <div class="card-body table-responsive py-3">
-            <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#crear_usuario">Crear usuario</button>
+            <button class="btn btn-primary mb-4" data-bs-toggle="modal" id="#btn_enviar">Crear usuario</button>
 
             <div class="table-responsive">
                 <table class="table display" id="tabla1">
