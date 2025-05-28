@@ -68,8 +68,15 @@
             exit;
         }
 
+        if (isset($_POST['consultar_bien'])) {
+            $datos = $patch_panel->ConsultarBien();
+            echo json_encode($datos);
+            exit;
+        }
+        
         if (isset($_POST["restaurar"])) {
 
+            $patch_panel->set_codigo_bien($_POST["codigo_bien"]);
             $patch_panel->set_codigo_bien($_POST["codigo_bien"]);
             $peticion["peticion"] = "restaurar";
             $datos = $patch_panel->Transaccion($peticion);

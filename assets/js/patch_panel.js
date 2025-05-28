@@ -147,6 +147,7 @@ function enviaAjax(datos) {
 
 					$("#modal1").modal("hide");
 					mensajes("success", 10000, lee.mensaje, null);
+					actualizarSelectBien();
 					consultar();
 
 				} else if (lee.resultado == "consultar") {
@@ -157,12 +158,14 @@ function enviaAjax(datos) {
 
 					$("#modal1").modal("hide");
 					mensajes("success", 10000, lee.mensaje, null);
+					actualizarSelectBien();
 					consultar();
 
 				} else if (lee.resultado == "eliminar") {
 					
 					$("#modal1").modal("hide");
 					mensajes("success", 10000, lee.mensaje, null);
+					actualizarSelectBien();
 					consultar();
 
 				} else if (lee.resultado == "consultar_eliminadas") {
@@ -173,6 +176,7 @@ function enviaAjax(datos) {
 
                     mensajes("success", null, "Patch Panel restaurado", lee.mensaje);
                     consultarEliminadas();
+					actualizarSelectBien();
                     consultar();
 
                 } else if (lee.resultado == "entrada") {
@@ -222,12 +226,6 @@ function capaValidar() {
 		if (obj.bool === 0) { }
 	})
 
-	$('#codigo_bien').on('change blur input focusout mouseleave', function () {
-
-		const obj = validarSelect();
-
-		if (obj.bool === 0) { }
-	});
 }
 
 function validarSelect() {
@@ -306,67 +304,33 @@ function crearDataTable(arreglo) {
 	});
 }
 
-function limpia() {
+function actualizarSelectBien() {
+    $.ajax({
+        url: '', 
+        type: 'POST',
+        data: { consultar_bien: 'consultar_bien' },
+        success: function(respuesta) {
+            try {
+                let datos = JSON.parse(respuesta);
+                if (Array.isArray(datos)) {
+                    let $select = $("#codigo_bien");
+                    $select.empty();
+                    $select.append('<option selected value="default" disabled>Seleccione un Código de Bien</option>');
+                    datos.forEach(function(bien) {
+                        $select.append(`<option value="${bien.codigo_bien}">${bien.codigo_bien} - ${bien.descripcion}</option>`);
+                    });
+                }
+            } catch (e) {
 
-	$("#codigo_bien").val("default");
-	$("#tipo_patch_panel").val("");
-	$("#cantidad_puertos").val("");
-	$("#serial_patch_panel").val("");
+                mensajes("error", 5000, "Error", "No se pudo actualizar el listado de bienes.");
 
-	$('#codigo_bien').prop('disabled', false);
-	$('#tipo_patch_panel').prop('disabled', false);
-	$('#cantidad_puertos').prop('disabled', false);
-	$('#serial_patch_panel').prop('disabled', false);
+            }
+        },
+		error: function() {
+            mensajes("error", 5000, "Error", "No se pudo conectar con el servidor.");
+        }
 
-	$("#codigo_bien option.opcion_temporal").remove();
-
-}
-
-function rellenar(pos, accion) {
-
-	limpia();
-	
-    let linea = $(pos).closest('tr');
-    let codigoBien = $(linea).find("td:eq(0)").text().trim();
-
-    if ($("#codigo_bien option[value='" + codigoBien + "']").length === 0) {
-        $("#codigo_bien").append(
-            $("<option>", {
-                value: codigoBien,
-               	text: codigoBien,
-            	class: "opcion_temporal"
-            })
-        );
-    }
-
-    $("#codigo_bien").val(codigoBien);
-
-
-	$("#cantidad_puertos").val($(linea).find("td:eq(1)").text());
-	$("#tipo_patch_panel").val($(linea).find("td:eq(2)").text());
-	$("#serial_patch_panel").val($(linea).find("td:eq(3)").text());
-
-	if (accion == 0) {
-
-		$('#codigo_bien').prop('disabled', true);
-		$('#tipo_patch_panel').prop('disabled', false);
-		$('#cantidad_puertos').prop('disabled', false);
-		$('#serial_patch_panel').prop('disabled', false);
-		$("#modalTitleId").text("Modificar Patch Panel")
-		$("#enviar").text("Modificar");
-	}
-	else {
-		$('#codigo_bien').prop('disabled', true);
-		$('#tipo_patch_panel').prop('disabled', true);
-		$('#cantidad_puertos').prop('disabled', true);
-		$('#serial_patch_panel').prop('disabled', true);
-		$("#modalTitleId").text("Eliminar Patch Panel")
-		$("#enviar").text("Eliminar");
-	}
-
-	$('#enviar').prop('disabled', false);
-	$("#modal1").modal("show");
-
+    });
 }
 
 function consultarEliminadas() {
@@ -488,5 +452,68 @@ async function restaurarPatchPanel(boton) {
         enviaAjax(datos);
 
     }
+
+}
+
+function limpia() {
+
+	$("#codigo_bien").val("default");
+	$("#tipo_patch_panel").val("");
+	$("#cantidad_puertos").val("");
+	$("#serial_patch_panel").val("");
+
+	$('#codigo_bien').prop('disabled', false);
+	$('#tipo_patch_panel').prop('disabled', false);
+	$('#cantidad_puertos').prop('disabled', false);
+	$('#serial_patch_panel').prop('disabled', false);
+
+	$("#codigo_bien option.opcion_temporal").remove();
+
+}
+
+function rellenar(pos, accion) {
+
+	limpia();
+	
+    let linea = $(pos).closest('tr');
+    let codigoBien = $(linea).find("td:eq(0)").text().trim();
+
+    if ($("#codigo_bien option[value='" + codigoBien + "']").length === 0) {
+        $("#codigo_bien").append(
+            $("<option>", {
+                value: codigoBien,
+               	text: codigoBien,
+            	class: "opcion_temporal"
+            })
+        );
+    }
+
+    $("#codigo_bien").val(codigoBien);
+
+
+	$("#cantidad_puertos").val($(linea).find("td:eq(1)").text());
+	$("#tipo_patch_panel").val($(linea).find("td:eq(2)").text());
+	$("#serial_patch_panel").val($(linea).find("td:eq(3)").text());
+
+	if (accion == 0) {
+
+		$('#codigo_bien').prop('disabled', true);
+		$('#tipo_patch_panel').prop('disabled', false);
+		$('#cantidad_puertos').prop('disabled', false);
+		$('#serial_patch_panel').prop('disabled', false);
+		$("#modalTitleId").text("Modificar Patch Panel")
+		$("#enviar").text("Modificar");
+	}
+	else {
+		$('#codigo_bien').prop('disabled', true);
+		$('#tipo_patch_panel').prop('disabled', true);
+		$('#cantidad_puertos').prop('disabled', true);
+		$('#serial_patch_panel').prop('disabled', true);
+		$("#modalTitleId").text("Eliminar Patch Panel")
+		$("#enviar").text("Eliminar");
+	}
+
+	$('#enviar').prop('disabled', false);
+	$("#modal1").modal("show");
 
 }

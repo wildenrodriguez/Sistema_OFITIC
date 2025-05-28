@@ -89,7 +89,7 @@
 
                 <li class="menu-item <?php echo (isset($_GET['dato']) && $_GET['dato'] == "unidad") ? "active" : "" ?>"
                   title="Gestión de Switches">
-                  <a href="?page=switch">
+                  <a href="?page=Switch_">
                     <i class="fa-solid fa-server"></i>
                     <span class="ms-2 me-2 menu-text">Gestión de Switches</span>
                   </a>

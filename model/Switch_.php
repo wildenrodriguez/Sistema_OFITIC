@@ -2,12 +2,11 @@
 
 require_once "model/conexion.php";
 
-class patch_panel extends Conexion {
+class Switch_ extends Conexion {
 
     private $codigo_bien;
-    private $tipo_patch_panel;
     private $cantidad_puertos;
-    private $serial_patch_panel;
+    private $serial_switch;
 
     public function __construct() {
         $this->conex = new Conexion("sistema");
@@ -22,13 +21,6 @@ class patch_panel extends Conexion {
         $this->codigo_bien = $codigo_bien;
     }
 
-    public function get_tipo_patch_panel() {
-        return $this->tipo_patch_panel;
-    }
-    public function set_tipo_patch_panel($tipo_patch_panel) {
-        $this->tipo_patch_panel = $tipo_patch_panel;
-    }
-
     public function get_cantidad_puertos() {
         return $this->cantidad_puertos;
     }
@@ -36,13 +28,12 @@ class patch_panel extends Conexion {
         $this->cantidad_puertos = $cantidad_puertos;
     }
 
-    public function get_serial_patch_panel() {
-        return $this->serial_patch_panel;
+    public function get_serial_switch() {
+        return $this->serial_switch;
     }
-    public function set_serial_patch_panel($serial_patch_panel) {
-        $this->serial_patch_panel = $serial_patch_panel;
+    public function set_serial_switch($serial_switch) {
+        $this->serial_switch = $serial_switch;
     }
-
 
     private function Validar() {
 
@@ -50,7 +41,7 @@ class patch_panel extends Conexion {
 
         try {
 
-            $query = "SELECT * FROM patch_panel WHERE codigo_bien = :codigo_bien";
+            $query = "SELECT * FROM switch WHERE codigo_bien = :codigo_bien";
 
             $stm = $this->conex->prepare($query);
             $stm->bindParam(":codigo_bien", $this->codigo_bien);
@@ -83,18 +74,18 @@ class patch_panel extends Conexion {
 
             try {
 
-                $query = "INSERT INTO patch_panel(codigo_bien, tipo_patch_panel, cantidad_puertos,  `serial`) VALUES 
-                (:codigo_bien, :tipo_patch_panel, :cantidad_puertos, :serial_patch_panel)";
+                $query = "INSERT INTO switch(codigo_bien, cantidad_puertos, `serial`) 
+                VALUES 
+                (:codigo_bien, :cantidad_puertos, :serial_switch)";
 
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":codigo_bien", $this->codigo_bien);
-                $stm->bindParam(":tipo_patch_panel", $this->tipo_patch_panel);
                 $stm->bindParam(":cantidad_puertos", $this->cantidad_puertos);
-                $stm->bindParam(":serial_patch_panel", $this->serial_patch_panel);
+                $stm->bindParam(":serial_switch", $this->serial_switch);
                 $stm->execute();
                 $dato['resultado'] = "registrar";
                 $dato['estado'] = 1;
-                $dato['mensaje'] = "Se registró el Patch Panel exitosamente";
+                $dato['mensaje'] = "Se registró el Switch exitosamente";
 
             } catch (PDOException $e) {
 
@@ -123,17 +114,16 @@ class patch_panel extends Conexion {
 
         try {
 
-            $query = "UPDATE patch_panel SET tipo_patch_panel= :tipo_patch_panel, cantidad_puertos= :cantidad_puertos,  `serial`=:serial_patch_panel WHERE codigo_bien = :codigo_bien";
+            $query = "UPDATE switch SET cantidad_puertos = :cantidad_puertos, `serial` = :serial_switch WHERE codigo_bien = :codigo_bien";
 
             $stm = $this->conex->prepare($query);
             $stm->bindParam(":codigo_bien", $this->codigo_bien);
-            $stm->bindParam(":tipo_patch_panel", $this->tipo_patch_panel);
             $stm->bindParam(":cantidad_puertos", $this->cantidad_puertos);
-            $stm->bindParam(":serial_patch_panel", $this->serial_patch_panel);
+            $stm->bindParam(":serial_switch", $this->serial_switch);
             $stm->execute();
             $dato['resultado'] = "modificar";
             $dato['estado'] = 1;
-            $dato['mensaje'] = "Se modificaron los datos del Patch Panel con éxito";
+            $dato['mensaje'] = "Se modificaron los datos del Switch con éxito";
 
         } catch (PDOException $e) {
 
@@ -158,16 +148,16 @@ class patch_panel extends Conexion {
             try {
 
                 $query = "UPDATE bien b
-                JOIN patch_panel p ON p.codigo_bien = b.codigo_bien
+                JOIN switch s ON s.codigo_bien = b.codigo_bien
                 SET b.estatus = 0
                 WHERE b.codigo_bien = :codigo_bien";
-                
+
                 $stm = $this->conex->prepare($query);
                 $stm->bindParam(":codigo_bien", $this->codigo_bien);
                 $stm->execute();
                 $dato['resultado'] = "eliminar";
                 $dato['estado'] = 1;
-                $dato['mensaje'] = "Se eliminó El Patch Panel exitosamente";
+                $dato['mensaje'] = "Se eliminó el Switch exitosamente";
 
             } catch (PDOException $e) {
 
@@ -196,9 +186,9 @@ class patch_panel extends Conexion {
 
         try {
 
-            $query = "SELECT p.codigo_bien, p.tipo_patch_panel, p.cantidad_puertos, p.serial
-            FROM patch_panel p
-            JOIN bien b ON p.codigo_bien = b.codigo_bien
+            $query = "SELECT s.codigo_bien, s.cantidad_puertos, s.serial
+            FROM switch s
+            JOIN bien b ON s.codigo_bien = b.codigo_bien
             WHERE b.estatus = 1";
 
             $stm = $this->conex->prepare($query);
@@ -212,7 +202,7 @@ class patch_panel extends Conexion {
             $dato['mensaje'] = $e->getMessage();
 
         }
-        
+
         $this->Cerrar_Conexion($this->conex, $stm);
 
         return $dato;
@@ -225,21 +215,21 @@ class patch_panel extends Conexion {
         try {
 
             $query = "SELECT b.codigo_bien, b.descripcion  
-                        FROM bien b
-                        WHERE b.estatus = 1
-                            AND NOT EXISTS (
-                                SELECT 1 FROM patch_panel p WHERE p.codigo_bien = b.codigo_bien
-                            )
-                            AND NOT EXISTS (
-                                SELECT 1 FROM switch s WHERE s.codigo_bien = b.codigo_bien
-                            )
-                            AND NOT EXISTS (
-                                SELECT 1 FROM equipo e WHERE e.codigo_bien = e.codigo_bien
-                            )";
+                      FROM bien b
+                      WHERE b.estatus = 1
+                        AND NOT EXISTS (
+                            SELECT 1 FROM switch s WHERE s.codigo_bien = b.codigo_bien
+                        )
+                        AND NOT EXISTS (
+                            SELECT 1 FROM patch_panel p WHERE p.codigo_bien = b.codigo_bien
+                        )
+                        AND NOT EXISTS (
+                            SELECT 1 FROM equipo e WHERE e.codigo_bien = e.codigo_bien
+                        )";
 
             $stm = $this->conex->prepare($query);
             $stm->execute();
-            
+
             return $stm->fetchAll(PDO::FETCH_ASSOC);
 
         } catch (PDOException $e) {
@@ -255,10 +245,10 @@ class patch_panel extends Conexion {
 
         try {
 
-            $query = "SELECT p.*
-                    FROM patch_panel p 
-                    JOIN bien b ON p.codigo_bien = b.codigo_bien 
-                    WHERE b.estatus = 0";
+            $query = "SELECT s.*
+                      FROM switch s
+                      JOIN bien b ON s.codigo_bien = b.codigo_bien
+                      WHERE b.estatus = 0";
 
             $stm = $this->conex->prepare($query);
             $stm->execute();
@@ -284,19 +274,16 @@ class patch_panel extends Conexion {
         try {
 
             $query = "UPDATE bien b
-                    JOIN patch_panel p ON p.codigo_bien = b.codigo_bien
-                    SET b.estatus = 1
-                    WHERE b.codigo_bien = :codigo_bien";
+                      JOIN switch s ON s.codigo_bien = b.codigo_bien
+                      SET b.estatus = 1
+                      WHERE b.codigo_bien = :codigo_bien";
 
             $stm = $this->conex->prepare($query);
             $stm->bindParam(":codigo_bien", $this->codigo_bien);
             $stm->execute();
             $dato['resultado'] = "restaurar";
             $dato['estado'] = 1;
-            $dato['mensaje'] = "Patch Panel restaurado exitosamente";
-            
-            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se restauró el Patch Panel. Codigo de Bien: " . $this->codigo_bien;
-            Bitacora($msg, "patch_panel");
+            $dato['mensaje'] = "Switch restaurado exitosamente";
 
         } catch (PDOException $e) {
 
@@ -307,7 +294,7 @@ class patch_panel extends Conexion {
         }
 
         $this->Cerrar_Conexion($this->conex, $stm);
-        
+
         return $dato;
     }
 
@@ -322,7 +309,7 @@ class patch_panel extends Conexion {
                 return $this->Consultar();
 
             case 'consultar_eliminadas':
-                return $this->ConsultarEliminadas();   
+                return $this->ConsultarEliminadas();
 
             case 'consultar_bien':
                 return $this->ConsultarBien();
@@ -332,7 +319,7 @@ class patch_panel extends Conexion {
 
             case 'eliminar':
                 return $this->Eliminar();
-                
+
             case 'restaurar':
                 return $this->Restaurar();
 
