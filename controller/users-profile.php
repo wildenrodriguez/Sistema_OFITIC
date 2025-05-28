@@ -79,9 +79,9 @@ if (is_file("view/" . $page . ".php")) {
 		$usuario->set_apellidos($apellido);
 		$usuario->set_correo($correo);
 		$usuario->set_telefono($tlf);
-
-		if ($usuario->Transaccion(['peticion' => 'modificar'])) {
-			$msg["success"] = "Actualizado";
+		$peticion['peticion']='modificar';
+		if ($usuario->Transaccion($peticion)) {
+			
 		} else {
 			$msg["danger"] = "No se pudo actualizar";
 		}
