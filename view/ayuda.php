@@ -32,9 +32,9 @@
                 <!-- Comienzo cards -->
                 <div class="card m-2">
                   <div class="card-body">
-                    <h5 class="card-title">Como iniciar sesion</h5>
+                    <h1 class="card-title">Como iniciar sesion?</h1>
 
-                    <p class="card-title">Para poder iniciar sesion tendremos que rellenar los datos solicitados como lo son cedula,contraseña y luego pulsar el boton ingresar. </p>
+                    <li class="card-title">Para poder iniciar sesion tendremos que rellenar los datos solicitados como lo son cedula Y contraseña, luego pulsar el boton ingresar para iniciar la sesion. </li>
                    
                     <div id="imageCarousel" class="carousel slide text-center" data-bs-ride="carousel">
                     <div class="carousel-inner">
@@ -64,18 +64,28 @@
 
                   <div class="card-body">
                     <h1 class="card-title">Dashboard</h1>
-                    <p class="card-title">Para poder iniciar sesion tenemos que entrar en el sistema, ya estando adentro del sistema aparecera </p>
+                    <li class="card-title">Para poder iniciar sesion tenemos que entrar en el sistema, ya estando adentro del sistema aparecera </li>
                   </div>
 
                   <div class="card-body">
-                    <h1 class="card-title">solicitudes</h1>
-                    <p class="card-title">Para poder iniciar sesion tenemos que entrar en el sistema, ya estando adentro del sistema aparecera </p>
-                  </div>
+                    <h2 >Modulo mis solicitudes</h2>
+                    
+                    <div>
+           <p class="card-title">En este modulo podremos realizar las solicitudes de los problemas que tengamos dentro de la empresa a continucion se le mostraran como realizar una solicitud de un servicio </p>
+            <ol>
+          
+             <li>Presionar el botón "Hacer solicitud".</li>
+             <li>Describir el problema que se está presentando y presionar el botón "Enviar".</li>
+             </ol>
+           </div>
           
                  
                   <p class="card-text"><small class="text-body-secondary">Ultima modificacion 3 minutos atras</small></p>
                 </div>
 <div class=" row">
+  <div class="card m-2">
+                  <div class="card-body">
+                    <h1 class="card-title">MIS SERVICIOS</h1>
 
                 <?php if ($datos["rol"] == "SUPERUSUARIO" or $datos["rol"] == "Técnico") { ?>
 
