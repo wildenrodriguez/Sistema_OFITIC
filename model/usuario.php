@@ -118,7 +118,7 @@ class Usuario extends Conexion
                 `apellidos` = :apellidos,
                 `correo` = :correo,
                 `telefono` = :telefono 
-              WHERE `nombre_usuario` = :id_usuario OR `cedula` = :cedula";
+                WHERE `nombre_usuario` = :id_usuario OR `cedula` = :cedula";
 
     $con = $this->conex->prepare($query);
     $con->bindParam(':cedula', $this->cedula);
