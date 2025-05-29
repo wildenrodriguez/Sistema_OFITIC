@@ -67,6 +67,7 @@ if (is_file("view/" . $page . ".php")) {
 			
 			if ($json['bool'] == 1) {
 				$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Realizó una solicitud exitosamente";
+                $msgN = "Nueva solicitud creada por " . $_SESSION['user']['nombre_usuario'] . ": " . $_POST["motivo"];
 			} else {
 				$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al enviar la solicitud";
 			}
@@ -75,6 +76,10 @@ if (is_file("view/" . $page . ".php")) {
 		
 		echo json_encode($json);
 		Bitacora($msg, "Solicitud");
+		Notificar(
+                    $msgN,
+                    "Solicitudes"
+                );
 		exit;
 	}
 

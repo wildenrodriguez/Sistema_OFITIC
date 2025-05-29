@@ -198,7 +198,7 @@
               </ul>
 
             <?php } ?>
-          </ul>
+            </ul>
     </nav>
   </div>
 
@@ -302,6 +302,7 @@
 
         <div class="col-auto ms-auto">
           <div class="top-nav-actions">
+            <!-- En el header del menú -->
             <div class="action-item notification-dropdown">
               <button class="notification-btn">
                 <i class="fas fa-bell"></i>
@@ -309,48 +310,21 @@
               </button>
               <div class="dropdown-menu notification-menu">
                 <div class="dropdown-header">
-                  <h6>Notifications</h6>
+                  <h6>Notificaciones</h6>
                   <button class="close-dropdown">
                     <i class="fas fa-times"></i>
                   </button>
                 </div>
-                <div class="dropdown-body">
-                  <div class="notification-item">
-                    <div class="notification-icon info">
-                      <i class="fas fa-info"></i>
-                    </div>
-                    <div class="notification-content">
-                      <p class="notification-title">New Feature</p>
-                      <p class="notification-text">
-                        Check out our new budget tracking tool!
-                      </p>
-                      <p class="notification-time">2 hours ago</p>
+                <div class="dropdown-body" id="notificaciones-container">
+                  <!-- Las notificaciones se cargarán aquí dinámicamente -->
+                  <div class="text-center py-3">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">Cargando...</span>
                     </div>
                   </div>
-                  <div class="notification-item">
-                    <div class="notification-icon warning">
-                      <i class="fas fa-exclamation-triangle"></i>
-                    </div>
-                    <div class="notification-content">
-                      <p class="notification-title">Account Alert</p>
-                      <p class="notification-text">
-                        Unusual activity detected on your account.
-                      </p>
-                      <p class="notification-time">1 day ago</p>
-                    </div>
-                  </div>
-                  <div class="notification-item">
-                    <div class="notification-icon danger">
-                      <i class="fas fa-credit-card"></i>
-                    </div>
-                    <div class="notification-content">
-                      <p class="notification-title">Payment Due</p>
-                      <p class="notification-text">
-                        Your credit card payment is due in 3 days.
-                      </p>
-                      <p class="notification-time">3 days ago</p>
-                    </div>
-                  </div>
+                </div>
+                <div class="dropdown-footer">
+                  <a href="?page=notificacion" class="btn btn-sm btn-primary w-100">Ver todas</a>
                 </div>
               </div>
             </div>
@@ -408,3 +382,4 @@
     <link rel="icon" href="assets/img/favicon.ico">
 
     <head>
+      
