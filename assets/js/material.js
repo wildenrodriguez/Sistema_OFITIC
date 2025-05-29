@@ -216,7 +216,12 @@ function capaValidar() {
 	});
 
 	$("#ubicacion").on("change", function () {
-		estadoSelect($(this), $("#subicacion"), "Debe seleccionar una ubicación", $(this).val() != "");
+		if($(this).val() === ""){
+			estadoSelect($(this), $("#subicacion"), "Debe seleccionar una ubicación", 0);
+
+		} else{
+			estadoSelect($(this), $("#subicacion"), "", 1);
+		}
 	});
 }
 

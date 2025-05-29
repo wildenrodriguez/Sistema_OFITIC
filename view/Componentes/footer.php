@@ -122,7 +122,7 @@ function getModuleLink(modulo) {
         case 'Solicitudes': return '?page=solicitud';
         case 'Bitácora': return '?page=bitacora';
         case 'Usuarios': return '?page=usuario';
-        case 'Materiales': return '?page=material';
+        case 'Material': return '?page=material';
         default: return '?page=notificacion';
     }
 }</script>
