@@ -23,22 +23,38 @@
               <label for="codigo_bien">Código de Bien</label>
             </div>
           </div>
-          <div class="col-5">
+
+          <div class="col-4">
+            <div class="form-floating mb-3">
+                <select class="form-select" name="cantidad_puertos" id="cantidad_puertos" title="Ingresar Cantidad de Puertos del Switch">
+
+                    <option selected value="default" disabled>Seleccione la Cantidad de Puertos</option>
+
+                    <option value="8">8</option>
+                    <option value="10">10</option>
+                    <option value="16">16</option>
+                    <option value="24">24</option>
+                    <option value="28">28</option>
+                    <option value="48">48</option>
+                    <option value="52">52</option>
+                    
+                </select>
+                <span id="scantidad_puertos"></span>
+                <label for="cantidad_puertos" class="form-label">Cantidad de Puertos</label>
+            </div>
+        </div>
+
+        </div>
+        <div class="row justify-content-center">
+
+          <div class="col-8">
             <div class="form-floating mb-3">
               <input placeholder="" class="form-control" name="serial_switch" type="text" id="serial_switch" maxlength="45" title="Ingresar Serial del Switch">
               <span id="sserial_switch"></span>
               <label for="serial_switch" class="form-label">Serial del Switch</label>
             </div>
           </div>
-        </div>
-        <div class="row justify-content-center">
-          <div class="col-4">
-            <div class="form-floating mb-3">
-              <input placeholder="" class="form-control" name="cantidad_puertos" type="number" id="cantidad_puertos" title="Ingresar Cantidad de Puertos del Switch" maxlength="11" min="1">
-              <span id="scantidad_puertos"></span>
-              <label for="cantidad_puertos" class="form-label">Cantidad de Puertos</label>
-            </div>
-          </div>
+
         </div>
       </div>
       <div class="modal-footer">

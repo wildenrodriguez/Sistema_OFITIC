@@ -96,7 +96,7 @@ $(document).ready(function () {
     $("#btn-registrar").on("click", function () { 
 
         limpia();
-
+        actualizarSelectBien();
         $("#modalTitleId").text("Registrar Switch");
         $("#enviar").text("Registrar");
         $("#enviar").prop('disabled', false);
@@ -211,11 +211,32 @@ function enviaAjax(datos) {
 
 function capaValidar() {
 
-    $('#codigo_bien').on('change blur input focusout mouseleave', function () {
+    $("#codigo_bien").on("change", function () {
+        if ($(this).val() == "default") {
+            estadoSelect(this, "#scodigo_bien", "Debe seleccionar un Código de Bien", 0);
+        } else {
+            estadoSelect(this, "#scodigo_bien", "", 1);
+        }
+    });
 
-        const obj = validarSelect();
+    $("#cantidad_puertos").on("change", function () {
+        if (!["8", "10", "16", "24", "28", "48", "52"].includes($(this).val())) {
+            estadoSelect(this, "#scantidad_puertos", "Debe seleccionar una cantidad válida", 0);
+        } else {
+            estadoSelect(this, "#scantidad_puertos", "", 1);
+        }
+    });
 
-        if (obj.bool === 0) { }
+    $("#serial_switch").on("keypress", function (e) {
+        validarKeyPress(/^[0-9a-zA-ZáéíóúüñÑçÇ\/\-.,# ]*$/, e);
+    });
+    $("#serial_switch").on("keyup", function () {
+        validarKeyUp(
+            /^[0-9a-zA-ZáéíóúüñÑçÇ\/\-.,# ]{3,45}$/,
+            $(this),
+            $("#sserial_switch"),
+            "El serial debe tener de 3 a 45 caracteres y solo caracteres válidos (/-.,#)"
+        );
     });
 
 }
@@ -247,17 +268,33 @@ function validarSelect() {
 }
 
 function validarenvio() {
+    let valido = true;
 
-    const obj = validarSelect();
-
-    if (obj.bool == 0) {
-
-        mensajes("error", 10000, "Verifica", obj.mensaje);
-
-        return false;
+    if ($("#codigo_bien").val() == "default") {
+        estadoSelect("#codigo_bien", "#scodigo_bien", "Debe seleccionar un Código de Bien", 0);
+        mensajes("error", 10000, "Verifica", "Debe seleccionar un Código de Bien");
+        valido = false;
     }
 
-    return true;
+    if (!["8", "10", "16", "24", "28", "48", "52"].includes($("#cantidad_puertos").val())) {
+        estadoSelect("#cantidad_puertos", "#scantidad_puertos", "Debe seleccionar una cantidad válida", 0);
+        mensajes("error", 10000, "Verifica", "Debe seleccionar una cantidad válida");
+        valido = false;
+    }
+
+    if (
+        validarKeyUp(
+            /^[0-9a-zA-ZáéíóúüñÑçÇ\/\-.,# ]{3,45}$/,
+            $("#serial_switch"),
+            $("#sserial_switch"),
+            "El serial debe tener de 3 a 45 caracteres y solo caracteres válidos (/-.,#)"
+        ) == 0
+    ) {
+        mensajes("error", 10000, "Verifica", "El serial debe tener de 3 a 45 caracteres y solo caracteres válidos (/-.,#)");
+        valido = false;
+    }
+
+    return valido;
 }
 
 function crearDataTable(arreglo) {
@@ -381,12 +418,16 @@ async function restaurarSwitch(boton) {
 function limpia() {
 
     $("#codigo_bien").val("default");
-    $("#cantidad_puertos").val("");
+    $("#cantidad_puertos").val("default");
     $("#serial_switch").val("");
 
     $('#codigo_bien').prop('disabled', false);
     $('#cantidad_puertos').prop('disabled', false);
     $('#serial_switch').prop('disabled', false);
+
+    $("#codigo_bien").removeClass("is-valid is-invalid");
+    $("#cantidad_puertos").removeClass("is-valid is-invalid");
+    $("#serial_switch").removeClass("is-valid is-invalid");
 
     $("#codigo_bien option.opcion_temporal").remove();
 }
@@ -409,6 +450,7 @@ function rellenar(pos, accion) {
     }
 
     $("#codigo_bien").val(codigoBien);
+    
     $("#cantidad_puertos").val($(linea).find("td:eq(1)").text());
     $("#serial_switch").val($(linea).find("td:eq(2)").text());
 

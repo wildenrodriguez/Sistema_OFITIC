@@ -60,7 +60,7 @@ class Switch_ extends Conexion {
 
         }
 
-        $this->Cerrar_Conexion($none, $stm);
+        $this->Cerrar_Conexion($this->conex, $stm);
 
         return $dato;
     }
@@ -111,25 +111,34 @@ class Switch_ extends Conexion {
     private function Actualizar() {
 
         $dato = [];
+        $bool = $this->Validar();
 
-        try {
+        if ($bool['bool'] != 0) {
+            try {
 
-            $query = "UPDATE switch SET cantidad_puertos = :cantidad_puertos, `serial` = :serial_switch WHERE codigo_bien = :codigo_bien";
+                $query = "UPDATE switch SET cantidad_puertos = :cantidad_puertos, `serial` = :serial_switch WHERE codigo_bien = :codigo_bien";
 
-            $stm = $this->conex->prepare($query);
-            $stm->bindParam(":codigo_bien", $this->codigo_bien);
-            $stm->bindParam(":cantidad_puertos", $this->cantidad_puertos);
-            $stm->bindParam(":serial_switch", $this->serial_switch);
-            $stm->execute();
-            $dato['resultado'] = "modificar";
-            $dato['estado'] = 1;
-            $dato['mensaje'] = "Se Modificaron los datos del Switch Exitosamente";
+                $stm = $this->conex->prepare($query);
+                $stm->bindParam(":codigo_bien", $this->codigo_bien);
+                $stm->bindParam(":cantidad_puertos", $this->cantidad_puertos);
+                $stm->bindParam(":serial_switch", $this->serial_switch);
+                $stm->execute();
+                $dato['resultado'] = "modificar";
+                $dato['estado'] = 1;
+                $dato['mensaje'] = "Se Modificaron los datos del Switch Exitosamente";
 
-        } catch (PDOException $e) {
+            } catch (PDOException $e) {
 
-            $dato['estado'] = -1;
+                $dato['estado'] = -1;
+                $dato['resultado'] = "error";
+                $dato['mensaje'] = $e->getMessage();
+
+            }
+        } else {
+
             $dato['resultado'] = "error";
-            $dato['mensaje'] = $e->getMessage();
+            $dato['estado'] = -1;
+            $dato['mensaje'] = "Error al modificar el registro";
 
         }
 
@@ -322,6 +331,9 @@ class Switch_ extends Conexion {
 
             case 'restaurar':
                 return $this->Restaurar();
+
+            case 'validar':
+                return $this->Validar();
 
             default:
                 return "Operacion: " . $peticion['peticion'] . " no valida";

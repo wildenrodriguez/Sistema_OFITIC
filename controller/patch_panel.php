@@ -19,6 +19,10 @@
 
         $patch_panel = new patch_panel();
 
+        $bien_valido = $patch_panel->Transaccion(['peticion' => 'consultar_bien']);
+        
+
+
         if (isset($_POST["entrada"])) {
 
             $json['resultado'] = "entrada";
@@ -30,25 +34,27 @@
         }
 
         if (isset($_POST["registrar"])) {
-
-            if ($_POST["codigo_bien"] == "default") {
+            
+            $codigos_bien_validos = array_column($bien_valido, 'codigo_bien');
+            
+            if (!in_array($_POST["codigo_bien"], $codigos_bien_validos)) {
                 $json['resultado'] = "error";
-                $json['mensaje'] = "Error, Seleccione un Código de Bien";
+                $json['mensaje'] = "Error <br> Seleccione un Código de Bien";
                 $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), envió solicitud no válida";
                 
             } else if (preg_match("/^[0-9a-zA-ZáéíóúüñÑçÇ\/\-.,# ]{3,45}$/", $_POST["serial_patch_panel"]) == 0) {
                 $json['resultado'] = "error";
-                $json['mensaje'] = "Error, Serial del Patch Panel no válido";
+                $json['mensaje'] = "Error <br> Serial del Patch Panel no válido";
                 $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), envió solicitud no válida";
                 
-            } else if (preg_match("/^[0-9]{1,11}$/", $_POST["cantidad_puertos"]) == 0) {
+            } else if (!in_array($_POST["cantidad_puertos"], ["8", "12", "16", "24", "32", "48", "96"])) {
                 $json['resultado'] = "error";
-                $json['mensaje'] = "Error, Cantidad de Puertos no válida";
+                $json['mensaje'] = "Error <br>Cantidad de Puertos no válido";
                 $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), envió solicitud no válida";
                 
-            } else if (preg_match("/^[0-9a-zA-ZáéíóúüñÑçÇ\/\-.,# ]{3,45}$/", $_POST["tipo_patch_panel"]) == 0) {
+            } else if (!in_array($_POST["tipo_patch_panel"], ["Red", "Telefonía"])) {
                 $json['resultado'] = "error";
-                $json['mensaje'] = "Error, Tipo de Patch Panel no válido";
+                $json['mensaje'] = "Error <br> Tipo de Patch Panel no válido";
                 $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), envió solicitud no válida";
                 
             } else {
@@ -111,24 +117,19 @@
 
         if (isset($_POST["modificar"])) {
 
-            if (preg_match("/^[0-9a-zA-ZáéíóúüñÑçÇ\/\-.,# ]{3,45}$/", $_POST["tipo_patch_panel"]) == 0) {
+           if (preg_match("/^[0-9a-zA-ZáéíóúüñÑçÇ\/\-.,# ]{3,45}$/", $_POST["serial_patch_panel"]) == 0) {
                 $json['resultado'] = "error";
-                $json['mensaje'] = "Error, Tipo de Patch Panel no válido";
+                $json['mensaje'] = "Error <br> Serial del Patch Panel no válido";
                 $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), envió solicitud no válida";
                 
-            } else if (preg_match("/^[0-9a-zA-ZáéíóúüñÑçÇ\/\-.,# ]{3,45}$/", $_POST["serial_patch_panel"]) == 0) {
+            } else if (!in_array($_POST["cantidad_puertos"], ["8", "12", "16", "24", "32", "48", "96"])) {
                 $json['resultado'] = "error";
-                $json['mensaje'] = "Error, Serial del Patch Panel no válido";
+                $json['mensaje'] = "Error <br>Cantidad de Puertos no válido";
                 $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), envió solicitud no válida";
                 
-            } else if (preg_match("/^[0-9]{1,11}$/", $_POST["cantidad_puertos"]) == 0) {
+            } else if (!in_array($_POST["tipo_patch_panel"], ["Red", "Telefonía"])) {
                 $json['resultado'] = "error";
-                $json['mensaje'] = "Error, Cantidad de Puertos no válida";
-                $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), envió solicitud no válida";
-                
-            } else if ($_POST["codigo_bien"] == "default") {
-                $json['resultado'] = "error";
-                $json['mensaje'] = "Error, Seleccione un Código de Bien";
+                $json['mensaje'] = "Error <br> Tipo de Patch Panel no válido";
                 $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), envió solicitud no válida";
                 
             } else {
@@ -156,14 +157,6 @@
 
         if (isset($_POST["eliminar"])) {
 
-
-            if ($_POST["codigo_bien"] == "default") {
-                $json['resultado'] = "error";
-                $json['mensaje'] = "Error, Seleccione un Código de Bien";
-                $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), envió solicitud no válida";
-
-            } else {
-
                 $patch_panel->set_codigo_bien($_POST["codigo_bien"]);
                 $peticion["peticion"] = "eliminar";
                 $json = $patch_panel->Transaccion($peticion);
@@ -176,15 +169,12 @@
                     
                     $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al eliminar un Patch Panel";
                 }
-
-            }
+            
        
             echo json_encode($json);
             Bitacora($msg, "patch_panel");
             exit;
         }
-
-        $bien = $patch_panel->Transaccion(['peticion' => 'consultar_bien']);
 
         require_once "view/" . $page . ".php";
 

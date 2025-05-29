@@ -120,26 +120,36 @@ class patch_panel extends Conexion {
     private function Actualizar() {
 
         $dato = [];
+        $bool = $this->Validar();
 
-        try {
+        if ($bool['bool'] != 0) {
 
-            $query = "UPDATE patch_panel SET tipo_patch_panel= :tipo_patch_panel, cantidad_puertos= :cantidad_puertos,  `serial`=:serial_patch_panel WHERE codigo_bien = :codigo_bien";
+            try {
 
-            $stm = $this->conex->prepare($query);
-            $stm->bindParam(":codigo_bien", $this->codigo_bien);
-            $stm->bindParam(":tipo_patch_panel", $this->tipo_patch_panel);
-            $stm->bindParam(":cantidad_puertos", $this->cantidad_puertos);
-            $stm->bindParam(":serial_patch_panel", $this->serial_patch_panel);
-            $stm->execute();
-            $dato['resultado'] = "modificar";
-            $dato['estado'] = 1;
-            $dato['mensaje'] = "Se Modificaron los datos del Patch Panel Exitosamente";
+                $query = "UPDATE patch_panel SET tipo_patch_panel= :tipo_patch_panel, cantidad_puertos= :cantidad_puertos,  `serial`=:serial_patch_panel WHERE codigo_bien = :codigo_bien";
 
-        } catch (PDOException $e) {
+                $stm = $this->conex->prepare($query);
+                $stm->bindParam(":codigo_bien", $this->codigo_bien);
+                $stm->bindParam(":tipo_patch_panel", $this->tipo_patch_panel);
+                $stm->bindParam(":cantidad_puertos", $this->cantidad_puertos);
+                $stm->bindParam(":serial_patch_panel", $this->serial_patch_panel);
+                $stm->execute();
+                $dato['resultado'] = "modificar";
+                $dato['estado'] = 1;
+                $dato['mensaje'] = "Se Modificaron los datos del Patch Panel Exitosamente";
 
-            $dato['estado'] = -1;
+            } catch (PDOException $e) {
+
+                $dato['estado'] = -1;
+                $dato['resultado'] = "error";
+                $dato['mensaje'] = $e->getMessage();
+
+            }
+        } else {
+
             $dato['resultado'] = "error";
-            $dato['mensaje'] = $e->getMessage();
+            $dato['estado'] = -1;
+            $dato['mensaje'] = "Error al Modificar el registro";
 
         }
 
@@ -335,6 +345,9 @@ class patch_panel extends Conexion {
                 
             case 'restaurar':
                 return $this->Restaurar();
+
+            case 'validar':
+                return $this->Validar();
 
             default:
                 return "Operacion: " . $peticion['peticion'] . " no valida";

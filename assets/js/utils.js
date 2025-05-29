@@ -50,14 +50,28 @@ function estadoSelect(input, span, mensaje, estado) {
 };
 
 function mensajes(icono, tiempo, titulo, mensaje) {
-  Swal.fire({
-    icon: icono,
-    timer: tiempo,
-    title: titulo,
-    text: mensaje,
-    showConfirmButton: true,
-    confirmButtonText: 'Aceptar',
-  });
+  if (icono === "error") {
+    Swal.fire({
+      icon: icono,
+      timer: tiempo,
+      title: titulo,
+      text: mensaje,
+      showConfirmButton: true,
+      confirmButtonText: 'Aceptar',
+    }).then(() => {
+      // Habilita el botón al cerrar la alerta de error
+      $('#enviar').prop('disabled', false);
+    });
+  } else {
+    Swal.fire({
+      icon: icono,
+      timer: tiempo,
+      title: titulo,
+      text: mensaje,
+      showConfirmButton: true,
+      confirmButtonText: 'Aceptar',
+    });
+  }
 }
 
 async function confirmarAccion(titulo, mensaje, icono) {

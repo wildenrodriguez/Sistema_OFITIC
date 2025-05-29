@@ -48,10 +48,19 @@
         
         <div class="row justify-content-center">
 
-           <div class="col-4">
+           <div class="col-5">
             <div class="form-floating mb-3 ">
 
-              <input placeholder="" class="form-control" name="cantidad_puertos" type="number" id="cantidad_puertos" title="Ingresar Cantidad de Puertos del Patch Panel" maxlength="11" min="1">
+              <select class="form-select" name="cantidad_puertos" id="cantidad_puertos" title="Ingresar Cantidad de Puertos del Patch Panel">
+                <option selected value="default" disabled>Seleccione la Cantidad de Puertos</option>
+                <option value="8">8</option>
+                <option value="12">12</option>
+                <option value="16">16</option>
+                <option value="24">24</option>
+                <option value="32">32</option>
+                <option value="48">48</option>
+                <option value="96">96</option>
+              </select>
               <span id="scantidad_puertos"></span>
               <label for="cantidad_puertos" class="form-label">Cantidad Puertos</label>
 
@@ -59,10 +68,18 @@
           </div>
 
 
-           <div class="col-7">
+           <div class="col-6">
             <div class="form-floating mb-3">
 
-              <input placeholder="" class="form-control" name="tipo_patch_panel" type="text" id="tipo_patch_panel" maxlength="45" title="Ingresar Tipo de Patch Panel">
+              <select class="form-select" name="tipo_patch_panel" id="tipo_patch_panel" maxlength="45" title="Ingresar Tipo de Patch Panel">
+
+                <option selected value="default" disabled>Seleccione el Tipo de Patch Panel</option>
+
+                <option value="Red">Patch Panel de Red</option>
+                <option value="Telefonía">Patch Panel de Telefonía</option>
+
+              </select>
+
               <span id="stipo_patch_panel"></span>
               <label for="tipo_patch_panel" class="form-label">Tipo de Patch Panel</label>
 

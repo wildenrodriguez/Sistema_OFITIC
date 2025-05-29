@@ -17,6 +17,8 @@ if (is_file("view/" . $page . ".php")) {
 
     $switch = new Switch_();
 
+    $bien = $switch->Transaccion(['peticion' => 'consultar_bien']);
+
     if (isset($_POST["entrada"])) {
         $json['resultado'] = "entrada";
         echo json_encode($json);
@@ -27,18 +29,19 @@ if (is_file("view/" . $page . ".php")) {
 
     if (isset($_POST["registrar"])) {
 
-        if ($_POST["codigo_bien"] == "default") {
+        $codigos_bien_validos = array_column($bien, 'codigo_bien');
+
+        if (!in_array($_POST["codigo_bien"], $codigos_bien_validos)) {
 
             $json['resultado'] = "error";
             $json['mensaje'] = "Error, Seleccione un Código de Bien";
             $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), envió solicitud no válida";
 
-        } else if (preg_match("/^[0-9]{1,11}$/", $_POST["cantidad_puertos"]) == 0) {
-
+        } else if (!in_array($_POST["cantidad_puertos"], ["8", "10", "16", "24", "28", "48", "52"])) {
             $json['resultado'] = "error";
-            $json['mensaje'] = "Error, Cantidad de Puertos no válida";
+            $json['mensaje'] = "Error <br>Cantidad de Puertos no válido";
             $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), envió solicitud no válida";
-
+                
         } else if (preg_match("/^[0-9a-zA-ZáéíóúüñÑçÇ\/\-.,# ]{3,45}$/", $_POST["serial_switch"]) == 0) {
 
             $json['resultado'] = "error";
@@ -97,18 +100,11 @@ if (is_file("view/" . $page . ".php")) {
 
     if (isset($_POST["modificar"])) {
 
-        if ($_POST["codigo_bien"] == "default") {
-
+       if (!in_array($_POST["cantidad_puertos"], ["8", "10", "16", "24", "28", "48", "52"])) {
             $json['resultado'] = "error";
-            $json['mensaje'] = "Error, Seleccione un Código de Bien";
+            $json['mensaje'] = "Error <br>Cantidad de Puertos no válido";
             $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), envió solicitud no válida";
-
-        } else if (preg_match("/^[0-9]{1,11}$/", $_POST["cantidad_puertos"]) == 0) {
-
-            $json['resultado'] = "error";
-            $json['mensaje'] = "Error, Cantidad de Puertos no válida";
-            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), envió solicitud no válida";
-
+                
         } else if (preg_match("/^[0-9a-zA-ZáéíóúüñÑçÇ\/\-.,# ]{3,45}$/", $_POST["serial_switch"]) == 0) {
 
             $json['resultado'] = "error";
@@ -138,14 +134,6 @@ if (is_file("view/" . $page . ".php")) {
 
     if (isset($_POST["eliminar"])) {
 
-         if ($_POST["codigo_bien"] == "default") {
-
-            $json['resultado'] = "error";
-            $json['mensaje'] = "Error, Seleccione un Código de Bien";
-            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), envió solicitud no válida";
-
-        } else {
-
             $switch->set_codigo_bien($_POST["codigo_bien"]);
             $peticion["peticion"] = "eliminar";
             $datos = $switch->Transaccion($peticion);
@@ -156,7 +144,7 @@ if (is_file("view/" . $page . ".php")) {
             } else {
                 $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al eliminar un Switch";
             }
-        }
+        
 
         echo json_encode($datos);
         Bitacora($msg, "Switch");
@@ -164,7 +152,7 @@ if (is_file("view/" . $page . ".php")) {
 
     }
 
-    $bien = $switch->Transaccion(['peticion' => 'consultar_bien']);
+   
 
     require_once "view/" . $page . ".php";
 
