@@ -302,7 +302,7 @@
 
         <div class="col-auto ms-auto">
           <div class="top-nav-actions">
-            <!-- En el header del menú -->
+            <!-- donde van las notificaciones por que se me pierden -->
             <div class="action-item notification-dropdown">
               <button class="notification-btn">
                 <i class="fas fa-bell"></i>
@@ -316,7 +316,7 @@
                   </button>
                 </div>
                 <div class="dropdown-body" id="notificaciones-container">
-                  <!-- Las notificaciones se cargarán aquí dinámicamente -->
+                  
                   <div class="text-center py-3">
                     <div class="spinner-border text-primary" role="status">
                       <span class="visually-hidden">Cargando...</span>

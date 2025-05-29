@@ -166,11 +166,11 @@ ul {
     top: 0;
     right: 0;
     background-color: var(--danger);
-    color: white;
+    color: var(--card-foreground);
     border-radius: 50%;
     width: 1.25rem;
     height: 1.25rem;
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -301,7 +301,7 @@ ul {
     border-top: 1px solid var(--border-color);
 }
 
-/* Estilos para la página de notificaciones */
+
 .nueva-notificacion {
     background-color: rgba(var(--primary-rgb), 0.05);
 }
