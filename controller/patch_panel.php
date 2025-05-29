@@ -19,7 +19,7 @@
 
         $patch_panel = new patch_panel();
 
-        $bien_valido = $patch_panel->Transaccion(['peticion' => 'consultar_bien']);
+        $bien = $patch_panel->Transaccion(['peticion' => 'consultar_bien']);
         
 
 
@@ -35,7 +35,7 @@
 
         if (isset($_POST["registrar"])) {
             
-            $codigos_bien_validos = array_column($bien_valido, 'codigo_bien');
+            $codigos_bien_validos = array_column($bien, 'codigo_bien');
             
             if (!in_array($_POST["codigo_bien"], $codigos_bien_validos)) {
                 $json['resultado'] = "error";

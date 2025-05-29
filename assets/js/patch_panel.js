@@ -360,6 +360,7 @@ function crearDataTable(arreglo) {
 }
 
 function actualizarSelectBien() {
+	
     $.ajax({
         url: '', 
         type: 'POST',
@@ -368,6 +369,7 @@ function actualizarSelectBien() {
             try {
                 let datos = JSON.parse(respuesta);
                 if (Array.isArray(datos)) {
+
                     let $select = $("#codigo_bien");
                     $select.empty();
                     $select.append('<option selected value="default" disabled>Seleccione un Código de Bien</option>');

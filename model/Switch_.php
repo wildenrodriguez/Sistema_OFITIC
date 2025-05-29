@@ -233,7 +233,7 @@ class Switch_ extends Conexion {
                             SELECT 1 FROM patch_panel p WHERE p.codigo_bien = b.codigo_bien
                         )
                         AND NOT EXISTS (
-                            SELECT 1 FROM equipo e WHERE e.codigo_bien = e.codigo_bien
+                            SELECT 1 FROM equipo e WHERE e.codigo_bien = b.codigo_bien
                         )";
 
             $stm = $this->conex->prepare($query);

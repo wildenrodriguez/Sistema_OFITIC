@@ -11,6 +11,7 @@
         <div class="row justify-content-center">
           <div class="col-6">
             <div class="form-floating mb-3">
+            
               <select class="form-select" name="codigo_bien" id="codigo_bien" title="Seleccionar el Código del Bien del Switch">
                 <option selected value="default" disabled>Seleccione un Código de Bien</option>
                 <?php foreach ($bien as $bien): ?>

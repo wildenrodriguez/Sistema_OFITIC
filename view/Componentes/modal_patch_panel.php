@@ -18,11 +18,11 @@
               <select class="form-select" name="codigo_bien" id="codigo_bien" title="Seleccionar el Código del Bien del Patch Panel">
                 <option selected value="default" disabled>Seleciones un Código de Bien</option>
                  
-                <?php foreach ($bien as $bien): ?>
-                      <option value="<?= $bien['codigo_bien'] ?>">
-                       <?= $bien['codigo_bien'] . " - " .  $bien['descripcion']?>
-                      </option>
-                 <?php endforeach; ?>
+                <?php foreach ($bien['datos'] as $bien): ?>
+                    <option value="<?= $bien['codigo_bien'] ?>">
+                        <?= $bien['codigo_bien'] . " - " .  $bien['descripcion']?>
+                    </option>
+                <?php endforeach; ?>
 
               </select>
 

@@ -233,19 +233,21 @@ class patch_panel extends Conexion {
         $dato = [];
 
         try {
-
+           
             $query = "SELECT b.codigo_bien, b.descripcion  
-                        FROM bien b
-                        WHERE b.estatus = 1
-                            AND NOT EXISTS (
-                                SELECT 1 FROM patch_panel p WHERE p.codigo_bien = b.codigo_bien
-                            )
-                            AND NOT EXISTS (
-                                SELECT 1 FROM switch s WHERE s.codigo_bien = b.codigo_bien
-                            )
-                            AND NOT EXISTS (
-                                SELECT 1 FROM equipo e WHERE e.codigo_bien = e.codigo_bien
-                            )";
+                    FROM bien b
+                    WHERE b.estatus = 1
+                        AND NOT EXISTS (
+                            SELECT 1 FROM patch_panel p WHERE p.codigo_bien = b.codigo_bien
+                        )
+                        AND NOT EXISTS (
+                            SELECT 1 FROM switch s WHERE s.codigo_bien = b.codigo_bien
+                        )
+                        AND NOT EXISTS (
+                            SELECT 1 FROM equipo e WHERE e.codigo_bien = b.codigo_bien
+                        )";
+
+
 
             $stm = $this->conex->prepare($query);
             $stm->execute();
