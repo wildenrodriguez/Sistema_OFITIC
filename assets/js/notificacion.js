@@ -101,6 +101,7 @@ function crearDataTable(arreglo) {
     $('#tabla1 tbody').on('click', 'tr', function() {
         var id = $(this).data('id');
         var estado = $(this).find('td:eq(5)').text().trim();
+        var modulo = $(this).find('td:eq(1)').text().trim();
         
         if (estado == 'Nuevo') {
             var formData = new FormData();
@@ -108,9 +109,8 @@ function crearDataTable(arreglo) {
             formData.append('id', id);
             enviaAjax(formData);
         }
-        
-        // Aquí podrías agregar lógica para redirigir al módulo correspondiente
-        // basado en el campo 'modulo' de la notificación
+
+        window.location="?page=" + modulo.toLowerCase();
     });
 }
 
