@@ -109,8 +109,9 @@ function crearDataTable(arreglo) {
             formData.append('id', id);
             enviaAjax(formData);
         }
-
-        window.location="?page=" + modulo.toLowerCase();
+        if (modulo != 'Notificaciones') {
+            window.location="?page=" + modulo.toLowerCase();
+        }
     });
 }
 
