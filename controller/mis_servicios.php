@@ -76,6 +76,7 @@ if (is_file("view/" . $page . ".php")) {
 		
 		echo json_encode($json);
 		Bitacora($msg, "Solicitud");
+		//Tengan cuidado con las notificaciones por que dan problemas con el envio
 		Notificar(
                     $msgN,
                     "Solicitudes"
