@@ -45,12 +45,17 @@ if (is_file("view/" . $page . ".php")) {
 			$json = $material->Transaccion($peticion);
 			if ($json['estado'] == 1) {
 				$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se registró un nuevo material";
+				$msgN = "Nuevo material registrado por " . $_SESSION['user']['nombre_usuario'] . ": " . $_POST["nombre"];
 			} else {
 				$msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al registrar un nuevo material";
 			}
 		}
 		echo json_encode($json);
 		Bitacora($msg, "Material");
+		Notificar(
+                    $msgN,
+                    "Material"
+                );
 		exit;
 	}
 

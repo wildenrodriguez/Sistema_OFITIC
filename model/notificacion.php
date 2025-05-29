@@ -2,16 +2,15 @@
 require_once "model/conexion.php";
 class Notificacion extends Conexion
 {
-
     private $id;
     private $usuario;
     private $modulo;
-    private $accion;
+    private $mensaje;
     private $fecha;
     private $hora;
+    private $estado;
 
     public function __construct(){
-        
         $this->conex = new Conexion("usuario");
         $this->conex = $this->conex->Conex();
     }
@@ -28,8 +27,8 @@ class Notificacion extends Conexion
         $this->modulo = $modulo;
     }
 
-    public function set_accion($accion){
-        $this->accion = $accion;
+    public function set_mensaje($mensaje){
+        $this->mensaje = $mensaje;
     }
 
     public function set_fecha($fecha){
@@ -40,7 +39,11 @@ class Notificacion extends Conexion
         $this->hora = $hora;
     }
 
-    public function get_id($id){
+    public function set_estado($estado){
+        $this->estado = $estado;
+    }
+
+    public function get_id(){
         return $this->id;
     }
 
@@ -52,8 +55,8 @@ class Notificacion extends Conexion
         return $this->modulo;
     }
 
-    public function get_accion(){
-        return $this->accion;
+    public function get_mensaje(){
+        return $this->mensaje;
     }
 
     public function get_fecha(){
@@ -64,51 +67,27 @@ class Notificacion extends Conexion
         return $this->hora;
     }
 
-    private function Validar(){
-        $dato = [];
-
-        try {
-            $this->conex->beginTransaction();
-            $query = "SELECT * FROM notificacion WHERE id_notificacion = :id";
-            
-            $stm = $this->conex->prepare($query);
-            $stm->bindParam(":id", $this->id);
-            $stm->execute();
-            if($stm->rowCount() > 0){
-                $dato['arreglo'] = $stm->fetch(PDO::FETCH_ASSOC);
-                $dato['bool'] = 1;
-            } else {
-                $dato['bool'] = 0;
-            }
-            $this->conex->commit();
-            
-        } catch (PDOException $e) {
-            $this->conex->rollBack();
-            $dato['error'] = $e->getMessage();
-        }
-        $this->Cerrar_Conexion($none, $stm);
-        return $dato;
+    public function get_estado(){
+        return $this->estado;
     }
 
     private function Registrar(){
         $dato = [];
-        $bool = $this->Validar();
-
-        if($bool['bool'] == 0){
         try {
             $this->conex->beginTransaction();
-            $query = "INSERT INTO notificacion (id_notificacion, usuario, modulo, accion_notificacion, fecha, hora)
-            VALUES (NULL, :usuario, :modulo, :accion, :fecha, :hora)";
+            $query = "INSERT INTO notificacion (usuario, modulo, mensaje, fecha, hora, estado)
+                      VALUES (:usuario, :modulo, :mensaje, :fecha, :hora, 'Nuevo')";
             
             $stm = $this->conex->prepare($query);
             $stm->bindParam(":usuario", $this->usuario);
             $stm->bindParam(":modulo", $this->modulo);
-            $stm->bindParam(":accion", $this->accion);
+            $stm->bindParam(":mensaje", $this->mensaje);
             $stm->bindParam(":fecha", $this->fecha);
             $stm->bindParam(":hora", $this->hora);
             $stm->execute();
             $dato['resultado'] = "registrar";
-            $dato['mensaje'] = "Se registro con éxito";
+            $dato['mensaje'] = "Notificación registrada con éxito";
+            $dato['id'] = $this->conex->lastInsertId();
 
             $this->conex->commit();
         } catch (PDOException $e) {
@@ -116,24 +95,18 @@ class Notificacion extends Conexion
             $dato['resultado'] = "error";
             $dato['mensaje'] = $e->getMessage();
         }
-    } else {
-        $this->conex->rollBack();
-        $dato['resultado'] = "error";
-        $dato['mensaje'] = "Registro duplicado";
-    }
         $this->Cerrar_Conexion($this->conex, $stm);
         return $dato;
     }
 
-
     private function Consultar(){
         $dato = [];
-
         try {
             $this->conex->beginTransaction();
-            $query = "SELECT * FROM notificacion ORDER BY notificacion.id_notificacion DESC";
+            $query = "SELECT * FROM notificacion WHERE usuario = :usuario ORDER BY id DESC";
             
             $stm = $this->conex->prepare($query);
+            $stm->bindParam(":usuario", $this->usuario);
             $stm->execute();
             $dato['resultado'] = "consultar";
             $dato['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
@@ -147,21 +120,63 @@ class Notificacion extends Conexion
         return $dato;
     }
 
+    private function MarcarLeido(){
+        $dato = [];
+        try {
+            $this->conex->beginTransaction();
+            $query = "UPDATE notificacion SET estado = 'Leído' WHERE id = :id AND usuario = :usuario";
+            
+            $stm = $this->conex->prepare($query);
+            $stm->bindParam(":id", $this->id);
+            $stm->bindParam(":usuario", $this->usuario);
+            $stm->execute();
+            $dato['resultado'] = "actualizar";
+            $dato['mensaje'] = "Notificación marcada como leída";
+            $this->conex->commit();
+        } catch (PDOException $e) {
+            $this->conex->rollBack();
+            $dato['resultado'] = "error";
+            $dato['mensaje'] = $e->getMessage();
+        }
+        $this->Cerrar_Conexion($this->conex, $stm);
+        return $dato;
+    }
+
+    private function ContarNuevas(){
+        $dato = [];
+        try {
+            $this->conex->beginTransaction();
+            $query = "SELECT COUNT(*) as total FROM notificacion WHERE usuario = :usuario AND estado = 'Nuevo'";
+            
+            $stm = $this->conex->prepare($query);
+            $stm->bindParam(":usuario", $this->usuario);
+            $stm->execute();
+            $result = $stm->fetch(PDO::FETCH_ASSOC);
+            $dato['resultado'] = "contar";
+            $dato['total'] = $result['total'];
+            $this->conex->commit();
+        } catch (PDOException $e) {
+            $this->conex->rollBack();
+            $dato['resultado'] = "error";
+            $dato['mensaje'] = $e->getMessage();
+        }
+        $this->Cerrar_Conexion($this->conex, $stm);
+        return $dato;
+    }
+
     public function Transaccion($peticion){
-
         switch($peticion['peticion']){
-
             case 'registrar':
                 return $this->Registrar();
-            
             case 'consultar':
                 return $this->Consultar();
-
+            case 'marcar_leido':
+                return $this->MarcarLeido();
+            case 'contar_nuevas':
+                return $this->ContarNuevas();
             default:
-                return "Operacion: ".$peticion['peticion']." no valida";
-
+                return ["resultado" => "error", "mensaje" => "Operación no válida"];
         }
-
     }
 }
 ?>
