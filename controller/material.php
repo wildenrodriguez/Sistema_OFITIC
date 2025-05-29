@@ -117,6 +117,7 @@ if (is_file("view/" . $page . ".php")) {
 		exit;
 	}
 
+
 	if (isset($_POST["eliminar"])) {
 		if (preg_match("/^[0-9]{1,11}$/", $_POST["id_material"]) == 0) {
 			$json['resultado'] = "error";

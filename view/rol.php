@@ -4,8 +4,7 @@
 <?php require_once("Componentes/menu.php");
       require_once("Componentes/modal_rol.php");
       require_once("Componentes/modal_permiso.php");?>
-      
-
+    
   <main id="main" class="main">
           
     <div class="pagetitle">
@@ -17,16 +16,6 @@
         </ol>
       </nav>
     </div><!-- End Page Title -->
-    <?php 
-      if (isset($confirmacion)) {
-    ?>
-      <div class="alert alert-<?php echo $color; ?> alert-dismissible fade show" role="alert">
-         <strong><?php echo $confirmacion; ?></strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    <?php 
-      }
-     ?>
     <section class="section">
       <div class="row">
         <div class="col-lg-12">

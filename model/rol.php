@@ -2,7 +2,6 @@
 require_once "model/conexion.php";
 class Rol extends Conexion
 {
-
     private $id;
     private $nombre;
 
@@ -165,9 +164,9 @@ class Rol extends Conexion
 
             $stm = $this->conex->prepare($query);
             $stm->execute();
-            $this->conex->commit();
             $dato['resultado'] = "consultar";
             $dato['datos'] = $stm->fetchAll(PDO::FETCH_ASSOC);
+            $this->conex->commit();
         } catch (PDOException $e) {
             $this->conex->rollBack();
             $dato['resultado'] = "error";
@@ -196,7 +195,6 @@ class Rol extends Conexion
 
             default:
                 return "Operacion: " . $peticion['peticion'] . " no valida";
-
         }
 
     }

@@ -116,7 +116,7 @@ async function restaurarMaterial(boton) {
 	var confirmacion = false;
 	var linea = $(boton).closest('tr');
 	var id_material = $(linea).find('td:eq(0)').text();
-	console.log(id_material);
+	//console.log(id_material);
 
 	confirmacion = await confirmarAccion("¿Restaurar Material?", "¿Está seguro que desea restaurar este material?", "question");
 

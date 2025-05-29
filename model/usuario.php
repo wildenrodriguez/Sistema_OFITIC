@@ -110,7 +110,7 @@ class Usuario extends Conexion
     private function Registrar()
     {
 
-        $query = "INSERT INTO `usuario`(`cedula`, `clave`, `rol`) VALUES (:cedula,:clave,:rol)";
+        $query = "INSERT INTO usuario(cedula, clave, rol) VALUES (:cedula,:clave,:rol)";
 
         $con = $this->conex->prepare($query);
         $con->bindParam(':cedula', $this->cedula);
@@ -125,12 +125,12 @@ class Usuario extends Conexion
 
     private function ModificarUsuario()
     {
-        $query = "UPDATE `usuario` SET 
-                `nombres` = :nombres,
-                `apellidos` = :apellidos,
-                `correo` = :correo,
-                `telefono` = :telefono 
-                WHERE `nombre_usuario` = :nombre_usuario OR `cedula` = :cedula";
+        $query = "UPDATE usuario SET 
+                nombres = :nombres,
+                apellidos = :apellidos,
+                correo = :correo,
+                telefono = :telefono 
+                WHERE nombre_usuario = :nombre_usuario OR cedula = :cedula";
 
         $con = $this->conex->prepare($query);
         $con->bindParam(':cedula', $this->cedula);
@@ -145,7 +145,7 @@ class Usuario extends Conexion
 
     private function crear_tecnico()
     {
-        $con = $this->conex->prepare("INSERT INTO `tecnico`() VALUES (:cedula,:tipo)");
+        $con = $this->conex->prepare("INSERT INTO tecnico() VALUES (:cedula,:tipo)");
         $con->bindParam(':cedula', $this->cedula);
         $con->bindParam(':tipo', $this->tipo);
         return $con->execute();

@@ -35,6 +35,7 @@ function Bitacora($msg, $modulo) {
     $bitacora->set_fecha($fecha);
     $bitacora->set_hora($hora);
     $bitacora->Transaccion($peticion);
+    exit;
 }
 
 function Notificar($msg, $modulo, $usuarios = []) {
@@ -58,5 +59,6 @@ function Notificar($msg, $modulo, $usuarios = []) {
     }
 
     return $resultados;
+    
 }
 ?>
