@@ -95,6 +95,7 @@ function enviaAjax(datos) {
         beforeSend: function () { },
         timeout: 10000,
         success: function (respuesta) {
+            console.log(respuesta);
             try {
                 var lee = JSON.parse(respuesta);
                 if (lee.resultado == "registrar") {
@@ -119,7 +120,7 @@ function enviaAjax(datos) {
                     TablaEliminados(lee.datos);
 
                 } else if (lee.resultado == "restaurar") {
-                    mensajes("success", null, "Bien restaurado", lee.mensaje);
+                    mensajes("success", 10000, "Bien restaurado", lee.mensaje);
                     consultarEliminadas();
                     consultar();
 

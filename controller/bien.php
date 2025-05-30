@@ -34,7 +34,7 @@ if (is_file("view/" . $page . ".php")) {
         $datos = $bien->Transaccion($peticion);
         echo json_encode($datos);
 
-        if($datos['estado'] == 1){
+        if ($datos['estado'] == 1) {
             $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se registró un nuevo bien";
         } else {
             $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al registrar un nuevo bien";
@@ -62,6 +62,8 @@ if (is_file("view/" . $page . ".php")) {
         $peticion["peticion"] = "restaurar";
         $datos = $bien->Transaccion($peticion);
         echo json_encode($datos);
+        $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se restauró el bien Código: " . $_POST["codigo_bien"];
+        Bitacora($msg, "Bien");
         exit;
     }
 
@@ -105,7 +107,7 @@ if (is_file("view/" . $page . ".php")) {
         $datos = $bien->Transaccion($peticion);
         echo json_encode($datos);
 
-        if($datos['estado'] == 1){
+        if ($datos['estado'] == 1) {
             $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se modificó el registro del bien";
         } else {
             $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al modificar bien";
@@ -120,7 +122,7 @@ if (is_file("view/" . $page . ".php")) {
         $datos = $bien->Transaccion($peticion);
         echo json_encode($datos);
 
-        if($datos['estado'] == 1){
+        if ($datos['estado'] == 1) {
             $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se eliminó un bien";
         } else {
             $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), error al eliminar un bien";
@@ -138,4 +140,3 @@ if (is_file("view/" . $page . ".php")) {
 } else {
     require_once "view/404.php";
 }
-?>

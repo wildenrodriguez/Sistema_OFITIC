@@ -353,9 +353,7 @@ class Bien extends Conexion
             $dato['resultado'] = "restaurar";
             $dato['estado'] = 1;
             $dato['mensaje'] = "Bien restaurado exitosamente";
-
-            $msg = "(" . $_SESSION['user']['nombre_usuario'] . "), Se restauró el bien Código: " . $this->codigo_bien;
-            Bitacora($msg, "Bien");
+            
         } catch (PDOException $e) {
             $dato['resultado'] = "error";
             $dato['estado'] = -1;
